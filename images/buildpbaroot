@@ -30,7 +30,7 @@ sed -i '/menu "System tools"/a \\tsource "package/sedutil/Config.in"' package/Co
 cp -r ../../buildroot/packages/sedutil/ package/
 # Make a distribution from the current source
 cd ../../..
-autoreconf 
+autoreconf -i
 ./configure
 make dist
 mkdir images/scratch/buildroot/dl/

@@ -1,5 +1,7 @@
 ![alt tag](https://avatars0.githubusercontent.com/u/13870012?v=3&s=200)
 
+AMD RYZEN: This fork is for AMD Ryzen systems that cannot boot with standard sedutil
+
 This software is Copyright 2014-2017 Bright Plaza Inc. <drivetrust@drivetrust.com>
 
 This file is part of sedutil.
@@ -38,3 +40,34 @@ Linux and Windows executables are available at https://github.com/Drive-Trust-Al
 If you are looking for the PSID revert function see linux/PSIDRevert_LINUX.txt or win32/PSIDRevert_WINDOWS.txt
 
 PLEASE SEE CONTRIBUTING if you would like to make a code contribution.
+
+How to build (Ubuntu 16.04):
+
+Install dependencies:
+apt-get update
+apt-get upgrade
+apt-get install \
+      build-essential autoconf pkg-config libc6-dev make \ 
+	  g++-multilib m4 libtool ncurses-dev unzip zip git python \
+      zlib1g-dev wget bsdmainutils automake curl bc \
+      rsync cpio git nasm 
+
+git clone https://github.com/ChubbyAnt/sedutil.git
+cd images/
+run:
+./getresources
+run:
+./buildpbaroot
+(this takes a long time)
+run:
+./buildUEFI64 
+run:
+./buildbios 
+run:
+./buildrescue Rescue64
+run:
+./buildrescue Rescue32
+
+Download the img files created by these operations, then follow the instructions here:
+https://github.com/Drive-Trust-Alliance/sedutil/wiki/Encrypting-your-drive
+
