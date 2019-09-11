@@ -43,31 +43,30 @@ PLEASE SEE CONTRIBUTING if you would like to make a code contribution.
 
 How to build (Ubuntu 16.04):
 
-Install dependencies:
-apt-get update
-apt-get upgrade
-apt-get install \
-      build-essential autoconf pkg-config libc6-dev make \ 
-	  g++-multilib m4 libtool ncurses-dev unzip zip git python \
-      zlib1g-dev wget bsdmainutils automake curl bc \
-      rsync cpio git nasm 
+Install dependencies:  
+apt-get update  
+apt-get upgrade  
+apt-get install \  
+      build-essential autoconf pkg-config libc6-dev make \   
+	  g++-multilib m4 libtool ncurses-dev unzip zip git python \  
+      zlib1g-dev wget bsdmainutils automake curl bc \  
+      rsync cpio git nasm   
 
-git clone https://github.com/ChubbyAnt/sedutil.git
-cd images/
-run:
-./getresources
-run:
-./buildpbaroot
-(this takes a long time)
-run:
-./buildUEFI64 
-run:
-./buildbios 
-run:
-./buildrescue Rescue64
-run:
-./buildrescue Rescue32
+git clone https://github.com/ChubbyAnt/sedutil.git  
+cd images/  
+run:  
+./getresources  
+run:  
+./buildpbaroot  
+(this takes a long time)  
+run:  
+./buildUEFI64   
+run:  
+./buildbios  
+run:  
+./buildrescue Rescue64  
+run:  
+./buildrescue Rescue32  
 
-Download the img files created by these operations, then follow the instructions here:
-https://github.com/Drive-Trust-Alliance/sedutil/wiki/Encrypting-your-drive
-
+Download the img files created by these operations, then follow the instructions here:  
+https://github.com/Drive-Trust-Alliance/sedutil/wiki/Encrypting-your-drive  
