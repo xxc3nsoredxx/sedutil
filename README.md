@@ -46,21 +46,21 @@ The sedutil project provides a CLI tool (`sedutil-cli`) capable of setting up an
 
 ## Setup
 
-To configure a drive, load a compatible [RECOVERY](https://github.com/Drive-Trust-Alliance/sedutil/releases) image onto a USB drive and follow the instructions here:  
+To configure a drive, load a compatible [RECOVERY](https://github.com/ChubbyAnt/sedutil/releases) image onto a USB drive and follow the instructions here:  
 
 https://github.com/Drive-Trust-Alliance/sedutil/wiki/Encrypting-your-drive  
 
 
 ## Origin
 
-This version of sedutil is based off the original [@dta](https://github.com/Drive-Trust-Alliance/sedutil/) implementation as modified by [@dta](https://github.com/lukefor/sedutil). This fork adds support for the PBA bootloader to work on AMD Ryzen and AMD Ryzen mobile systems.
+This version of sedutil is based off the original [@dta](https://github.com/Drive-Trust-Alliance/sedutil/) implementation as modified by [@lukefor](https://github.com/lukefor/sedutil). This fork adds support for the PBA bootloader to work on AMD Ryzen and AMD Ryzen mobile systems.
 
 
 ## Notable Differences
 
 Unique to this repo are the following modifications:
 
-* Compatibile with AMD Ryzen and mobile AMD Ryzen systems
+* Compatibile with AMD Ryzen and AMD Ryzen mobile systems
 
 
 ## Build Process
