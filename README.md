@@ -33,40 +33,81 @@ or changing the contents of /sys/module/libata/parameters/allow_tpm from a "0" t
 
 ***** sleep (S3) is not supported.
 
-Source code is available on GitHub at https://github.com/Drive-Trust-Alliance/sedutil 
+Orginal source code is available on GitHub at https://github.com/Drive-Trust-Alliance/sedutil 
 
 Linux and Windows executables are available at https://github.com/Drive-Trust-Alliance/sedutil/wiki/Executable-Distributions
 
-If you are looking for the PSID revert function see linux/PSIDRevert_LINUX.txt or win32/PSIDRevert_WINDOWS.txt
+# About SEDutil for AMD Ryzen
 
-PLEASE SEE CONTRIBUTING if you would like to make a code contribution.
+DTA sedutil: For AMD Ryzen Systems
 
-How to build (Ubuntu 16.04):
+The sedutil project provides a CLI tool (`sedutil-cli`) capable of setting up and managing self encrypting drives (SEDs) that comply with the TCG OPAL 2.00 standard. This project also provides a pre-boot authentication image (`linuxpba`) which can be loaded onto an encrypted disk's shadow MBR. This pre-boot authentication image allows the user enter their password and unlock SED drives during the boot process. **Using this tool can make data on the drive inaccessible!**
 
-Install dependencies:  
-apt-get update  
-apt-get upgrade  
-apt-get install \  
-      build-essential autoconf pkg-config libc6-dev make \   
-	  g++-multilib m4 libtool ncurses-dev unzip zip git python \  
-      zlib1g-dev wget bsdmainutils automake curl bc \  
-      rsync cpio git nasm   
 
-git clone https://github.com/ChubbyAnt/sedutil.git  
-cd images/  
-run:  
-./getresources  
-run:  
-./buildpbaroot  
-(this takes a long time)  
-run:  
-./buildUEFI64   
-run:  
-./buildbios  
-run:  
-./buildrescue Rescue64  
-run:  
-./buildrescue Rescue32  
+## Setup
 
-Download the img files created by these operations, then follow the instructions here:  
+To configure a drive, load a compatible [RECOVERY](https://github.com/Drive-Trust-Alliance/sedutil/releases) image onto a USB drive and follow the instructions here:  
+
+https://github.com/Drive-Trust-Alliance/sedutil/wiki/Encrypting-your-drive  
+
+
+## Origin
+
+This version of sedutil is based off the original [@dta](https://github.com/Drive-Trust-Alliance/sedutil/) implementation as modified by [@dta](https://github.com/lukefor/sedutil). This fork adds support for the PBA bootloader to work on AMD Ryzen and AMD Ryzen mobile systems.
+
+
+## Notable Differences
+
+Unique to this repo are the following modifications:
+
+* Compatibile with AMD Ryzen and mobile AMD Ryzen systems
+
+
+## Build Process
+
+Building is supported on Ubuntu 18.04.3 (LTS) x64. Other versions will probably not compile correctly!
+
+To compile your own version of `sedutil` you will need the standard development tools, an internet connection, and ~10 GB of disk space. 
+
+Prerequisites:  
+
+```
+sudo apt-get update && sudo apt-get upgrade -y  
+  
+sudo apt-get install build-essential autoconf pkg-config libc6-dev make g++-multilib m4 libtool ncurses-dev unzip zip git python zlib1g-dev wget bsdmainutils automake curl bc rsync cpio git nasm -y
+
+```
+
+Automatically Build Everything:  
+
+```
+git clone https://github.com/ChubbyAnt/sedutil && cd sedutil && autoreconf --install && ./configure && make all && cd images && ./getresources && ./buildpbaroot && ./buildbios && ./buildUEFI64 && ./buildrescue Rescue32 && ./buildrescue Rescue64 && cd ..
+```
+
+Build Everything Manually Step by Step:  
+
+```
+git clone https://github.com/ChubbyAnt/sedutil
+cd sedutil
+autoreconf --install
+./configure
+make all
+cd images
+./getresources
+./buildpbaroot
+./buildbios
+./buildUEFI64
+./buildrescue Rescue32
+./buildrescue Rescue64
+cd ..
+```
+
+The various recovery and boot images will be located in the `images` directory.
+
+
+## Testing
+
+I have only tested the boot images/release files on a HP x360 Envy AMD 3700u with a Samsung EVO 970 Plus 2TB NVMe drive. My testing has also focused only on the 64 bit UEFI images. While the other variants might work, you should exercise caution, and if possible, test the release on a computer with data that is expendable.
+
+Follow the instructions here:  
 https://github.com/Drive-Trust-Alliance/sedutil/wiki/Encrypting-your-drive  
