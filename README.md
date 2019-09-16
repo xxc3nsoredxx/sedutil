@@ -109,7 +109,7 @@ The various recovery and boot images will be located in the `images` directory.
 
 ## Testing
 
-This version has only been verified to boot on a HP x360 Envy AMD 3700u with a Samsung EVO 970 Plus 2TB NVMe drive. My testing has also focused only on the 64 bit UEFI images. While the other variants might work, you should exercise caution, and if possible, test the release on a computer with data that is expendable.
+This version has only been verified to boot on a HP x360 Envy AMD 3700u with a Samsung EVO 970 Plus 2TB NVMe drive. Testing has also focused only on the 64 bit UEFI images. While the other variants might work, you should exercise caution, and if possible, test the release on a computer with data that is expendable.
 
 Follow the instructions here:  
 https://github.com/Drive-Trust-Alliance/sedutil/wiki/Encrypting-your-drive  
