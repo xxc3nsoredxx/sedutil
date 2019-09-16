@@ -317,8 +317,10 @@ Expected Output:
 Verify that the locking SP has been deactivated:  
 ```
 sedutil-cli --query {drive}
-```
+```  
+
 Look at the query output and make certain that the Locking section shows ```lockingEnabled=N```
+
 --------
 Locking function (0x0002)
 Locked = N, LockingEnabled = N, LockingSupported = Y,
