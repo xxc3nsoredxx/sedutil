@@ -299,7 +299,7 @@ Expected Output:
 - 14:08:21.999 INFO: MBREnable set on 
 ```
 
-Some OPAL drives have a firmware bug that will erase all of your data if you issue the commands below. See [Remove OPAL] (https://github.com/Drive-Trust-Alliance/sedutil/wiki/Remove-OPAL) for a list of drive/firmware pairs that is know to have been tested.  
+Some OPAL drives have a firmware bug that will erase all of your data if you issue the commands below. See [Remove OPAL](https://github.com/Drive-Trust-Alliance/sedutil/wiki/Remove-OPAL) for a list of drive/firmware pairs that is know to have been tested.  
 
 #To remove OPAL issue these commands:  
 
