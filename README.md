@@ -1,6 +1,8 @@
 ![alt tag](https://avatars0.githubusercontent.com/u/13870012?v=3&s=200)
 
-Intel and AMD Ryzen: This SEDutil fork includes supprt for intel and AMD Ryzen systems
+Intel and AMD Ryzen: This SEDutil fork includes support for intel and AMD Ryzen systems with SHA-512 password authentication
+
+Note: This version of SEDutil is not compatible with SHA-1 versions of SEDutil
 
 This software is Copyright 2014-2017 Bright Plaza Inc. <drivetrust@drivetrust.com>
 
@@ -107,7 +109,7 @@ The various recovery and boot images will be located in the `images` directory.
 
 ## Testing
 
-I have only tested the boot images/release files on a HP x360 Envy AMD 3700u with a Samsung EVO 970 Plus 2TB NVMe drive. My testing has also focused only on the 64 bit UEFI images. While the other variants might work, you should exercise caution, and if possible, test the release on a computer with data that is expendable.
+This version has only been verified to boot on a HP x360 Envy AMD 3700u with a Samsung EVO 970 Plus 2TB NVMe drive. My testing has also focused only on the 64 bit UEFI images. While the other variants might work, you should exercise caution, and if possible, test the release on a computer with data that is expendable.
 
 Follow the instructions here:  
 https://github.com/Drive-Trust-Alliance/sedutil/wiki/Encrypting-your-drive  
