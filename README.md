@@ -171,23 +171,23 @@ Verify that Your drive is listed and the that the PBA reports it as "is OPAL"
 
 Issuing the commands in the steps that follow will enable OPAL locking. If you have a problem you will need to follow the steps at the end of this page [Recovery Information](https://github.com/Drive-Trust-Alliance/sedutil/wiki/Encrypting-your-drive#recovery-information) to either disable or remove OPAL locking.
 
-The following steps use /dev/sdc as the device and UEFI64-1.15.img.gz for the PBA image, substitute the proper /dev/nvme? for your drive and the proper PBA name for your system
+The following steps use /dev/nvme0 as the device and UEFI64-1.15.img.gz for the PBA image, substitute the proper /dev/nvme? for your drive and the proper PBA name for your system
 
 #Enable Locking and the PBA  
 
 Enter the commands below: (Use the password of debug for this test, it will be changed later)  
 ```
-sedutil-cli --initialsetup debug /dev/sdc
-sedutil-cli --enablelockingrange 0 debug /dev/sdc
-sedutil-cli --setlockingrange 0 lk debug /dev/sdc
-sedutil-cli --setmbrdone off debug /dev/sdc
-gunzip /usr/sedutil/UEFI64-n.nn.img.gz <-- Replace n.nn with the release number.
-sedutil-cli --loadpbaimage debug /usr/sedutil/UEFI64-n.nn.img /dev/sdc <-- Replace n.nn with the release number.
+gunzip /usr/sedutil/UEFI64-*img.gz 
+sedutil-cli --initialsetup debug /dev/nvme0
+sedutil-cli --enablelockingrange 0 debug /dev/nvme0
+sedutil-cli --setlockingrange 0 lk debug /dev/nvme0
+sedutil-cli --setmbrdone off debug /dev/nvme0
+sedutil-cli --loadpbaimage debug /usr/sedutil/UEFI64-*.img /dev/nvme0 
 ```
 Expected Output:  
 
 ```
-#sedutil-cli --initialsetup debug /dev/sdc
+#sedutil-cli --initialsetup debug /dev/nvme0
 - 14:06:39.709 INFO: takeOwnership complete
 - 14:06:41.703 INFO: Locking SP Activate Complete
 - 14:06:42.317 INFO: LockingRange0 disabled 
@@ -195,18 +195,18 @@ Expected Output:
 - 14:06:43.171 INFO: MBRDone set on 
 - 14:06:43.515 INFO: MBRDone set on 
 - 14:06:43.904 INFO: MBREnable set on 
-- 14:06:43.904 INFO: Initial setup of TPer complete on /dev/sdc
-#sedutil-cli --enablelockingrange 0 debug /dev/sdc
+- 14:06:43.904 INFO: Initial setup of TPer complete on /dev/nvme0
+#sedutil-cli --enablelockingrange 0 debug /dev/nvme0
 - 14:07:24.914 INFO: LockingRange0 enabled ReadLocking,WriteLocking
-#sedutil-cli --setlockingrange 0 lk debug /dev/sdc
+#sedutil-cli --setlockingrange 0 lk debug /dev/nvme0
 - 14:07:46.728 INFO: LockingRange0 set to LK
-#sedutil-cli --setmbrdone off debug /dev/sdc
+#sedutil-cli --setmbrdone off debug /dev/nvme0
 - 14:08:21.999 INFO: MBRDone set off 
 #gunzip /usr/sedutil/UEFI64-1.15.img.gz 
-#sedutil-cli --loadpbaimage debug /usr/sedutil/UEFI64-1.15.img /dev/sdc
-- 14:10:55.328 INFO: Writing PBA to /dev/sdc
+#sedutil-cli --loadpbaimage debug /usr/sedutil/UEFI64-1.15.img /dev/nvme0
+- 14:10:55.328 INFO: Writing PBA to /dev/nvme0
 33554432 of 33554432 100% blk=1500 
-- 14:14:04.499 INFO: PBA image  /usr/sedutil/UEFI64.img written to /dev/sdc
+- 14:14:04.499 INFO: PBA image  /usr/sedutil/UEFI64.img written to /dev/nvme0
 #
 ```
 
@@ -225,10 +225,10 @@ DTA LINUX Pre Boot Authorization
 
 Please enter pass-phrase to unlock OPAL drives: *****
 Scanning....
-Drive /dev/nvme0 Samsung SSD 960 EVO 250GB                is OPAL NOT LOCKED   
+Drive /dev/nvme0 Samsung SSD 960 EVO 250GB                is OPAL Unlocked   <---  IMPORTANT!!  
 Drive /dev/sda   Crucial_CT250MX200SSD1                   is OPAL NOT LOCKED   
 Drive /dev/sdb   Samsung SSD 850 EVO 500GB                is OPAL NOT LOCKED   
-Drive /dev/sdc   ST500LT025-1DH142                        is OPAL Unlocked   <--- IMPORTANT!!   
+Drive /dev/sdc   ST500LT025-1DH142                        is OPAL NOT LOCKED   
 Drive /dev/sdd   Samsung SSD 850 EVO 250GB                is OPAL NOT LOCKED   
 ```
 
@@ -238,26 +238,26 @@ Verify that the PBA unlocks your drive, it should say "is OPAL Unlocked" If it d
 
 The SID and Admin1 passwords do not have to match but it makes things easier.  
 ```
-edutil-cli --setsidpassword debug yourrealpassword /dev/sdc
-sedutil-cli --setadmin1pwd debug yourrealpassword /dev/sdc
+edutil-cli --setsidpassword debug yourrealpassword /dev/nvme0
+sedutil-cli --setadmin1pwd debug yourrealpassword /dev/nvme0
 ```
 
 Expected Output:  
 
 ```
-#sedutil-cli --setsidpassword debug yourrealpassword /dev/sdc
-#sedutil-cli --setadmin1pwd  debug yourrealpassword /dev/sdc
+#sedutil-cli --setsidpassword debug yourrealpassword /dev/nvme0
+#sedutil-cli --setadmin1pwd  debug yourrealpassword /dev/nvme0
 - 14:20:53.352 INFO: Admin1 password changed
 ```
 
 Make sure you didn't mistype your password by testing it.  
 
-```sedutil-cli --setmbrdone on yourrealpassword /dev/sdc```
+```sedutil-cli --setmbrdone on yourrealpassword /dev/nvme0```
 
 Expected Output:  
 
 ```
-#sedutil-cli --setmbrdone on yourrealpassword /dev/sdc
+#sedutil-cli --setmbrdone on yourrealpassword /dev/nvme0
 - 14:22:21.590 INFO: MBRDone set on 
 ```
 
@@ -277,9 +277,9 @@ sedutil-cli –-setMBREnable off <password> <drive>
 
 Expected Output:  
 ```
-#sedutil-cli --disablelockingrange 0 debug /dev/sdc
+#sedutil-cli --disablelockingrange 0 debug /dev/nvme0
 - 14:07:24.914 INFO: LockingRange0 disabled 
-#sedutil-cli --setmbrenable off debug /dev/sdc
+#sedutil-cli --setmbrenable off debug /dev/nvme0
 - 14:08:21.999 INFO: MBREnable set off 
 ```
 
@@ -293,9 +293,9 @@ sedutil-cli –-setMBREnable on <password> <drive>
 Expected Output:  
 
 ```
-#sedutil-cli --enablelockingrange 0 debug /dev/sdc
+#sedutil-cli --enablelockingrange 0 debug /dev/nvme0
 - 14:07:24.914 INFO: LockingRange0 enabled ReadLocking,WriteLocking
-#sedutil-cli --setmbrenable on debug /dev/sdc
+#sedutil-cli --setmbrenable on debug /dev/nvme0
 - 14:08:21.999 INFO: MBREnable set on 
 ```
 
@@ -310,7 +310,7 @@ sedutil-cli --revertnoerase <password> <drive>
 Expected Output:  
 
 ```
-#sedutil-cli --revertnoerase debug /dev/sdc
+#sedutil-cli --revertnoerase debug /dev/nvme0
 - 14:22:47.060 INFO: Revert LockingSP complete
 ```
 
@@ -338,7 +338,7 @@ sedutil-cli --reverttper {SIDpassword} {drive}
 Expected output:  
 
 ```
-#sedutil-cli --reverttper debug /dev/sdc
+#sedutil-cli --reverttper debug /dev/nvme0
 - 14:23:13.968 INFO: revertTper completed successfully
 #
 ```
