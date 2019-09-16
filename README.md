@@ -1,6 +1,6 @@
 ![alt tag](https://avatars0.githubusercontent.com/u/13870012?v=3&s=200)
 
-AMD RYZEN: This fork is for AMD Ryzen systems that cannot boot with standard sedutil
+Intel and AMD Ryzen: This SEDutil fork includes supprt for intel and AMD Ryzen systems
 
 This software is Copyright 2014-2017 Bright Plaza Inc. <drivetrust@drivetrust.com>
 
