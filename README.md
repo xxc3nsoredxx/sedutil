@@ -321,10 +321,12 @@ sedutil-cli --query {drive}
 
 Look at the query output and make certain that the Locking section shows ```lockingEnabled=N```
 
---------
+```  
+-----
 Locking function (0x0002)
 Locked = N, LockingEnabled = N, LockingSupported = Y,
 ---------
+```  
 
 If the query does not show lockingEnabled=N DO NOT CONTINUE with the next step, if you do all your data will be erased.  
 
