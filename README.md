@@ -37,7 +37,7 @@ or changing the contents of /sys/module/libata/parameters/allow_tpm from a "0" t
 
 Orginal source code is available on GitHub at https://github.com/Drive-Trust-Alliance/sedutil 
 
-Linux and Windows executables are available at https://github.com/Drive-Trust-Alliance/sedutil/wiki/Executable-Distributions
+Linux and Windows executables and Linux PBA bootloader images for this version of SEDutil are available at https://github.com/ChubbyAnt/sedutil/releases
 
 # About SEDutil for AMD Ryzen
 
@@ -55,13 +55,14 @@ https://github.com/Drive-Trust-Alliance/sedutil/wiki/Encrypting-your-drive
 
 ## Origin
 
-This version of sedutil is based off the original [@dta](https://github.com/Drive-Trust-Alliance/sedutil/) implementation as modified by [@lukefor](https://github.com/lukefor/sedutil). This fork adds support for the PBA bootloader to work on AMD Ryzen and AMD Ryzen mobile systems.
+This version of sedutil is based off the original [@dta](https://github.com/Drive-Trust-Alliance/sedutil/) implementation incorporating some modifications by [@ladar](https://github.com/ladar/sedutil), [@ckamm](https://github.com/ckamm/sedutil/) and [@CyrilVanErsche](https://github.com/CyrilVanErsche/sedutil/). This fork adds support for the PBA bootloader on AMD Ryzen and AMD Ryzen mobile systems.
 
 
 ## Notable Differences
 
 Unique to this repo are the following modifications:
 
+* SHA512 password hashing vs SHA1 on original SEDutil
 * Compatibile with AMD Ryzen and AMD Ryzen mobile systems
 
 
@@ -114,6 +115,7 @@ This version has only been verified to boot on a HP x360 Envy AMD 3700u with a S
 ## Encrypting Your Drive
 
 For the most comprehensive information, review this first:  
+
 https://github.com/Drive-Trust-Alliance/sedutil/wiki/Encrypting-your-drive  
 
 Both the PBA and rescue systems use the us_english keyboard. This can cause issues when setting the password on your normal operating system if you use another keyboard mapping. To make sure the PBA recognizes your password you are encouraged to set up you drive from the rescue system as described on this page.
@@ -122,7 +124,8 @@ Both the PBA and rescue systems use the us_english keyboard. This can cause issu
 
 These are the instructions for modern UEFI NVME equipped systems using SEDutil OPAL locking and unlocking utility as a windows pre-boot bootloader:
 
-Download the rescue system for 64bit UEFI 
+Download the rescue system for 64bit UEFI  
+ 
 * UEFI support currently requires that Secure Boot be turned off
 
 Transfer the Rescue image to the USB stick with a program like [Balena Etcher](https://www.balena.io/etcher/).
@@ -262,10 +265,12 @@ Expected Output:
 ```
 
 #Your drive in now using OPAL locking.  
+
 You now need to COMPLETELY POWER DOWN YOUR SYSTEM  
 This will lock the drive so that when you restart your system it will boot the PBA.
 
 #Recovery information:  
+
 If there is an issue after enabling locking you can either disable locking or remove OPAL to continue using your drive without locking.  
 
 If you want to disable Locking and the PBA:  
