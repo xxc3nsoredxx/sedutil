@@ -130,7 +130,8 @@ Download the rescue system for 64bit UEFI
 
 Transfer the Rescue image to the USB stick with a program like [Balena Etcher](https://www.balena.io/etcher/).
 
-Restart your computer, enter the BIOS, enable "legacy boot" or "CSM" or "Compatility Mode" - AND - disable secure boot.
+Restart your computer, enter the BIOS, and disable secure boot.  
+Note: Earlier versions of SEDutil also required BIOS enable of "legacy boot" or "CSM" or "Compatility Mode" - this is no longer required with this version of SEDutil. 
 
 Boot the USB thumb drive with the rescue system on it. You will see the Login prompt, enter "root" there is no password so you will get a root shell prompt.
 
