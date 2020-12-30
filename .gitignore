@@ -201,3 +201,7 @@ windows/installer/exe
 # My additions
 *.vim
 *.swp
+
+# Ignore buildroot files
+buildroot-*.tar.gz
+buildroot-*/
