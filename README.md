@@ -1,8 +1,9 @@
 ![alt tag](https://avatars0.githubusercontent.com/u/13870012?v=3&s=200)
 
-Intel and AMD Ryzen: This SEDutil fork includes support for intel and AMD Ryzen systems with SHA-512 password authentication
+Intel and AMD Ryzen: This SEDutil fork includes support for Intel and AMD Ryzen systems with SHA-512 password authentication.
+Updated buildroot: This fork uses an updated buildroot config instead of the Linux 4.14.146 one.
 
-Note: This version of SEDutil is not compatible with SHA-1 versions of SEDutil
+Note: This version of SEDutil is not compatible with SHA-1 versions of SEDutil.
 
 This software is Copyright 2014-2017 Bright Plaza Inc. <drivetrust@drivetrust.com>
 
@@ -55,7 +56,7 @@ https://github.com/Drive-Trust-Alliance/sedutil/wiki/Encrypting-your-drive
 
 ## Origin
 
-This version of sedutil is based off the original [@dta](https://github.com/Drive-Trust-Alliance/sedutil/) implementation incorporating some modifications by [@ladar](https://github.com/ladar/sedutil), [@ckamm](https://github.com/ckamm/sedutil/) and [@CyrilVanErsche](https://github.com/CyrilVanErsche/sedutil/). This fork adds support for the PBA bootloader on AMD Ryzen and AMD Ryzen mobile systems.
+This version is based on the sedutil fork by [@ChubbyAnt](https://github.com/ChubbyAnt/sedutil) which is itself based on the original [@dta](https://github.com/Drive-Trust-Alliance/sedutil/) implementation and incorporates changes by [@ladar](https://github.com/ladar/sedutil), [@ckamm](https://github.com/ckamm/sedutil/) and [@CyrilVanErsche](https://github.com/CyrilVanErsche/sedutil/). In addition to adding support for the PBA bootloader on AMD Ryzen and AMD Ryzen mobile systems, this fork uses an updated buildroot image.
 
 
 ## Notable Differences
