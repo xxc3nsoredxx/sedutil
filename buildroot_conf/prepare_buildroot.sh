@@ -5,3 +5,6 @@ DOWNLOAD="buildroot-$VERSION.tar.gz"
 
 curl "https://git.buildroot.net/buildroot/snapshot/$DOWNLOAD" -O
 tar xf $DOWNLOAD
+
+echo '*' > buildroot-*/.gitignore
+echo '!/.config' >> buildroot-*/.gitignore

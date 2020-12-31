@@ -1,0 +1,2 @@
+# Ignore buildroot files
+buildroot-*.tar.gz

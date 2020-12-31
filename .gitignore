@@ -198,10 +198,6 @@ windows/installer/Output/
 windows/installer/exe
 
 
-# My additions
+# Vim files
 *.vim
 *.swp
-
-# Ignore buildroot files
-buildroot-*.tar.gz
-buildroot-*/
