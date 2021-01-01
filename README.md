@@ -1,6 +1,7 @@
 ![alt tag](https://avatars0.githubusercontent.com/u/13870012?v=3&s=200)
 
-Intel and AMD Ryzen: This SEDutil fork includes support for Intel and AMD Ryzen systems with SHA-512 password authentication.
+AMD Ryzen: This SEDutil fork includes support for AMD Ryzen systems with SHA-512 password authentication.
+
 Updated buildroot: This fork uses an updated buildroot config instead of the Linux 4.14.146 one.
 
 Note: This version of SEDutil is not compatible with SHA-1 versions of SEDutil.
@@ -22,7 +23,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 
-
 sedutil - The Drive Trust Alliance Self Encrypting Drive Utility
 
 This program and it's accompanying Pre-Boot Authorization image allow
@@ -34,38 +34,36 @@ You must be administrator/root to run the host managment program
 In Linux libata.allow_tpm must be set to 1. Either via adding libata.allow_tpm=1 to the kernel flags at boot time 
 or changing the contents of /sys/module/libata/parameters/allow_tpm from a "0" to a "1" on a running system.
 
-***** sleep (S3) is not supported.
+***sleep (S3) is not supported.***
 
 Orginal source code is available on GitHub at https://github.com/Drive-Trust-Alliance/sedutil 
 
 Linux and Windows executables and Linux PBA bootloader images for this version of SEDutil are available at https://github.com/ChubbyAnt/sedutil/releases
 
 # About SEDutil for AMD Ryzen
-
 DTA sedutil: For AMD Ryzen Systems
 
-The sedutil project provides a CLI tool (`sedutil-cli`) capable of setting up and managing self encrypting drives (SEDs) that comply with the TCG OPAL 2.00 standard. This project also provides a pre-boot authentication image (`linuxpba`) which can be loaded onto an encrypted disk's shadow MBR. This pre-boot authentication image allows the user enter their password and unlock SED drives during the boot process. **Using this tool can make data on the drive inaccessible!**
-
+The sedutil project provides a CLI tool (`sedutil-cli`) capable of setting up and managing self encrypting drives (SEDs) that comply with the TCG OPAL 2.00 standard.
+This project also provides a pre-boot authentication image (`linuxpba`) which can be loaded onto an encrypted disk's shadow MBR.
+This pre-boot authorization image allows the user enter their password and unlock SED drives during the boot process.
+**Using this tool can make data on the drive inaccessible!**
 
 ## Setup
-
 To configure a drive, load a compatible [RECOVERY](https://github.com/ChubbyAnt/sedutil/releases) image onto a USB drive and follow the instructions here:  
 
-https://github.com/Drive-Trust-Alliance/sedutil/wiki/Encrypting-your-drive  
-
+https://github.com/Drive-Trust-Alliance/sedutil/wiki/Encrypting-your-drive
 
 ## Origin
-
-This version is based on the sedutil fork by [@ChubbyAnt](https://github.com/ChubbyAnt/sedutil) which is itself based on the original [@dta](https://github.com/Drive-Trust-Alliance/sedutil/) implementation and incorporates changes by [@ladar](https://github.com/ladar/sedutil), [@ckamm](https://github.com/ckamm/sedutil/) and [@CyrilVanErsche](https://github.com/CyrilVanErsche/sedutil/). In addition to adding support for the PBA bootloader on AMD Ryzen and AMD Ryzen mobile systems, this fork uses an updated buildroot image.
-
+This version is based on the sedutil fork by [@ChubbyAnt](https://github.com/ChubbyAnt/sedutil) which is itself based on the original [@dta](https://github.com/Drive-Trust-Alliance/sedutil/) implementation and incorporates changes by [@ladar](https://github.com/ladar/sedutil), [@ckamm](https://github.com/ckamm/sedutil/) and [@CyrilVanErsche](https://github.com/CyrilVanErsche/sedutil/).
+In addition to adding support for the PBA bootloader on AMD Ryzen and AMD Ryzen mobile systems, this fork uses an updated buildroot image.
 
 ## Notable Differences
-
 Unique to this repo are the following modifications:
 
 * SHA512 password hashing vs SHA1 on original SEDutil
 * Compatibile with AMD Ryzen and AMD Ryzen mobile systems
-
+* Updated PBA: newer, stripped down kernel
+* NO 32-BIT/BIOS SUPPORT
 
 ## Build Process
 
