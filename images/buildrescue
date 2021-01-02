@@ -7,20 +7,25 @@ BUILDTYPE='RESCUE64'
 ROOTDIR='64bit'
 BUILDIMG="$BUILDTYPE-$VERSIONINFO.img"
 
+function die {
+    echo 'Prereqs not available'
+    exit 1
+}
+
 # Check if running as root
 if [ $(id -u) -ne 0 ]; then
     echo 'Must be run as root!'
     exit 1
 fi
 
-[ -f scratch/$SYSLINUX/efi64/efi/syslinux.efi ] || { echo 'Prereqs not available'; exit 1; }
-[ -f scratch/$SYSLINUX/efi64/com32/elflink/ldlinux/ldlinux.e64 ] || { echo 'Prereqs not available'; exit 1; }
-[ -f scratch/buildroot/$ROOTDIR/images/bzImage ] || { echo 'Prereqs not available'; exit 1; }
-[ -f scratch/buildroot/$ROOTDIR/images/rootfs.cpio.xz ] || { echo 'Prereqs not available'; exit 1; }
-[ -x scratch/buildroot/$ROOTDIR/target/sbin/linuxpba ] || { echo 'Prereqs not available'; exit 1; }
-[ -x scratch/buildroot/$ROOTDIR/target/sbin/sedutil-cli ] || { echo 'Prereqs not available'; exit 1; }
-[ -f buildroot/syslinux.cfg ] || { echo 'Prereqs not available'; exit 1; }
-[ -f UEFI64/UEFI64-*.img.gz ] || { echo 'Prereqs not available'; exit 1; }
+[ -f scratch/$SYSLINUX/efi64/efi/syslinux.efi ]                     || die
+[ -f scratch/$SYSLINUX/efi64/com32/elflink/ldlinux/ldlinux.e64 ]    || die
+[ -f scratch/buildroot/$ROOTDIR/images/bzImage ]                    || die
+[ -f scratch/buildroot/$ROOTDIR/images/rootfs.cpio.xz ]             || die
+[ -x scratch/buildroot/$ROOTDIR/target/sbin/linuxpba ]              || die
+[ -x scratch/buildroot/$ROOTDIR/target/sbin/sedutil-cli ]           || die
+[ -f buildroot/syslinux.cfg ]                                       || die
+[ -f UEFI64/UEFI64-*.img.gz ]                                       || die
 echo "Building $BUILDTYPE image"
 
 # Clean slate
