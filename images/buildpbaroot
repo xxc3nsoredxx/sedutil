@@ -1,33 +1,35 @@
-#!/bin/bash
+#! /bin/bash
 set -x
-function die {
-echo An error has occured! Please fix this and start over!
-exit 99
-}
 . conf
+
+function die {
+    echo 'An error has occured! Please fix this and start over!'
+    exit 1
+}
+
 cd scratch
-# clean up and start over
+
+# Clean slate
+rm buildroot-*
 rm -rf buildroot
-git clone ${BUILDROOT} || die
+curl $BUILDROOT/buildroot-$BUILDROOT_TAG.tar.gz -O || die
+tar xf buildroot-$BUILDROOT_TAG.tar.gz
+mv buildroot-$BUILDROOT_TAG buildroot
+
 cd buildroot
-git checkout -b PBABUILD ${BUILDROOT_TAG}  || die
-git reset --hard
-git clean -df
-# add out of tree build directoried and files
-# 64 bit system
+
+# Add out of tree build directories and files
 mkdir 64bit
 cp ../../buildroot/64bit/.config 64bit/
 cp ../../buildroot/64bit/* 64bit/
 cp -r ../../buildroot/64bit/overlay 64bit/
-# 32 bit system
-mkdir 32bit
-cp ../../buildroot/32bit/.config 32bit/
-cp ../../buildroot/32bit/* 32bit/
-cp -r ../../buildroot/32bit/overlay 32bit/
-# add the current buildroot packages
+
+# Add the buildroot packages
 sed -i '/sedutil/d' package/Config.in
 sed -i '/menu "System tools"/a \\tsource "package/sedutil/Config.in"' package/Config.in
+rm -rf package/sedutil
 cp -r ../../buildroot/packages/sedutil/ package/
+
 # Make a distribution from the current source
 cd ../../..
 autoreconf -i
@@ -38,19 +40,16 @@ cp sedutil-*.tar.gz images/scratch/buildroot/dl/
 make distclean
 
 # Expand the distribution tarball so we can use it as the Buildroot override.
-# Override location is specified in the 'local.mk' file in buildroot/{32,64}bit
-# directories.
+# Override location is specified in the 'local.mk' file in buildroot/64bit
+# directory.
 # See also section 8.12.6 "Using Buildroot during development" in the
 # Buildroot user manual.
 cd images/scratch/buildroot/dl
-tar xvfz sedutil-*.tar.gz
+tar xf sedutil-*.tar.gz
 cd ..
 
-# build the rootfs for 64 and 32 bit systems
-echo Making the 64bit PBA Linux system
+# Build the rootfs for 64 bit systems
+echo 'Making the 64bit PBA Linux system'
 make O=64bit 2>&1 | tee 64bit/build_output.txt
-echo Making the 32bit PBA Linux system
-make O=32bit 2>&1 | tee 32bit/build_output.txt
-# back to where we started
+
 cd ../..
-exit 0

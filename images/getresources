@@ -1,10 +1,10 @@
-#!/bin/bash
+#! /bin/bash
 set -x
-## Get version information
 . conf
-## Make a clean start
+
+# Clean slate
 rm -rf scratch
 mkdir scratch
 cd scratch
-wget https://www.kernel.org/pub/linux/utils/boot/syslinux/${SYSLINUX}.tar.xz
-tar xf ${SYSLINUX}.tar.xz 
+curl https://www.kernel.org/pub/linux/utils/boot/syslinux/$SYSLINUX.tar.xz -O
+tar xf $SYSLINUX.tar.xz 

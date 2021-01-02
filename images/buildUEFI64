@@ -1,37 +1,53 @@
-#!/bin/bash
+#! /bin/bash
 set -x
-# Build a custom UEFI linux based PBA image
-## define releases for tools
 . conf
-VERSIONINFO=`git describe --dirty`  || VERSIONINFO=tarball
-BUILDTYPE=UEFI64
-BUILDIMG=${BUILDTYPE}-${VERSIONINFO}.img
 
-## check that everything is available
-[  -f scratch/${SYSLINUX}/efi64/efi/syslinux.efi ] || { echo " prereqs are not available "; exit 1; }
-[  -f scratch/${SYSLINUX}/efi64/com32/elflink/ldlinux/ldlinux.e64 ] || { echo " prereqs are not available "; exit 1; }
-[  -f scratch/buildroot/64bit/images/bzImage ] || { echo " prereqs are not available "; exit 1; }
-[  -f scratch/buildroot/64bit/images/rootfs.cpio.xz ] || { echo " prereqs are not available "; exit 1; }
-[  -f scratch/buildroot/64bit/target/sbin/linuxpba  ] || { echo " prereqs are not available "; exit 1; }
-[  -f scratch/buildroot/64bit/target/sbin/sedutil-cli  ] || { echo " prereqs are not available "; exit 1; }
-[  -f buildroot/syslinux.cfg ] || { echo " prereqs are not available "; exit 1; }
+# Build a custom UEFI linux based PBA image
+VERSIONINFO="$(git describe --dirty)" || VERSIONINFO='tarball'
+BUILDTYPE='UEFI64'
+BUILDIMG="$BUILDTYPE-$VERSIONINFO.img"
+
+# Check if running as root
+if [ $(id -u) -ne 0 ]; then
+    echo 'Must be run as root!'
+    exit 1
+fi
+
+# Check prereqs
+[ -f scratch/$SYSLINUX/efi64/efi/syslinux.efi ] || { echo 'Prereqs not available'; exit 1; }
+[ -f scratch/$SYSLINUX/efi64/com32/elflink/ldlinux/ldlinux.e64 ] || { echo 'Prereqs not available'; exit 1; }
+[ -f scratch/buildroot/64bit/images/bzImage ] || { echo 'Prereqs not available'; exit 1; }
+[ -f scratch/buildroot/64bit/images/rootfs.cpio.xz ] || { echo 'Prereqs not available'; exit 1; }
+[ -f scratch/buildroot/64bit/target/sbin/linuxpba ] || { echo 'Prereqs not available'; exit 1; }
+[ -f scratch/buildroot/64bit/target/sbin/sedutil-cli ] || { echo 'Prereqs not available'; exit 1; }
+[ -f buildroot/syslinux.cfg ] || { echo 'Prereqs not available'; exit 1; }
+echo "Building $BUILDTYPE image"
   
-# Start fresh
-sudo rm -rf ${BUILDTYPE} ; mkdir ${BUILDTYPE} ; cd ${BUILDTYPE}
-# make an image file
-dd if=/dev/zero of=${BUILDIMG} bs=1M count=32
-(echo "n";echo "";echo "";echo "";echo "ef00";echo w;echo Y) | gdisk ${BUILDIMG}
-LOOPDEV=`sudo losetup --show -f -o 1048576 ${BUILDIMG}`
-sudo mkfs.vfat $LOOPDEV -n ${BUILDTYPE}
-sudo mkdir image
-sudo mount $LOOPDEV image
-sudo chmod 777 image
-sudo mkdir -p image/EFI/boot
-sudo cp ../scratch/${SYSLINUX}/efi64/efi/syslinux.efi image/EFI/boot/bootx64.efi
-sudo cp ../scratch/${SYSLINUX}/efi64/com32/elflink/ldlinux/ldlinux.e64 image/EFI/boot/
-sudo cp ../scratch/buildroot/64bit/images/bzImage image/EFI/boot/
-sudo cp ../scratch/buildroot/64bit/images/rootfs.cpio.xz image/EFI/boot/
-sudo cp ../buildroot/syslinux.cfg image/EFI/boot/
-sudo umount image
-sudo losetup -d $LOOPDEV
-gzip ${BUILDIMG}
+# Clean slate
+rm -rf $BUILDTYPE
+mkdir $BUILDTYPE
+cd $BUILDTYPE
+
+# Create image file and loopback device
+dd if=/dev/zero of=$BUILDIMG bs=1M count=32
+sfdisk $BUILDIMG < ../layout.sfdisk
+LOOPDEV=$(losetup --show -f -o 1048576 $BUILDIMG)
+mkfs.vfat $LOOPDEV -n $BUILDTYPE
+
+# Mount the image
+mkdir image
+mount $LOOPDEV image
+chmod 644 image
+
+# Copy the system onto the image
+mkdir -p image/EFI/boot
+cp ../scratch/$SYSLINUX/efi64/efi/syslinux.efi image/EFI/boot/bootx64.efi
+cp ../scratch/$SYSLINUX/efi64/com32/elflink/ldlinux/ldlinux.e64 image/EFI/boot/
+cp ../scratch/buildroot/64bit/images/bzImage image/EFI/boot/
+cp ../scratch/buildroot/64bit/images/rootfs.cpio.xz image/EFI/boot/
+cp ../buildroot/syslinux.cfg image/EFI/boot/
+
+# Clean up
+umount image
+losetup -d $LOOPDEV
+gzip $BUILDIMG
