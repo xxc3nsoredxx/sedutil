@@ -12,7 +12,7 @@ cd scratch
 # Clean slate
 rm buildroot-*
 rm -rf buildroot
-curl $BUILDROOT/buildroot-$BUILDROOT_TAG.tar.gz -O || die
+curl -L -O $BUILDROOT/buildroot-$BUILDROOT_TAG.tar.gz -O || die
 tar xf buildroot-$BUILDROOT_TAG.tar.gz
 mv buildroot-$BUILDROOT_TAG buildroot
 

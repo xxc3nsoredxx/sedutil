@@ -34,16 +34,15 @@ rm -rf scratch/rescuefs
 rm -f scratch/buildroot/$ROOTDIR/images/rescuefs.cpio.xz 
 mkdir scratch/rescuefs
 cd scratch/rescuefs
-xz -c ../buildroot/$ROOTDIR/images/rootfs.cpio.xz | cpio -i -H newc -d
+xz -dc ../buildroot/$ROOTDIR/images/rootfs.cpio.xz | cpio -i -H newc -d
 
 # Weird permission denied on etc/issue 
-echo '*************************************' > /tmp/issue
-echo "* DTA sedutil rescue image $BUILDIMG" >> /tmp/issue
-echo '*' >> /tmp/issue
-echo '* Login as root, there is no password' >> /tmp/issue
-echo '*' >> /tmp/issue
-echo '*************************************' >> /tmp/issue
-mv /tmp/issue etc/issue
+echo '*************************************' > etc/issue
+echo "* DTA sedutil rescue image $BUILDIMG" >> etc/issue
+echo '*' >> etc/issue
+echo '* Login as root, there is no password' >> etc/issue
+echo '*' >> etc/issue
+echo '*************************************' >> etc/issue
 rm etc/init.d/S99*
 mkdir -p usr/sedutil
 cp ../../UEFI64/UEFI64-*.img.gz usr/sedutil/
@@ -61,8 +60,8 @@ mkfs.vfat $LOOPDEV -n $BUILDTYPE
 
 # Mount the image
 mkdir image
-sudo mount $LOOPDEV image
-sudo chmod 644 image
+mount $LOOPDEV image
+chmod 644 image
 
 # Copy the system onto the image
 mkdir -p image/EFI/boot
@@ -76,3 +75,6 @@ cp ../buildroot/syslinux.cfg image/EFI/boot/
 umount image
 losetup -d $LOOPDEV
 gzip $BUILDIMG
+
+cd ..
+chown -R --reference=. $BUILDTYPE

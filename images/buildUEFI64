@@ -57,3 +57,6 @@ cp ../buildroot/syslinux.cfg image/EFI/boot/
 umount image
 losetup -d $LOOPDEV
 gzip $BUILDIMG
+
+cd ..
+chown -R --reference=. $BUILDTYPE
