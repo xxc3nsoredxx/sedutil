@@ -39,6 +39,8 @@ pushd scratch/rootfs &> /dev/null
     sed -i '\|/dev/root|d' etc/fstab
     # Remove sysfs entry from /etc/fstab
     sed -i '/sysfs/d' etc/fstab
+    # Replace tmpfs with ramfs in /etc/fstab
+    sed -i 's/tmpfs/ramfs/g' etc/fstab
 
     # Repack initramfs
     find . | cpio -o -H newc | xz -9 -C crc32 -c > ../buildroot/64bit/images/rootfs.cpio.xz
