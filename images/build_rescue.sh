@@ -28,25 +28,32 @@ fi
 [ -f UEFI64/UEFI64-*.img.gz ]                                           || die
 echo "Building $BUILDTYPE image"
 
-# Clean slate
+# Clean slate and remaster initramfs
 rm -rf scratch/rescuefs
 rm -f scratch/buildroot/$ROOTDIR/images/rescuefs.cpio.xz 
 mkdir scratch/rescuefs
-cd scratch/rescuefs
-xz -dc ../buildroot/$ROOTDIR/images/rootfs.cpio.xz | cpio -i -H newc -d
+pushd scratch/rescuefs &> /dev/null
+    # Unpack initramfs
+    xz -dc ../buildroot/$ROOTDIR/images/rootfs.cpio.xz | cpio -i -H newc -d
+    
+    # Create /etc/issue
+    echo '*************************************' > etc/issue
+    echo "* DTA sedutil rescue image $BUILDIMG" >> etc/issue
+    echo '*' >> etc/issue
+    echo '* Login as root, there is no password' >> etc/issue
+    echo '*' >> etc/issue
+    echo '*************************************' >> etc/issue
 
-# Weird permission denied on etc/issue 
-echo '*************************************' > etc/issue
-echo "* DTA sedutil rescue image $BUILDIMG" >> etc/issue
-echo '*' >> etc/issue
-echo '* Login as root, there is no password' >> etc/issue
-echo '*' >> etc/issue
-echo '*************************************' >> etc/issue
-rm etc/init.d/S99*
-mkdir -p usr/sedutil
-cp ../../UEFI64/UEFI64-*.img.gz usr/sedutil/
-find . | cpio -o -H newc | xz -9 -C crc32 -c > ../buildroot/$ROOTDIR/images/rescuefs.cpio.xz
-cd ../..
+    # Remove PBA service
+    rm etc/init.d/S99*
+
+    # Add the PBA image
+    mkdir -p usr/sedutil
+    cp ../../UEFI64/UEFI64-*.img.gz usr/sedutil/
+
+    # Repack initramfs
+    find . | cpio -o -H newc | xz -9 -C crc32 -c > ../buildroot/$ROOTDIR/images/rescuefs.cpio.xz
+popd &> /dev/null
 
 # Create image file and loopback device
 rm -rf $BUILDTYPE

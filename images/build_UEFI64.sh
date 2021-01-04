@@ -28,6 +28,22 @@ fi
 [ -f buildroot/syslinux.cfg ]                                           || die
 echo "Building $BUILDTYPE image"
   
+# Remaster initramfs
+rm -rf scratch/rootfs
+mkdir scratch/rootfs
+pushd scratch/rootfs &> /dev/null
+    # Unpack initramfs
+    xz -dc ../buildroot/64bit/images/rootfs.cpio.xz | cpio -i -H newc -d
+
+    # Remove /dev/root entry from /etc/fstab (mounts ext2)
+    sed -i '\|/dev/root|d' etc/fstab
+    # Remove sysfs entry from /etc/fstab
+    sed -i '/sysfs/d' etc/fstab
+
+    # Repack initramfs
+    find . | cpio -o -H newc | xz -9 -C crc32 -c > ../buildroot/64bit/images/rootfs.cpio.xz
+popd &> /dev/null
+
 # Clean slate
 rm -rf $BUILDTYPE
 mkdir $BUILDTYPE
