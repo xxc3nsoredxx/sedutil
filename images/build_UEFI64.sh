@@ -1,5 +1,4 @@
 #! /bin/bash
-set -x
 . conf
 
 # Build a custom UEFI linux based PBA image
@@ -20,13 +19,13 @@ if [ $(id -u) -ne 0 ]; then
 fi
 
 # Check prereqs
-[ -f scratch/$SYSLINUX/efi64/efi/syslinux.efi ]                     || die
-[ -f scratch/$SYSLINUX/efi64/com32/elflink/ldlinux/ldlinux.e64 ]    || die
-[ -f scratch/buildroot/64bit/images/bzImage ]                       || die
-[ -f scratch/buildroot/64bit/images/rootfs.cpio.xz ]                || die
-[ -f scratch/buildroot/64bit/target/sbin/linuxpba ]                 || die
-[ -f scratch/buildroot/64bit/target/sbin/sedutil-cli ]              || die
-[ -f buildroot/syslinux.cfg ]                                       || die
+[ -f scratch/$SYSLINUX_VER/efi64/efi/syslinux.efi ]                     || die
+[ -f scratch/$SYSLINUX_VER/efi64/com32/elflink/ldlinux/ldlinux.e64 ]    || die
+[ -f scratch/buildroot/64bit/images/bzImage ]                           || die
+[ -f scratch/buildroot/64bit/images/rootfs.cpio.xz ]                    || die
+[ -f scratch/buildroot/64bit/target/sbin/linuxpba ]                     || die
+[ -f scratch/buildroot/64bit/target/sbin/sedutil-cli ]                  || die
+[ -f buildroot/syslinux.cfg ]                                           || die
 echo "Building $BUILDTYPE image"
   
 # Clean slate
@@ -47,14 +46,15 @@ chmod 644 image
 
 # Copy the system onto the image
 mkdir -p image/EFI/boot
-cp ../scratch/$SYSLINUX/efi64/efi/syslinux.efi image/EFI/boot/bootx64.efi
-cp ../scratch/$SYSLINUX/efi64/com32/elflink/ldlinux/ldlinux.e64 image/EFI/boot/
+cp ../scratch/$SYSLINUX_VER/efi64/efi/syslinux.efi image/EFI/boot/bootx64.efi
+cp ../scratch/$SYSLINUX_VER/efi64/com32/elflink/ldlinux/ldlinux.e64 image/EFI/boot/
 cp ../scratch/buildroot/64bit/images/bzImage image/EFI/boot/
 cp ../scratch/buildroot/64bit/images/rootfs.cpio.xz image/EFI/boot/
 cp ../buildroot/syslinux.cfg image/EFI/boot/
 
 # Clean up
 umount image
+rmdir image
 losetup -d $LOOPDEV
 gzip $BUILDIMG
 

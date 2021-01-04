@@ -1,5 +1,4 @@
 #! /bin/bash
-set -x
 . conf
 
 VERSIONINFO="$(git describe --dirty)" || VERSIONINFO='tarball'
@@ -19,14 +18,14 @@ if [ $(id -u) -ne 0 ]; then
     exit 1
 fi
 
-[ -f scratch/$SYSLINUX/efi64/efi/syslinux.efi ]                     || die
-[ -f scratch/$SYSLINUX/efi64/com32/elflink/ldlinux/ldlinux.e64 ]    || die
-[ -f scratch/buildroot/$ROOTDIR/images/bzImage ]                    || die
-[ -f scratch/buildroot/$ROOTDIR/images/rootfs.cpio.xz ]             || die
-[ -x scratch/buildroot/$ROOTDIR/target/sbin/linuxpba ]              || die
-[ -x scratch/buildroot/$ROOTDIR/target/sbin/sedutil-cli ]           || die
-[ -f buildroot/syslinux.cfg ]                                       || die
-[ -f UEFI64/UEFI64-*.img.gz ]                                       || die
+[ -f scratch/$SYSLINUX_VER/efi64/efi/syslinux.efi ]                     || die
+[ -f scratch/$SYSLINUX_VER/efi64/com32/elflink/ldlinux/ldlinux.e64 ]    || die
+[ -f scratch/buildroot/$ROOTDIR/images/bzImage ]                        || die
+[ -f scratch/buildroot/$ROOTDIR/images/rootfs.cpio.xz ]                 || die
+[ -x scratch/buildroot/$ROOTDIR/target/sbin/linuxpba ]                  || die
+[ -x scratch/buildroot/$ROOTDIR/target/sbin/sedutil-cli ]               || die
+[ -f buildroot/syslinux.cfg ]                                           || die
+[ -f UEFI64/UEFI64-*.img.gz ]                                           || die
 echo "Building $BUILDTYPE image"
 
 # Clean slate
@@ -65,14 +64,15 @@ chmod 644 image
 
 # Copy the system onto the image
 mkdir -p image/EFI/boot
-cp ../scratch/$SYSLINUX/efi64/efi/syslinux.efi image/EFI/boot/bootx64.efi
-cp ../scratch/$SYSLINUX/efi64/com32/elflink/ldlinux/ldlinux.e64 image/EFI/boot/
+cp ../scratch/$SYSLINUX_VER/efi64/efi/syslinux.efi image/EFI/boot/bootx64.efi
+cp ../scratch/$SYSLINUX_VER/efi64/com32/elflink/ldlinux/ldlinux.e64 image/EFI/boot/
 cp ../scratch/buildroot/64bit/images/bzImage image/EFI/boot/
 cp ../scratch/buildroot/64bit/images/rescuefs.cpio.xz image/EFI/boot/rootfs.cpio.xz
 cp ../buildroot/syslinux.cfg image/EFI/boot/
 
 # Clean up
 umount image
+rmdir image
 losetup -d $LOOPDEV
 gzip $BUILDIMG
 
