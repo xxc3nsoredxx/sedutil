@@ -93,6 +93,19 @@ To compile your own version of `sedutil` you will need the standard development 
 
 ## IGNORE ANYTHING BELOW THIS LINE
 
+`$` denotes user privs
+
+`#` denotes root privs
+
+Build:
+```bash
+cd images
+./prepare.sh
+./build_pbaroot.sh
+./build_UEFI64.sh
+./build_rescue.sh
+```
+
 Prerequisites:  
 
 ```
