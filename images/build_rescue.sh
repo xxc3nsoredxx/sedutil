@@ -29,6 +29,7 @@ fi
 echo "Building $BUILDTYPE image"
 
 # Clean slate and remaster initramfs
+echo 'Remastering initramfs ...'
 rm -f scratch/buildroot/$ROOTDIR/images/rescuefs.cpio.xz 
 mkdir scratch/rescuefs
 pushd scratch/rescuefs &> /dev/null
@@ -36,6 +37,7 @@ pushd scratch/rescuefs &> /dev/null
     xz -dc ../buildroot/$ROOTDIR/images/rootfs.cpio.xz | cpio -i -H newc -d
     
     # Create /etc/issue
+    echo 'Creating /etc/issue ...'
     echo '*************************************' > etc/issue
     echo "* DTA sedutil rescue image $BUILDIMG" >> etc/issue
     echo '*' >> etc/issue
@@ -44,9 +46,11 @@ pushd scratch/rescuefs &> /dev/null
     echo '*************************************' >> etc/issue
 
     # Remove PBA service
+    echo 'Deleting PBA init service ...'
     rm etc/init.d/S99*
 
     # Add the PBA image
+    echo 'Adding the UEFI image to /usr/sedutil/ ...'
     mkdir -p usr/sedutil
     cp ../../UEFI64/UEFI64-*.img.gz usr/sedutil/
 
@@ -54,11 +58,15 @@ pushd scratch/rescuefs &> /dev/null
     find . | cpio -o -H newc | xz -9 -C crc32 -c > ../buildroot/$ROOTDIR/images/rescuefs.cpio.xz
 popd &> /dev/null
 rm -rf scratch/rescuefs
+echo 'Remastering done!'
 
-# Create image file and loopback device
+# Clean slate
 rm -rf $BUILDTYPE
 mkdir $BUILDTYPE
 cd $BUILDTYPE
+
+# Create image file and loopback device
+echo 'Creating boot image ...'
 dd if=/dev/zero of=$BUILDIMG bs=1M count=75
 sfdisk $BUILDIMG < ../layout.sfdisk
 LOOPDEV=$(losetup --show -f -o 1048576 $BUILDIMG)
@@ -70,6 +78,7 @@ mount $LOOPDEV image
 chmod 644 image
 
 # Copy the system onto the image
+echo 'Copying system to boot image ...'
 mkdir -p image/EFI/boot
 cp ../scratch/$SYSLINUX_VER/efi64/efi/syslinux.efi image/EFI/boot/bootx64.efi
 cp ../scratch/$SYSLINUX_VER/efi64/com32/elflink/ldlinux/ldlinux.e64 image/EFI/boot/

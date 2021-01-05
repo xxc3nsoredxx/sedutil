@@ -29,22 +29,26 @@ fi
 echo "Building $BUILDTYPE image"
   
 # Remaster initramfs
+echo 'Remastering initramfs ...'
 mkdir scratch/rootfs
 pushd scratch/rootfs &> /dev/null
     # Unpack initramfs
     xz -dc ../buildroot/64bit/images/rootfs.cpio.xz | cpio -i -H newc -d
 
     # Remove /dev/root entry from /etc/fstab (mounts ext2)
-    sed -i '\|/dev/root|d' etc/fstab
+    sed -i '\|/dev/root|d' etc/fstab && echo 'Patching out /dev/root from /etc/fstab (mounts ext2) ...'
     # Remove sysfs entry from /etc/fstab
-    sed -i '/sysfs/d' etc/fstab
+    sed -i '/sysfs/d' etc/fstab && echo 'Patching out /sys from /etc/fstab (sysfs disabled) ...'
     # Replace tmpfs with ramfs in /etc/fstab
-    sed -i 's/tmpfs/ramfs/g' etc/fstab
+    sed -i 's/tmpfs/ramfs/g' etc/fstab && echo 'Patching tmpfs to mount as ramfs in /etc/fstab ...'
+    # Remove devpts entry from /etc/fstab
+    sed -i '/devpts/d' etc/fstab && echo 'Patching out /dev/pts from /etc/fstab (pseudoterminals disabled) ...'
 
     # Repack initramfs
     find . | cpio -o -H newc | xz -9 -C crc32 -c > ../buildroot/64bit/images/rootfs.cpio.xz
 popd &> /dev/null
 rm -rf scratch/rootfs
+echo 'Remastering done!'
 
 # Clean slate
 rm -rf $BUILDTYPE
@@ -52,6 +56,7 @@ mkdir $BUILDTYPE
 cd $BUILDTYPE
 
 # Create image file and loopback device
+echo 'Creating boot image ...'
 dd if=/dev/zero of=$BUILDIMG bs=1M count=32
 sfdisk $BUILDIMG < ../layout.sfdisk
 LOOPDEV=$(losetup --show -f -o 1048576 $BUILDIMG)
@@ -63,6 +68,7 @@ mount $LOOPDEV image
 chmod 644 image
 
 # Copy the system onto the image
+echo 'Copying system to boot image ...'
 mkdir -p image/EFI/boot
 cp ../scratch/$SYSLINUX_VER/efi64/efi/syslinux.efi image/EFI/boot/bootx64.efi
 cp ../scratch/$SYSLINUX_VER/efi64/com32/elflink/ldlinux/ldlinux.e64 image/EFI/boot/
