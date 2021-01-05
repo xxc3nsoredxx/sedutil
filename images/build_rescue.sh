@@ -29,7 +29,6 @@ fi
 echo "Building $BUILDTYPE image"
 
 # Clean slate and remaster initramfs
-rm -rf scratch/rescuefs
 rm -f scratch/buildroot/$ROOTDIR/images/rescuefs.cpio.xz 
 mkdir scratch/rescuefs
 pushd scratch/rescuefs &> /dev/null
@@ -54,6 +53,7 @@ pushd scratch/rescuefs &> /dev/null
     # Repack initramfs
     find . | cpio -o -H newc | xz -9 -C crc32 -c > ../buildroot/$ROOTDIR/images/rescuefs.cpio.xz
 popd &> /dev/null
+rm -rf scratch/rescuefs
 
 # Create image file and loopback device
 rm -rf $BUILDTYPE

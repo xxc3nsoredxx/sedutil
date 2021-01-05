@@ -29,7 +29,6 @@ fi
 echo "Building $BUILDTYPE image"
   
 # Remaster initramfs
-rm -rf scratch/rootfs
 mkdir scratch/rootfs
 pushd scratch/rootfs &> /dev/null
     # Unpack initramfs
@@ -45,6 +44,7 @@ pushd scratch/rootfs &> /dev/null
     # Repack initramfs
     find . | cpio -o -H newc | xz -9 -C crc32 -c > ../buildroot/64bit/images/rootfs.cpio.xz
 popd &> /dev/null
+rm -rf scratch/rootfs
 
 # Clean slate
 rm -rf $BUILDTYPE
