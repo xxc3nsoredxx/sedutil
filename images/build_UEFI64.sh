@@ -45,7 +45,7 @@ pushd scratch/rootfs &> /dev/null
     sed -i '/devpts/d' etc/fstab && echo 'Patching out /dev/pts from /etc/fstab (pseudoterminals disabled) ...'
 
     # Repack initramfs
-    find . | cpio -o -H newc | xz -9 -C crc32 -c > ../buildroot/64bit/images/rootfs.cpio.xz
+    find . | cpio -o -H newc | xz -9e -C crc32 -c > ../buildroot/64bit/images/rootfs.cpio.xz
 popd &> /dev/null
 rm -rf scratch/rootfs
 echo 'Remastering done!'
@@ -80,7 +80,7 @@ cp ../buildroot/syslinux.cfg image/EFI/boot/
 umount image
 rmdir image
 losetup -d $LOOPDEV
-gzip $BUILDIMG
+xz -9e $BUILDIMG
 
 cd ..
 chown -R --reference=. $BUILDTYPE

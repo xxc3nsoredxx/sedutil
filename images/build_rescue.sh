@@ -25,7 +25,7 @@ fi
 [ -x scratch/buildroot/$ROOTDIR/target/sbin/linuxpba ]                  || die
 [ -x scratch/buildroot/$ROOTDIR/target/sbin/sedutil-cli ]               || die
 [ -f buildroot/syslinux.cfg ]                                           || die
-[ -f UEFI64/UEFI64-*.img.gz ]                                           || die
+[ -f UEFI64/UEFI64-*.img.xz ]                                           || die
 echo "Building $BUILDTYPE image"
 
 # Clean slate and remaster initramfs
@@ -55,7 +55,7 @@ pushd scratch/rescuefs &> /dev/null
     cp ../../UEFI64/UEFI64-*.img.gz usr/sedutil/
 
     # Repack initramfs
-    find . | cpio -o -H newc | xz -9 -C crc32 -c > ../buildroot/$ROOTDIR/images/rescuefs.cpio.xz
+    find . | cpio -o -H newc | xz -9e -C crc32 -c > ../buildroot/$ROOTDIR/images/rescuefs.cpio.xz
 popd &> /dev/null
 rm -rf scratch/rescuefs
 echo 'Remastering done!'
@@ -90,7 +90,7 @@ cp ../buildroot/syslinux.cfg image/EFI/boot/
 umount image
 rmdir image
 losetup -d $LOOPDEV
-gzip $BUILDIMG
+xz -9e $BUILDIMG
 
 cd ..
 chown -R --reference=. $BUILDTYPE
