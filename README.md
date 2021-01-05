@@ -64,6 +64,7 @@ Unique to this repo are the following modifications:
 * Compatibile with AMD Ryzen and AMD Ryzen mobile systems
 * New build scripts
 * Updated PBA: newer, stripped down kernel
+  * Linux 5.4.80
   * Original DTA bzImage size: 6.3M
   * My bzImage size: 1.9M
 * No BIOS support
