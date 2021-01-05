@@ -53,7 +53,7 @@ pushd scratch/rescuefs &> /dev/null
     # Add the PBA image
     echo 'Adding the UEFI image to /usr/sedutil/ ...'
     mkdir -p usr/sedutil
-    cp ../../UEFI64/UEFI64-*.img.gz usr/sedutil/
+    cp ../../UEFI64/UEFI64-*.img.xz usr/sedutil/
 
     # Repack initramfs
     echo 'Repacking as rescuefs.cpio.xz ...'
