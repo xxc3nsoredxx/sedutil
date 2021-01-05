@@ -34,6 +34,7 @@ rm -f scratch/buildroot/$ROOTDIR/images/rescuefs.cpio.xz
 mkdir scratch/rescuefs
 pushd scratch/rescuefs &> /dev/null
     # Unpack initramfs
+    echo 'Unpacking rootfs.cpio.xz ...'
     xz -dc ../buildroot/$ROOTDIR/images/rootfs.cpio.xz | cpio -i -H newc -d
     
     # Create /etc/issue
@@ -55,6 +56,7 @@ pushd scratch/rescuefs &> /dev/null
     cp ../../UEFI64/UEFI64-*.img.gz usr/sedutil/
 
     # Repack initramfs
+    echo 'Repacking as rescuefs.cpio.xz ...'
     find . | cpio -o -H newc | xz -9e -C crc32 -c > ../buildroot/$ROOTDIR/images/rescuefs.cpio.xz
 popd &> /dev/null
 rm -rf scratch/rescuefs
@@ -90,6 +92,7 @@ cp ../buildroot/syslinux.cfg image/EFI/boot/
 umount image
 rmdir image
 losetup -d $LOOPDEV
+echo 'Compressing boot image ...'
 xz -9e $BUILDIMG
 
 cd ..

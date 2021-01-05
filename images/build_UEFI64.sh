@@ -33,6 +33,7 @@ echo 'Remastering initramfs ...'
 mkdir scratch/rootfs
 pushd scratch/rootfs &> /dev/null
     # Unpack initramfs
+    echo 'Unpacking rootfs.cpio.xz ...'
     xz -dc ../buildroot/64bit/images/rootfs.cpio.xz | cpio -i -H newc -d
 
     # Remove /dev/root entry from /etc/fstab (mounts ext2)
@@ -45,6 +46,7 @@ pushd scratch/rootfs &> /dev/null
     sed -i '/devpts/d' etc/fstab && echo 'Patching out /dev/pts from /etc/fstab (pseudoterminals disabled) ...'
 
     # Repack initramfs
+    echo 'Repacking rootfs.cpio.xz ...'
     find . | cpio -o -H newc | xz -9e -C crc32 -c > ../buildroot/64bit/images/rootfs.cpio.xz
 popd &> /dev/null
 rm -rf scratch/rootfs
@@ -80,6 +82,7 @@ cp ../buildroot/syslinux.cfg image/EFI/boot/
 umount image
 rmdir image
 losetup -d $LOOPDEV
+echo 'Compressing boot image ...'
 xz -9e $BUILDIMG
 
 cd ..
