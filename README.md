@@ -62,14 +62,35 @@ Unique to this repo are the following modifications:
 
 * SHA512 password hashing vs SHA1 on original SEDutil
 * Compatibile with AMD Ryzen and AMD Ryzen mobile systems
+* New build scripts
 * Updated PBA: newer, stripped down kernel
-* NO 32-BIT/BIOS SUPPORT
+  * Original DTA bzImage size: 6.3M
+  * My bzImage size: 1.9M
+* No BIOS support
+* No filesystem support
+  * Excluding proc, devtmpfs, and ramfs
+* No graphics support
+  * Excluding EFI framebuffer
+* No SMP support
+* No multilib support
+* No pseudoterminal support
+* No USB support
+* No SD/MMC/SDIO card support
+* No multi-user support
 
 ## Build Process
 
-Building is supported on Ubuntu 18.04.3 (LTS) x64. Other versions will probably not compile correctly!
+**NOTE:**
+This has so far only been tested to boot, `sedutil-cli --scan` showing my drive as having Opal 2 support, and nothing immediately glaring in `dmesg`.
+My machine is a ThinkPad T14 with Ryzen 7 PRO 4750U, 32 GiB of RAM, and a Samsung 970 EVO Plus 1 TiB NVMe M.2.
 
-To compile your own version of `sedutil` you will need the standard development tools, an internet connection, and ~10 GB of disk space. 
+Building is supported on Gentoo amd64.
+Other distros should work as long as the necessary tooling is available.
+
+To compile your own version of `sedutil` you will need the standard development tools, an internet connection, and at least 7 GiB of disk space. 
+`du -d 1 -a -c -h` in the root of the repo says 6.5 GiB for me.
+
+## IGNORE ANYTHING BELOW THIS LINE
 
 Prerequisites:  
 
