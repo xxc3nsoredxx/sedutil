@@ -2,6 +2,10 @@
 . conf
 set -o pipefail
 
+# Delete any existing ccache
+echo "Wiping ccache from $BR2_CCACHE_DIR ..."
+rm -rf $BR2_CCACHE_DIR
+
 # Test if scratch directory exists
 if ! [ -d scratch ]; then
     echo 'Creating directory "scratch" ...'

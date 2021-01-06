@@ -1,2 +1,5 @@
-# Ignore the working directory
+# Working directory
 /scratch
+
+# Buildroot ccache
+/buildroot/.br_ccache
