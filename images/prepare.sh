@@ -63,7 +63,7 @@ pushd scratch &> /dev/null
             autoreconf -i
             ./configure
 
-            echo 'Building sedutil ...'
+            echo 'Building sedutil package ...'
             make dist
 
             echo 'Adding sedutil to Buildroot tree ...'
