@@ -39,12 +39,16 @@ pushd scratch/rescuefs &> /dev/null
     
     # Create /etc/issue
     echo 'Creating /etc/issue ...'
-    echo '*************************************' > etc/issue
-    echo "* DTA sedutil rescue image $BUILDIMG" >> etc/issue
-    echo '*' >> etc/issue
-    echo '* Login as root, there is no password' >> etc/issue
-    echo '*' >> etc/issue
-    echo '*************************************' >> etc/issue
+    cat > etc/issue << 'EOF'
+xxc3nsoredxx's Sedutil Rescue Image
+===================================
+
+\s \m \r
+EOF
+
+    # Tell getty to auto-login as root
+    echo 'Patching /etc/inittab to auto-login as root ...'
+    sed -i 's/\/sbin\/getty/& -r/' etc/inittab
 
     # Remove PBA service
     echo 'Deleting PBA init service ...'

@@ -1,0 +1,30 @@
+From 5709eb152193636b463eb2c52d6f73836f95126d Mon Sep 17 00:00:00 2001
+From: xxc3nsoredxx <xxc3ncoredxx@gmail.com>
+Date: Thu, 7 Jan 2021 13:41:45 -0600
+Subject: [PATCH] Getty print issue even if no login prompt
+
+---
+ loginutils/getty.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/loginutils/getty.c b/loginutils/getty.c
+index 7393a3d1c..08d42ee11 100644
+--- a/loginutils/getty.c
++++ b/loginutils/getty.c
+@@ -722,6 +722,13 @@ int getty_main(int argc UNUSED_PARAM, char **argv)
+ 			set_tty_attrs();
+ 		}
+ 	}
++    /* Write issue file even if no prompt */
++#ifdef ISSUE
++    else {
++		if (!(option_mask32 & F_NOISSUE))
++			print_login_issue(G.issue, G.tty_name);
++    }
++#endif
+ 
+ 	/* Disable timer */
+ 	alarm(0);
+-- 
+2.26.2
+

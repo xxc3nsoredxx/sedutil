@@ -61,6 +61,11 @@ pushd scratch &> /dev/null
         rm -rf package/sedutil
         cp -r ../../buildroot/packages/sedutil/ package/
 
+        # Add the busybox/getty patch
+        echo 'Adding getty patches ...'
+        ls -w 1 ../../buildroot/packages/busybox/*.patch
+        cp -r ../../buildroot/packages/busybox/ package/
+
         # Compile and add sedutil
         pushd ../../.. &> /dev/null
             echo 'Reconfiguring sedutil ...'
