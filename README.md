@@ -63,21 +63,26 @@ Unique to this repo are the following modifications:
 * SHA512 password hashing vs SHA1 on original SEDutil
 * Compatibile with AMD Ryzen and AMD Ryzen mobile systems
 * New build scripts
+* No BIOS support
 * Updated PBA: newer, stripped down kernel
   * Linux 5.4.80
   * Original DTA bzImage size: 6.3 MiB
   * My bzImage size: 1.9 MiB
-* No BIOS support
-* No filesystem support
-  * Excluding proc, devtmpfs, and ramfs
-* No graphics support
-  * Excluding EFI framebuffer
-* No SMP support
-* No multilib support
-* No pseudoterminal support
-* No USB support
-* No SD/MMC/SDIO card support
-* No multi-user support
+  * Cut features
+    * No filesystem support
+      * Excluding proc, devtmpfs, and ramfs
+    * No graphics support
+      * Excluding EFI framebuffer
+    * No SMP support
+    * No multilib support
+    * No pseudoterminal support
+    * No USB support
+    * No SD/MMC/SDIO card support
+    * No multi-user support
+* Busybox patches
+  * loginutils/getty.c
+    * Display `/etc/issue` when not prompting for login
+    * `-r` flag to automatically log in as `root`
 
 ## Build Process
 
