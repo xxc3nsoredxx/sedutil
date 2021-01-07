@@ -66,7 +66,7 @@ pushd scratch &> /dev/null
         ls -w 1 ../../buildroot/packages/busybox/*.patch
         cp -r ../../buildroot/packages/busybox/ package/
 
-        # Compile and add sedutil
+        # Build sedutil tarball and add it
         pushd ../../.. &> /dev/null
             echo 'Reconfiguring sedutil ...'
             autoreconf -i

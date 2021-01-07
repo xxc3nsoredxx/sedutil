@@ -3,7 +3,6 @@
 
 VERSIONINFO="$(git describe --dirty)" || VERSIONINFO='tarball'
 BUILDTYPE='RESCUE64'
-ROOTDIR='64bit'
 BUILDIMG="$BUILDTYPE-$VERSIONINFO.img"
 
 function die {
@@ -20,22 +19,22 @@ fi
 
 [ -f scratch/$SYSLINUX_VER/efi64/efi/syslinux.efi ]                     || die
 [ -f scratch/$SYSLINUX_VER/efi64/com32/elflink/ldlinux/ldlinux.e64 ]    || die
-[ -f scratch/buildroot/$ROOTDIR/images/bzImage ]                        || die
-[ -f scratch/buildroot/$ROOTDIR/images/rootfs.cpio.xz ]                 || die
-[ -x scratch/buildroot/$ROOTDIR/target/sbin/linuxpba ]                  || die
-[ -x scratch/buildroot/$ROOTDIR/target/sbin/sedutil-cli ]               || die
+[ -f scratch/buildroot/64bit/images/bzImage ]                           || die
+[ -f scratch/buildroot/64bit/images/rootfs.cpio.xz ]                    || die
+[ -x scratch/buildroot/64bit/target/sbin/linuxpba ]                     || die
+[ -x scratch/buildroot/64bit/target/sbin/sedutil-cli ]                  || die
 [ -f buildroot/syslinux.cfg ]                                           || die
 [ -f UEFI64/UEFI64-*.img.xz ]                                           || die
 echo "Building $BUILDTYPE image"
 
 # Clean slate and remaster initramfs
 echo 'Remastering initramfs ...'
-rm -f scratch/buildroot/$ROOTDIR/images/rescuefs.cpio.xz 
+rm -f scratch/buildroot/64bit/images/rescuefs.cpio.xz 
 mkdir scratch/rescuefs
 pushd scratch/rescuefs &> /dev/null
     # Unpack initramfs
     echo 'Unpacking rootfs.cpio.xz ...'
-    xz -dc ../buildroot/$ROOTDIR/images/rootfs.cpio.xz | cpio -i -H newc -d
+    xz -dc ../buildroot/64bit/images/rootfs.cpio.xz | cpio -i -H newc -d
     
     # Create /etc/issue
     echo 'Creating /etc/issue ...'
@@ -61,7 +60,7 @@ EOF
 
     # Repack initramfs
     echo 'Repacking as rescuefs.cpio.xz ...'
-    find . | cpio -o -H newc | xz -9e -C crc32 -c > ../buildroot/$ROOTDIR/images/rescuefs.cpio.xz
+    find . | cpio -o -H newc | xz -9e -C crc32 -c > ../buildroot/64bit/images/rescuefs.cpio.xz
 popd &> /dev/null
 rm -rf scratch/rescuefs
 echo 'Remastering done!'
@@ -69,35 +68,35 @@ echo 'Remastering done!'
 # Clean slate
 rm -rf $BUILDTYPE
 mkdir $BUILDTYPE
-cd $BUILDTYPE
+pushd $BUILDTYPE &> /dev/null
+    # Create image file and loopback device
+    echo 'Creating boot image ...'
+    dd if=/dev/zero of=$BUILDIMG bs=1M count=75
+    sfdisk $BUILDIMG < ../layout.sfdisk
+    LOOPDEV=$(losetup --show -f -o 1048576 $BUILDIMG)
+    mkfs.vfat $LOOPDEV -n $BUILDTYPE
 
-# Create image file and loopback device
-echo 'Creating boot image ...'
-dd if=/dev/zero of=$BUILDIMG bs=1M count=75
-sfdisk $BUILDIMG < ../layout.sfdisk
-LOOPDEV=$(losetup --show -f -o 1048576 $BUILDIMG)
-mkfs.vfat $LOOPDEV -n $BUILDTYPE
+    # Mount the image
+    mkdir image
+    mount $LOOPDEV image
+    chmod 644 image
 
-# Mount the image
-mkdir image
-mount $LOOPDEV image
-chmod 644 image
+    # Copy the system onto the image
+    echo 'Copying system to boot image ...'
+    mkdir -p image/EFI/boot
+    cp ../scratch/$SYSLINUX_VER/efi64/efi/syslinux.efi image/EFI/boot/bootx64.efi
+    cp ../scratch/$SYSLINUX_VER/efi64/com32/elflink/ldlinux/ldlinux.e64 image/EFI/boot/
+    cp ../scratch/buildroot/64bit/images/bzImage image/EFI/boot/
+    cp ../scratch/buildroot/64bit/images/rescuefs.cpio.xz image/EFI/boot/rootfs.cpio.xz
+    cp ../buildroot/syslinux.cfg image/EFI/boot/
 
-# Copy the system onto the image
-echo 'Copying system to boot image ...'
-mkdir -p image/EFI/boot
-cp ../scratch/$SYSLINUX_VER/efi64/efi/syslinux.efi image/EFI/boot/bootx64.efi
-cp ../scratch/$SYSLINUX_VER/efi64/com32/elflink/ldlinux/ldlinux.e64 image/EFI/boot/
-cp ../scratch/buildroot/64bit/images/bzImage image/EFI/boot/
-cp ../scratch/buildroot/64bit/images/rescuefs.cpio.xz image/EFI/boot/rootfs.cpio.xz
-cp ../buildroot/syslinux.cfg image/EFI/boot/
+    # Clean up
+    umount image
+    rmdir image
+    losetup -d $LOOPDEV
+    echo 'Compressing boot image ...'
+    xz -9e $BUILDIMG
+popd &> /dev/null
 
-# Clean up
-umount image
-rmdir image
-losetup -d $LOOPDEV
-echo 'Compressing boot image ...'
-xz -9e $BUILDIMG
-
-cd ..
+# Make not owned by root
 chown -R --reference=. $BUILDTYPE

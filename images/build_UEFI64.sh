@@ -68,35 +68,35 @@ echo 'Remastering done!'
 # Clean slate
 rm -rf $BUILDTYPE
 mkdir $BUILDTYPE
-cd $BUILDTYPE
+pushd $BUILDTYPE &> /dev/null
+    # Create image file and loopback device
+    echo 'Creating boot image ...'
+    dd if=/dev/zero of=$BUILDIMG bs=1M count=32
+    sfdisk $BUILDIMG < ../layout.sfdisk
+    LOOPDEV=$(losetup --show -f -o 1048576 $BUILDIMG)
+    mkfs.vfat $LOOPDEV -n $BUILDTYPE
 
-# Create image file and loopback device
-echo 'Creating boot image ...'
-dd if=/dev/zero of=$BUILDIMG bs=1M count=32
-sfdisk $BUILDIMG < ../layout.sfdisk
-LOOPDEV=$(losetup --show -f -o 1048576 $BUILDIMG)
-mkfs.vfat $LOOPDEV -n $BUILDTYPE
+    # Mount the image
+    mkdir image
+    mount $LOOPDEV image
+    chmod 644 image
 
-# Mount the image
-mkdir image
-mount $LOOPDEV image
-chmod 644 image
+    # Copy the system onto the image
+    echo 'Copying system to boot image ...'
+    mkdir -p image/EFI/boot
+    cp ../scratch/$SYSLINUX_VER/efi64/efi/syslinux.efi image/EFI/boot/bootx64.efi
+    cp ../scratch/$SYSLINUX_VER/efi64/com32/elflink/ldlinux/ldlinux.e64 image/EFI/boot/
+    cp ../scratch/buildroot/64bit/images/bzImage image/EFI/boot/
+    cp ../scratch/buildroot/64bit/images/rootfs.cpio.xz image/EFI/boot/
+    cp ../buildroot/syslinux.cfg image/EFI/boot/
 
-# Copy the system onto the image
-echo 'Copying system to boot image ...'
-mkdir -p image/EFI/boot
-cp ../scratch/$SYSLINUX_VER/efi64/efi/syslinux.efi image/EFI/boot/bootx64.efi
-cp ../scratch/$SYSLINUX_VER/efi64/com32/elflink/ldlinux/ldlinux.e64 image/EFI/boot/
-cp ../scratch/buildroot/64bit/images/bzImage image/EFI/boot/
-cp ../scratch/buildroot/64bit/images/rootfs.cpio.xz image/EFI/boot/
-cp ../buildroot/syslinux.cfg image/EFI/boot/
+    # Clean up
+    umount image
+    rmdir image
+    losetup -d $LOOPDEV
+    echo 'Compressing boot image ...'
+    xz -9e $BUILDIMG
+popd &> /dev/null
 
-# Clean up
-umount image
-rmdir image
-losetup -d $LOOPDEV
-echo 'Compressing boot image ...'
-xz -9e $BUILDIMG
-
-cd ..
+# Make not owned by root
 chown -R --reference=. $BUILDTYPE
