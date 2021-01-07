@@ -94,7 +94,8 @@ Building is supported on Gentoo amd64.
 Other distros should work as long as the necessary tooling is available.
 
 To compile your own version of `sedutil` you will need the standard development tools, an internet connection, and at least 7 GiB of disk space. 
-`du -d 1 -a -c -h` in the root of the repo says 6.5 GiB for me.
+Although not mandatory, at least 12 GiB of space is recommended to safely accommodate the maximum `ccache` size of 5 GiB.
+`du -d 1 -a -c -h` in the root of the repo says 6.7 GiB for me.
 
 ## IGNORE ANYTHING BELOW THIS LINE
 
