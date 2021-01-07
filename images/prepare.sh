@@ -2,10 +2,6 @@
 . conf
 set -o pipefail
 
-# Delete any existing ccache
-echo "Wiping ccache from $BR2_CCACHE_DIR ..."
-rm -rf $BR2_CCACHE_DIR
-
 # Test if scratch directory exists
 if ! [ -d scratch ]; then
     echo 'Creating directory "scratch" ...'
@@ -48,11 +44,15 @@ pushd scratch &> /dev/null
 
     # Prepare buildroot tree
     pushd buildroot &> /dev/null
-        # Add out of tree build directories and files
-        if ! [ -d 64bit ]; then
-            echo 'Creating out of tree structure ...'
-            cp -r ../../buildroot/64bit ./
+        # Clean any existing files
+        if [ -d 64bit ]; then
+            echo 'Cleaning existing tree ...'
+            rm -rf 64bit
         fi
+
+        # Add out-of-tree build directories and files
+        echo 'Creating out-of-tree structure ...'
+        cp -r ../../buildroot/64bit ./
 
         # Add the buildroot packages
         echo 'Patching Buildroot config for sedutil ...'
@@ -61,7 +61,7 @@ pushd scratch &> /dev/null
         rm -rf package/sedutil
         cp -r ../../buildroot/packages/sedutil/ package/
 
-        # Add the busybox/getty patch
+        # Add the busybox/getty patchs
         echo 'Adding getty patches ...'
         ls -w 1 ../../buildroot/packages/busybox/*.patch
         cp -r ../../buildroot/packages/busybox/ package/
