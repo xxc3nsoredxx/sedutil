@@ -2,7 +2,7 @@
 
 cd scratch/buildroot
 echo 'Create kernel config ...'
-make O=64bit kernel-menuconfig
+make O=64bit linux-menuconfig
 
 cd 64bit
 echo 'Copying kernel config to 64bit/kernel.config ...'
