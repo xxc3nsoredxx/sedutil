@@ -11,10 +11,7 @@ RESCUE_IMG=$(basename -s '.xz' $RESCUE_BASE)
 
 # Test if running as root
 # Needed by dd(1)
-if [ $(id -u) -ne 0 ]; then
-    echo "$0 must be run as root!"
-    exit 1
-fi
+[ $(id -u) -ne 0 ] && die "$0 must be run as root, quitting!"
 
 echo -n "Copying $RESCUE to /tmp ..."
 cp $RESCUE /tmp && \
