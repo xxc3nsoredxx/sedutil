@@ -69,6 +69,9 @@ Unique to this repo are the following modifications:
   * Original DTA bzImage size: 6.3 MiB
   * My bzImage size: 1.9 MiB
   * Cut features
+    * No virtualization support
+    * No kernel module support
+    * No networking support
     * No filesystem support
       * Excluding proc, devtmpfs, and ramfs
     * No graphics support
