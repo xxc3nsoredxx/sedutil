@@ -88,26 +88,7 @@ Unique to this repo are the following modifications:
   * Cut features
     * Incompatible features (such as no kernel support)
     * Non-essential features (bells and whistles not needed to manage Opal 2 drives)
-    * For a full list, see 
-      c954e8f74a253c60e026d6e70051ebd0446a227d
-      226c9aa698a448e4b18c3d43cdf9bb2a59ea94d2
-      8bd187f6c01adf99cc658c0c42a59ebf2b6d9047
-      5d80d65345f80391afc7c019b000315e8396e791
-      69b59805bfd013fed6fdbdc4705ce742a83fbbb7
-      c2fbb030ef0b377edaffcd94e701d8b93b87d7c7
-      c05cd40b6c283455c01600a09abca05b6a4ba9c7
-      6946e2a3320e7f10ea7c005da5b9f2c0248e47f9
-      3f08596a9e0a28ef76cbf0ee6df72cd4a39c296b
-      599da4a30d456a10ebed91d276ff96208d26cbd6
-      e22fb15854d3446bf18d6ac6cbcc5d2e19148def
-      85f788e7d7d4c27918bfeaea1dd2b12dc9afc80e
-      512ec6f232fb86d0a03a80dfcf1dfa395db7243c
-      64672953388948afbd01c9f646a8d9ff2fd3b148
-      4c8e1d7e3d9087923bdd32f8c2eec51982e1b5b9
-      bebf27285bada858e0ee0541b3eea69808bd8a2a
-      9abbc0d40441ffffd9349d9aa4227ac78eba065f
-      fae931de1a4a6ca8e908564bc5505deced14aa08
-      eecbb7bc58599aee59ac30d5e6e6eb8d4a756ab7
+    * For a full list, see c954e8f74a253c60e026d6e70051ebd0446a227d
 * Busybox patches
   * loginutils/getty.c
     * Display `/etc/issue` when not prompting for login
