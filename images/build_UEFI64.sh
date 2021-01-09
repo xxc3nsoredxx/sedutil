@@ -57,6 +57,9 @@ pushd scratch/rootfs &> /dev/null
     # Remove swap entries
     sed -i '/swap/d' etc/inittab && \
     echo 'Patching out swap from /etc/inittab (swap support disabled) ...'
+    # Remove setting hostname
+    sed -i '/hostname/d' etc/inittab && \
+    echo 'Patching out hostname from /etc/inittab (no /bin/hostname) ...'
 
     # Repack initramfs
     echo 'Repacking rootfs.cpio.xz ...'
