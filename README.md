@@ -84,7 +84,7 @@ Unique to this repo are the following modifications:
     * No multi-user support
 * Stripped down Busybox
   * Original Busybox size: 714 KiB (as measured from 64bit/target/bin/busybox)
-  * My Busybox size: 264 KiB
+  * My Busybox size: 228 KiB
   * Cut features
     * Incompatible features (such as no kernel support)
     * Non-essential features (bells and whistles not needed to manage Opal 2 drives)
@@ -108,6 +108,7 @@ Unique to this repo are the following modifications:
 [9abbc0d4](https://github.com/xxc3nsoredxx/sedutil/commit/9abbc0d40441ffffd9349d9aa4227ac78eba065f)
 [fae931de](https://github.com/xxc3nsoredxx/sedutil/commit/fae931de1a4a6ca8e908564bc5505deced14aa08)
 [eecbb7bc](https://github.com/xxc3nsoredxx/sedutil/commit/eecbb7bc58599aee59ac30d5e6e6eb8d4a756ab7)
+[22fdafb1](https://github.com/xxc3nsoredxx/sedutil/commit/22fdafb15baa8fdb092d4035093839b327227984)
 * Busybox patches
   * loginutils/getty.c
     * Display `/etc/issue` when not prompting for login
