@@ -32,7 +32,6 @@ class DtaDevOpal1 : public DtaDevOpal {
 public:
     DtaDevOpal1(const char * devref);
     ~DtaDevOpal1();
-        /** return the communication ID to be used with this device */
+    /** return the communication ID to be used with this device */
     uint16_t comID();
-    
 };
