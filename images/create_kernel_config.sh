@@ -1,4 +1,5 @@
 #! /bin/bash
+. conf
 
 cd scratch/buildroot
 echo 'Create kernel config ...'
