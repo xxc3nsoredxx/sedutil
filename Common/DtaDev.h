@@ -95,7 +95,7 @@ public:
      * @param bufferlen length of the input/output buffer
      */
     virtual uint8_t sendCmd(ATACOMMAND cmd, uint8_t protocol, uint16_t comID,
-        void * buffer, uint32_t bufferlen) = 0;
+                            void * buffer, uint32_t bufferlen) = 0;
     /** OS specific command to Wait for specified number of milliseconds
      * @param milliseconds  number of milliseconds to wait
      */
@@ -120,7 +120,8 @@ public:
      * @param Admin1Password admin1 password for TPer
      * @param password User password to set for locking range
      */
-    virtual uint8_t setup_SUM(uint8_t lockingrange, uint64_t start, uint64_t length, char *Admin1Password, char * password) = 0;
+    virtual uint8_t setup_SUM(uint8_t lockingrange, uint64_t start, uint64_t length,
+                              char *Admin1Password, char * password) = 0;
     /** Set the SID password.
      * Requires special handling because password is not always hashed.
      * @param oldpassword  current SID password
@@ -129,7 +130,7 @@ public:
      * @param hashnewpwd  is the new password to be hashed before being added to the bytestream
      */
     virtual uint8_t setSIDPassword(char * oldpassword, char * newpassword,
-        uint8_t hasholdpwd = 1, uint8_t hashnewpwd = 1) = 0;
+                                   uint8_t hasholdpwd = 1, uint8_t hashnewpwd = 1) = 0;
     /** Set the password of a locking SP user.
      * @param password  current password
      * @param userid the userid whose password is to be changed
@@ -153,21 +154,21 @@ public:
      * @param Admin1Password password of administrative authority for locking range
      */
     virtual uint8_t setLockingRange(uint8_t lockingrange, uint8_t lockingstate,
-        char * Admin1Password) = 0;
+                                    char * Admin1Password) = 0;
     /** Change the locking state of a locking range in Single User Mode
          * @param lockingrange The number of the locking range (0 = global)
          * @param lockingstate  the locking state to set
          * @param password password of user authority for the locking range
          */
     virtual uint8_t setLockingRange_SUM(uint8_t lockingrange, uint8_t lockingstate,
-        char * password) = 0;
+                                        char * password) = 0;
     /** Change the active state of a locking range
      * @param lockingrange The number of the locking range (0 = global)
      * @param enabled  enable (true) or disable (false) the lockingrange
      * @param password Password of administrative authority for locking range
      */
     virtual uint8_t configureLockingRange(uint8_t lockingrange, uint8_t enabled,
-        char * password) = 0;
+                                          char * password) = 0;
     /** Setup a locking range.  Initialize a locking range, set it's start
      *  LBA and length, initialize it as unlocked with locking disabled.
      *  @paran lockingrange The Locking Range to be setup
@@ -176,7 +177,7 @@ public:
      *  @param password Password of administrator
      */
     virtual uint8_t setupLockingRange(uint8_t lockingrange, uint64_t start,
-        uint64_t length, char * password) = 0;
+                                      uint64_t length, char * password) = 0;
     /** Setup a locking range in Single User Mode.  Initialize a locking range,
      *  set it's start LBA and length, initialize it as unlocked with locking enabled.
          *  @paran lockingrange The Locking Range to be setup
@@ -185,7 +186,7 @@ public:
          *  @param password Password of administrator
          */
     virtual uint8_t setupLockingRange_SUM(uint8_t lockingrange, uint64_t start,
-        uint64_t length, char * password) = 0;
+                                          uint64_t length, char * password) = 0;
     /** List status of locking ranges.  
     *  @param password Password of administrator
     */
@@ -213,7 +214,8 @@ public:
      * @param password password of locking sp administrative authority
      * @param userid  the user to be enabled
      */
-    virtual uint8_t enableUser(char * password, char * userid, OPAL_TOKEN status = OPAL_TOKEN::OPAL_TRUE) = 0;
+    virtual uint8_t enableUser(char * password, char * userid,
+                               OPAL_TOKEN status = OPAL_TOKEN::OPAL_TRUE) = 0;
     /** Enable locking on the device
      * @param password password of the admin sp SID authority
      */
@@ -243,7 +245,8 @@ public:
      * @param password password of authority (SID or PSID)
      * @param PSID true or false is the authority the PSID
      *   */
-    virtual uint8_t revertTPer(char * password, uint8_t PSID = 0, uint8_t AdminSP = 0 ) = 0;
+    virtual uint8_t revertTPer(char * password, uint8_t PSID = 0,
+                               uint8_t AdminSP = 0 ) = 0;
     /** Erase a locking range
      * @param lockingrange The number of the locking range (0 = global)
      * @param password Password of administrative authority for locking range
@@ -256,7 +259,7 @@ public:
      * @param objID the UID of the object to dump
      *  */
     virtual uint8_t objDump(char *sp, char * auth, char *pass,
-        char * objID) = 0;
+                            char * objID) = 0;
     /** Issue any command to the drive for diagnostic purposes
      * @param sp index into the OPALUID table for the SP the object is in
      * @param auth the authority ti use for the dump
@@ -267,7 +270,7 @@ public:
      *
      */
     virtual uint8_t rawCmd(char *sp, char * auth, char *pass,
-        char *invoker, char *method, char *plist) = 0;
+                           char *invoker, char *method, char *plist) = 0;
     /** Read MSID
      */
     virtual uint8_t printDefaultPassword() = 0;
