@@ -60,8 +60,8 @@ DtaResponse::init(void * buffer)
         for (uint32_t i = 0; i < tokenLength; i++) {
             bytestring.push_back(reply[cpos++]);
         }
-		if (bytestring != empty_atom)
-			response.push_back(bytestring);
+        if (bytestring != empty_atom)
+            response.push_back(bytestring);
     }
 }
 
@@ -113,7 +113,7 @@ uint64_t DtaResponse::getUint64(uint32_t tokenNum)
     if (!(response[tokenNum][0] & 0x80)) { //tiny atom
         if ((response[tokenNum][0] & 0x40)) {
             LOG(E) << "unsigned int requested for signed tiny atom";
-			exit(EXIT_FAILURE);
+            exit(EXIT_FAILURE);
         }
         else {
             return (uint64_t) (response[tokenNum][0] & 0x3f);
@@ -122,14 +122,14 @@ uint64_t DtaResponse::getUint64(uint32_t tokenNum)
     else if (!(response[tokenNum][0] & 0x40)) { // short atom
         if ((response[tokenNum][0] & 0x10)) {
             LOG(E) << "unsigned int requested for signed short atom";
-			exit(EXIT_FAILURE);
+            exit(EXIT_FAILURE);
         }
         else {
             uint64_t whatever = 0;
             if (response[tokenNum].size() > 9) { LOG(E) << "UINT64 with greater than 8 bytes"; }
             int b = 0;
             for (uint32_t i = (uint32_t) response[tokenNum].size() - 1; i > 0; i--) {
-				whatever |= ((uint64_t)response[tokenNum][i] << (8 * b));
+                whatever |= ((uint64_t)response[tokenNum][i] << (8 * b));
                 b++;
             }
             return whatever;
@@ -138,15 +138,15 @@ uint64_t DtaResponse::getUint64(uint32_t tokenNum)
     }
     else if (!(response[tokenNum][0] & 0x20)) { // medium atom
         LOG(E) << "unsigned int requested for medium atom is unsupported";
-		exit(EXIT_FAILURE);
+        exit(EXIT_FAILURE);
     }
     else if (!(response[tokenNum][0] & 0x10)) { // long atom
         LOG(E) << "unsigned int requested for long atom is unsupported";
-		exit(EXIT_FAILURE);
+        exit(EXIT_FAILURE);
     }
     else { // TOKEN
         LOG(E) << "unsigned int requested for token is unsupported";
-		exit(EXIT_FAILURE);
+        exit(EXIT_FAILURE);
     }
 }
 
@@ -169,13 +169,13 @@ uint16_t DtaResponse::getUint16(uint32_t tokenNum)
 
 uint8_t DtaResponse::getUint8(uint32_t tokenNum)
 {
-	LOG(D1) << "Entering  DtaResponse::getUint8";
+    LOG(D1) << "Entering  DtaResponse::getUint8";
     uint64_t i = getUint64(tokenNum);
     if (i > 0xff) { LOG(E) << "UINT8 truncated "; }
     return (uint8_t) i;
 }
 //int64_t DtaResponse::getSint(uint32_t tokenNum) {
-//	LOG(E) << "DtaResponse::getSint() is not implemented";
+//    LOG(E) << "DtaResponse::getSint() is not implemented";
 //}
 
 std::vector<uint8_t> DtaResponse::getRawToken(uint32_t tokenNum)
@@ -191,7 +191,7 @@ std::string DtaResponse::getString(uint32_t tokenNum)
     int overhead = 0;
     if (!(response[tokenNum][0] & 0x80)) { //tiny atom
         LOG(E) << "Cannot get a string from a tiny atom";
-		exit(EXIT_FAILURE);
+        exit(EXIT_FAILURE);
     }
     else if (!(response[tokenNum][0] & 0x40)) { // short atom
         overhead = 1;
@@ -218,7 +218,7 @@ void DtaResponse::getBytes(uint32_t tokenNum, uint8_t bytearray[])
     int overhead = 0;
     if (!(response[tokenNum][0] & 0x80)) { //tiny atom
         LOG(E) << "Cannot get a bytestring from a tiny atom";
-		exit(EXIT_FAILURE);
+        exit(EXIT_FAILURE);
     }
     else if (!(response[tokenNum][0] & 0x40)) { // short atom
         overhead = 1;
@@ -231,7 +231,7 @@ void DtaResponse::getBytes(uint32_t tokenNum, uint8_t bytearray[])
     }
     else {
         LOG(E) << "Cannot get a bytestring from a TOKEN";
-		exit(EXIT_FAILURE);
+        exit(EXIT_FAILURE);
     }
 
     for (uint32_t i = overhead; i < response[tokenNum].size(); i++) {

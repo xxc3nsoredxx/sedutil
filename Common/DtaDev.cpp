@@ -46,12 +46,12 @@ DtaDev::~DtaDev()
 }
 uint8_t DtaDev::isOpal2()
 {
-	LOG(D1) << "Entering DtaDev::isOpal2 " << (uint16_t) disk_info.OPAL20;
-	return disk_info.OPAL20;
+    LOG(D1) << "Entering DtaDev::isOpal2 " << (uint16_t) disk_info.OPAL20;
+    return disk_info.OPAL20;
 }
 uint8_t DtaDev::isOpal1()
 {
-	LOG(D1) << "Entering DtaDev::isOpal1() " << (uint16_t)disk_info.OPAL10;
+    LOG(D1) << "Entering DtaDev::isOpal1() " << (uint16_t)disk_info.OPAL10;
     return disk_info.OPAL10;
 }
 uint8_t DtaDev::isEprise()
@@ -62,61 +62,61 @@ uint8_t DtaDev::isEprise()
 
 uint8_t DtaDev::isAnySSC()
 {
-	LOG(D1) << "Entering DtaDev::isAnySSC " << (uint16_t)disk_info.ANY_OPAL_SSC;
-	return disk_info.ANY_OPAL_SSC;
+    LOG(D1) << "Entering DtaDev::isAnySSC " << (uint16_t)disk_info.ANY_OPAL_SSC;
+    return disk_info.ANY_OPAL_SSC;
 }
 uint8_t DtaDev::isPresent()
 {
-	LOG(D1) << "Entering DtaDev::isPresent() " << (uint16_t) isOpen;
+    LOG(D1) << "Entering DtaDev::isPresent() " << (uint16_t) isOpen;
     return isOpen;
 }
 uint8_t DtaDev::MBREnabled()
 {
-	LOG(D1) << "Entering DtaDev::MBRENabled" << (uint16_t)disk_info.Locking_MBREnabled;
-	return disk_info.Locking_MBREnabled;
+    LOG(D1) << "Entering DtaDev::MBRENabled" << (uint16_t)disk_info.Locking_MBREnabled;
+    return disk_info.Locking_MBREnabled;
 }
 uint8_t DtaDev::MBRDone()
 {
-	LOG(D1) << "Entering DtaDev::MBRDone" << (uint16_t)disk_info.Locking_MBRDone;
-	return disk_info.Locking_MBRDone;
+    LOG(D1) << "Entering DtaDev::MBRDone" << (uint16_t)disk_info.Locking_MBRDone;
+    return disk_info.Locking_MBRDone;
 }
 uint8_t DtaDev::Locked()
 {
-	LOG(D1) << "Entering DtaDev::Locked" << (uint16_t)disk_info.Locking_locked;
-	return disk_info.Locking_locked;
+    LOG(D1) << "Entering DtaDev::Locked" << (uint16_t)disk_info.Locking_locked;
+    return disk_info.Locking_locked;
 }
 uint8_t DtaDev::LockingEnabled()
 {
-	LOG(D1) << "Entering DtaDev::LockingEnabled" << (uint16_t)disk_info.Locking_lockingEnabled;
-	return disk_info.Locking_lockingEnabled;
+    LOG(D1) << "Entering DtaDev::LockingEnabled" << (uint16_t)disk_info.Locking_lockingEnabled;
+    return disk_info.Locking_lockingEnabled;
 }
 char *DtaDev::getFirmwareRev()
 {
-	return (char *)&disk_info.firmwareRev;
+    return (char *)&disk_info.firmwareRev;
 }
 char *DtaDev::getModelNum()
 {
-	return (char *)&disk_info.modelNum;
+    return (char *)&disk_info.modelNum;
 }
 char *DtaDev::getSerialNum()
 {
-	return (char *)&disk_info.serialNum;
+    return (char *)&disk_info.serialNum;
 }
 DTA_DEVICE_TYPE DtaDev::getDevType()
-	{
-		return disk_info.devType;
-	}
+    {
+        return disk_info.devType;
+    }
 void DtaDev::discovery0()
 {
     LOG(D1) << "Entering DtaDev::discovery0()";
-	uint8_t lastRC;
+    uint8_t lastRC;
     void * d0Response = NULL;
     uint8_t * epos, *cpos;
     Discovery0Header * hdr;
     Discovery0Features * body;
-	d0Response = discovery0buffer + IO_BUFFER_ALIGNMENT;
-	d0Response = (void *)((uintptr_t)d0Response & (uintptr_t)~(IO_BUFFER_ALIGNMENT - 1));
-	memset(d0Response, 0, MIN_BUFFER_LENGTH);
+    d0Response = discovery0buffer + IO_BUFFER_ALIGNMENT;
+    d0Response = (void *)((uintptr_t)d0Response & (uintptr_t)~(IO_BUFFER_ALIGNMENT - 1));
+    memset(d0Response, 0, MIN_BUFFER_LENGTH);
     if ((lastRC = sendCmd(IF_RECV, 0x01, 0x0001, d0Response, MIN_BUFFER_LENGTH)) != 0) {
         LOG(D) << "Send D0 request to device failed " << (uint16_t)lastRC;
         return;
@@ -159,15 +159,15 @@ void DtaDev::discovery0()
             break;
         case FC_ENTERPRISE: /* Enterprise SSC */
             disk_info.Enterprise = 1;
-			disk_info.ANY_OPAL_SSC = 1;
-	        disk_info.Enterprise_rangeCrossing = body->enterpriseSSC.rangeCrossing;
+            disk_info.ANY_OPAL_SSC = 1;
+            disk_info.Enterprise_rangeCrossing = body->enterpriseSSC.rangeCrossing;
             disk_info.Enterprise_basecomID = SWAP16(body->enterpriseSSC.baseComID);
             disk_info.Enterprise_numcomID = SWAP16(body->enterpriseSSC.numberComIDs);
             break;
         case FC_OPALV100: /* Opal V1 */
             disk_info.OPAL10 = 1;
-			disk_info.ANY_OPAL_SSC = 1;
-	        disk_info.OPAL10_basecomID = SWAP16(body->opalv100.baseComID);
+            disk_info.ANY_OPAL_SSC = 1;
+            disk_info.OPAL10_basecomID = SWAP16(body->opalv100.baseComID);
             disk_info.OPAL10_numcomIDs = SWAP16(body->opalv100.numberComIDs);
             break;
         case FC_SINGLEUSER: /* Single User Mode */
@@ -185,8 +185,8 @@ void DtaDev::discovery0()
             break;
         case FC_OPALV200: /* OPAL V200 */
             disk_info.OPAL20 = 1;
-			disk_info.ANY_OPAL_SSC = 1;
-		    disk_info.OPAL20_basecomID = SWAP16(body->opalv200.baseCommID);
+            disk_info.ANY_OPAL_SSC = 1;
+            disk_info.OPAL20_basecomID = SWAP16(body->opalv200.baseCommID);
             disk_info.OPAL20_initialPIN = body->opalv200.initialPIN;
             disk_info.OPAL20_revertedPIN = body->opalv200.revertedPIN;
             disk_info.OPAL20_numcomIDs = SWAP16(body->opalv200.numCommIDs);
@@ -195,15 +195,15 @@ void DtaDev::discovery0()
             disk_info.OPAL20_rangeCrossing = body->opalv200.rangeCrossing;
             break;
         default:
-			if (0xbfff < (SWAP16(body->TPer.featureCode))) {
-				// silently ignore vendor specific segments as there is no public doc on them
-				disk_info.VendorSpecific += 1;
-			}
-			else {
-				disk_info.Unknown += 1;
-				LOG(D) << "Unknown Feature in Discovery 0 response " << std::hex << SWAP16(body->TPer.featureCode) << std::dec;
-				/* should do something here */
-			}
+            if (0xbfff < (SWAP16(body->TPer.featureCode))) {
+                // silently ignore vendor specific segments as there is no public doc on them
+                disk_info.VendorSpecific += 1;
+            }
+            else {
+                disk_info.Unknown += 1;
+                LOG(D) << "Unknown Feature in Discovery 0 response " << std::hex << SWAP16(body->TPer.featureCode) << std::dec;
+                /* should do something here */
+            }
             break;
         }
         cpos = cpos + (body->TPer.length + 4);
@@ -213,90 +213,90 @@ void DtaDev::discovery0()
 }
 void DtaDev::puke()
 {
-	LOG(D1) << "Entering DtaDev::puke()";
-	/* IDENTIFY */
-	cout << endl << dev << (disk_info.devType == DEVICE_TYPE_ATA ? " ATA " : 
+    LOG(D1) << "Entering DtaDev::puke()";
+    /* IDENTIFY */
+    cout << endl << dev << (disk_info.devType == DEVICE_TYPE_ATA ? " ATA " : 
             disk_info.devType == DEVICE_TYPE_SAS ? " SAS " : 
             disk_info.devType == DEVICE_TYPE_USB ? " USB " :
             disk_info.devType == DEVICE_TYPE_NVME ? " NVMe " :
                     " OTHER ");
-	cout << disk_info.modelNum << " " << disk_info.firmwareRev << " " << disk_info.serialNum << endl;
-	/* TPer */
-	if (disk_info.TPer) {
-		cout << "TPer function (" << HEXON(4) << FC_TPER << HEXOFF << ")" << std::endl;
-		cout << "    ACKNAK = " << (disk_info.TPer_ACKNACK ? "Y, " : "N, ")
-			<< "ASYNC = " << (disk_info.TPer_async ? "Y, " : "N. ")
-			<< "BufferManagement = " << (disk_info.TPer_bufferMgt ? "Y, " : "N, ")
-			<< "comIDManagement  = " << (disk_info.TPer_comIDMgt ? "Y, " : "N, ")
-			<< "Streaming = " << (disk_info.TPer_streaming ? "Y, " : "N, ")
-			<< "SYNC = " << (disk_info.TPer_sync ? "Y" : "N")
-			<< std::endl;
-	}
-	if (disk_info.Locking) {
+    cout << disk_info.modelNum << " " << disk_info.firmwareRev << " " << disk_info.serialNum << endl;
+    /* TPer */
+    if (disk_info.TPer) {
+        cout << "TPer function (" << HEXON(4) << FC_TPER << HEXOFF << ")" << std::endl;
+        cout << "    ACKNAK = " << (disk_info.TPer_ACKNACK ? "Y, " : "N, ")
+            << "ASYNC = " << (disk_info.TPer_async ? "Y, " : "N. ")
+            << "BufferManagement = " << (disk_info.TPer_bufferMgt ? "Y, " : "N, ")
+            << "comIDManagement  = " << (disk_info.TPer_comIDMgt ? "Y, " : "N, ")
+            << "Streaming = " << (disk_info.TPer_streaming ? "Y, " : "N, ")
+            << "SYNC = " << (disk_info.TPer_sync ? "Y" : "N")
+            << std::endl;
+    }
+    if (disk_info.Locking) {
 
-		cout << "Locking function (" << HEXON(4) << FC_LOCKING << HEXOFF << ")" << std::endl;
-		cout << "    Locked = " << (disk_info.Locking_locked ? "Y, " : "N, ")
-			<< "LockingEnabled = " << (disk_info.Locking_lockingEnabled ? "Y, " : "N, ")
-			<< "LockingSupported = " << (disk_info.Locking_lockingSupported ? "Y, " : "N, ");
-		cout << "MBRDone = " << (disk_info.Locking_MBRDone ? "Y, " : "N, ")
-			<< "MBREnabled = " << (disk_info.Locking_MBREnabled ? "Y, " : "N, ")
-			<< "MediaEncrypt = " << (disk_info.Locking_mediaEncrypt ? "Y" : "N")
-			<< std::endl;
-	}
-	if (disk_info.Geometry) {
+        cout << "Locking function (" << HEXON(4) << FC_LOCKING << HEXOFF << ")" << std::endl;
+        cout << "    Locked = " << (disk_info.Locking_locked ? "Y, " : "N, ")
+            << "LockingEnabled = " << (disk_info.Locking_lockingEnabled ? "Y, " : "N, ")
+            << "LockingSupported = " << (disk_info.Locking_lockingSupported ? "Y, " : "N, ");
+        cout << "MBRDone = " << (disk_info.Locking_MBRDone ? "Y, " : "N, ")
+            << "MBREnabled = " << (disk_info.Locking_MBREnabled ? "Y, " : "N, ")
+            << "MediaEncrypt = " << (disk_info.Locking_mediaEncrypt ? "Y" : "N")
+            << std::endl;
+    }
+    if (disk_info.Geometry) {
 
-		cout << "Geometry function (" << HEXON(4) << FC_GEOMETRY << HEXOFF << ")" << std::endl;
-		cout << "    Align = " << (disk_info.Geometry_align ? "Y, " : "N, ")
-			<< "Alignment Granularity = " << disk_info.Geometry_alignmentGranularity
-			<< " (" << // display bytes
-			(disk_info.Geometry_alignmentGranularity *
-			disk_info.Geometry_logicalBlockSize)
-			<< ")"
-			<< ", Logical Block size = " << disk_info.Geometry_logicalBlockSize
-			<< ", Lowest Aligned LBA = " << disk_info.Geometry_lowestAlignedLBA
-			<< std::endl;
-	}
-	if (disk_info.Enterprise) {
-		cout << "Enterprise function (" << HEXON(4) << FC_ENTERPRISE << HEXOFF << ")" << std::endl;
-		cout << "    Range crossing = " << (disk_info.Enterprise_rangeCrossing ? "Y, " : "N, ")
-			<< "Base comID = " << HEXON(4) << disk_info.Enterprise_basecomID
-			<< ", comIDs = " << disk_info.Enterprise_numcomID << HEXOFF
-			<< std::endl;
-	}
-	if (disk_info.OPAL10) {
-		cout << "Opal V1.0 function (" << HEXON(4) << FC_OPALV100 << HEXOFF << ")" << std::endl;
-		cout << "Base comID = " << HEXON(4) << disk_info.OPAL10_basecomID << HEXOFF
-			<< ", comIDs = " << disk_info.OPAL10_numcomIDs
-			<< std::endl;
-	}
-	if (disk_info.SingleUser) {
-		cout << "SingleUser function (" << HEXON(4) << FC_SINGLEUSER << HEXOFF << ")" << std::endl;
-		cout << "    ALL = " << (disk_info.SingleUser_all ? "Y, " : "N, ")
-			<< "ANY = " << (disk_info.SingleUser_any ? "Y, " : "N, ")
-			<< "Policy = " << (disk_info.SingleUser_policy ? "Y, " : "N, ")
-			<< "Locking Objects = " << (disk_info.SingleUser_lockingObjects)
-			<< std::endl;
-	}
-	if (disk_info.DataStore) {
-		cout << "DataStore function (" << HEXON(4) << FC_DATASTORE << HEXOFF << ")" << std::endl;
-		cout << "    Max Tables = " << disk_info.DataStore_maxTables
-			<< ", Max Size Tables = " << disk_info.DataStore_maxTableSize
-			<< ", Table size alignment = " << disk_info.DataStore_alignment
-			<< std::endl;
-	}
+        cout << "Geometry function (" << HEXON(4) << FC_GEOMETRY << HEXOFF << ")" << std::endl;
+        cout << "    Align = " << (disk_info.Geometry_align ? "Y, " : "N, ")
+            << "Alignment Granularity = " << disk_info.Geometry_alignmentGranularity
+            << " (" << // display bytes
+            (disk_info.Geometry_alignmentGranularity *
+            disk_info.Geometry_logicalBlockSize)
+            << ")"
+            << ", Logical Block size = " << disk_info.Geometry_logicalBlockSize
+            << ", Lowest Aligned LBA = " << disk_info.Geometry_lowestAlignedLBA
+            << std::endl;
+    }
+    if (disk_info.Enterprise) {
+        cout << "Enterprise function (" << HEXON(4) << FC_ENTERPRISE << HEXOFF << ")" << std::endl;
+        cout << "    Range crossing = " << (disk_info.Enterprise_rangeCrossing ? "Y, " : "N, ")
+            << "Base comID = " << HEXON(4) << disk_info.Enterprise_basecomID
+            << ", comIDs = " << disk_info.Enterprise_numcomID << HEXOFF
+            << std::endl;
+    }
+    if (disk_info.OPAL10) {
+        cout << "Opal V1.0 function (" << HEXON(4) << FC_OPALV100 << HEXOFF << ")" << std::endl;
+        cout << "Base comID = " << HEXON(4) << disk_info.OPAL10_basecomID << HEXOFF
+            << ", comIDs = " << disk_info.OPAL10_numcomIDs
+            << std::endl;
+    }
+    if (disk_info.SingleUser) {
+        cout << "SingleUser function (" << HEXON(4) << FC_SINGLEUSER << HEXOFF << ")" << std::endl;
+        cout << "    ALL = " << (disk_info.SingleUser_all ? "Y, " : "N, ")
+            << "ANY = " << (disk_info.SingleUser_any ? "Y, " : "N, ")
+            << "Policy = " << (disk_info.SingleUser_policy ? "Y, " : "N, ")
+            << "Locking Objects = " << (disk_info.SingleUser_lockingObjects)
+            << std::endl;
+    }
+    if (disk_info.DataStore) {
+        cout << "DataStore function (" << HEXON(4) << FC_DATASTORE << HEXOFF << ")" << std::endl;
+        cout << "    Max Tables = " << disk_info.DataStore_maxTables
+            << ", Max Size Tables = " << disk_info.DataStore_maxTableSize
+            << ", Table size alignment = " << disk_info.DataStore_alignment
+            << std::endl;
+    }
 
-	if (disk_info.OPAL20) {
-		cout << "OPAL 2.0 function (" << HEXON(4) << FC_OPALV200 << ")" << HEXOFF << std::endl;
-		cout << "    Base comID = " << HEXON(4) << disk_info.OPAL20_basecomID << HEXOFF;
-		cout << ", Initial PIN = " << HEXON(2) << disk_info.OPAL20_initialPIN << HEXOFF;
-		cout << ", Reverted PIN = " << HEXON(2) << disk_info.OPAL20_revertedPIN << HEXOFF;
-		cout << ", comIDs = " << disk_info.OPAL20_numcomIDs;
-		cout << std::endl;
-		cout << "    Locking Admins = " << disk_info.OPAL20_numAdmins;
-		cout << ", Locking Users = " << disk_info.OPAL20_numUsers;
-		cout << ", Range Crossing = " << (disk_info.OPAL20_rangeCrossing ? "Y" : "N");
-		cout << std::endl;
-	}
-	if (disk_info.Unknown)
-		cout << "**** " << (uint16_t)disk_info.Unknown << " **** Unknown function codes IGNORED " << std::endl;
+    if (disk_info.OPAL20) {
+        cout << "OPAL 2.0 function (" << HEXON(4) << FC_OPALV200 << ")" << HEXOFF << std::endl;
+        cout << "    Base comID = " << HEXON(4) << disk_info.OPAL20_basecomID << HEXOFF;
+        cout << ", Initial PIN = " << HEXON(2) << disk_info.OPAL20_initialPIN << HEXOFF;
+        cout << ", Reverted PIN = " << HEXON(2) << disk_info.OPAL20_revertedPIN << HEXOFF;
+        cout << ", comIDs = " << disk_info.OPAL20_numcomIDs;
+        cout << std::endl;
+        cout << "    Locking Admins = " << disk_info.OPAL20_numAdmins;
+        cout << ", Locking Users = " << disk_info.OPAL20_numUsers;
+        cout << ", Range Crossing = " << (disk_info.OPAL20_rangeCrossing ? "Y" : "N");
+        cout << std::endl;
+    }
+    if (disk_info.Unknown)
+        cout << "**** " << (uint16_t)disk_info.Unknown << " **** Unknown function codes IGNORED " << std::endl;
 }

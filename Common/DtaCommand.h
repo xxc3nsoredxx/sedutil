@@ -37,8 +37,8 @@ using namespace std;
 * the bytestream.
 */
 class DtaCommand {
-	friend class DtaDevOpal;
-	friend class DtaDevEnterprise;
+    friend class DtaDevOpal;
+    friend class DtaDevEnterprise;
 public:
     /** Default constructor, allocates the command and resonse buffers. */
     DtaCommand();
@@ -115,19 +115,19 @@ public:
      */
     void changeInvokingUid(vector<uint8_t> Invoker);
     /** Produce a hexdump of the response.  Typically used in debugging and tracing */
-	void dumpResponse();
+    void dumpResponse();
     /** Produce a hexdump of the command.  Typically used in debugging and tracing */
-	void dumpCommand();
-	/** Return the space used in the command buffer (rounded to 512 bytes) */
-	uint16_t outputBufferSize();
+    void dumpCommand();
+    /** Return the space used in the command buffer (rounded to 512 bytes) */
+    uint16_t outputBufferSize();
 private:
     /** return a pointer to the command buffer */
-	void * getCmdBuffer();
+    void * getCmdBuffer();
     /** return a pointer to the response buffer. */
-	void * getRespBuffer();
-	uint8_t commandbuffer[MAX_BUFFER_LENGTH + IO_BUFFER_ALIGNMENT]; /**< buffer allocation allow for 1k alignment */
-	uint8_t responsebuffer[MIN_BUFFER_LENGTH + IO_BUFFER_ALIGNMENT]; /**< buffer allocation allow for 1k alignment */
-	uint8_t *cmdbuf;  /**< Pointer to the command buffer */
+    void * getRespBuffer();
+    uint8_t commandbuffer[MAX_BUFFER_LENGTH + IO_BUFFER_ALIGNMENT]; /**< buffer allocation allow for 1k alignment */
+    uint8_t responsebuffer[MIN_BUFFER_LENGTH + IO_BUFFER_ALIGNMENT]; /**< buffer allocation allow for 1k alignment */
+    uint8_t *cmdbuf;  /**< Pointer to the command buffer */
     uint8_t *respbuf;  /**< pointer to the response buffer */
     uint32_t bufferpos = 0;  /**< position of the next byte in the command buffer */
 };

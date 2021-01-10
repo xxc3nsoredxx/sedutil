@@ -49,76 +49,76 @@ unsigned long long DtaDevOS::getSize()
 }
 DtaDevOS::DtaDevOS()
 {
-	drive = NULL;
+    drive = NULL;
 }
 
 /* Determine which type of drive we're using and instantiate a derived class of that type */
 void DtaDevOS::init(const char * devref)
 {
-	LOG(D1) << "DtaDevOS::init " << devref;
+    LOG(D1) << "DtaDevOS::init " << devref;
 
-	memset(&disk_info, 0, sizeof(OPAL_DiskInfo));
-	dev = devref;
+    memset(&disk_info, 0, sizeof(OPAL_DiskInfo));
+    dev = devref;
 
-	if (!strncmp(devref, "/dev/nvme", 9))
-	{
-//		DtaDevLinuxNvme *NvmeDrive = new DtaDevLinuxNvme();
-		drive = new DtaDevLinuxNvme();
-	}
-	else if (!strncmp(devref, "/dev/s", 6))
-	{
-//		DtaDevLinuxSata *SataDrive = new DtaDevLinuxSata();
-		drive = new DtaDevLinuxSata();
-	}
-	else 
+    if (!strncmp(devref, "/dev/nvme", 9))
+    {
+//        DtaDevLinuxNvme *NvmeDrive = new DtaDevLinuxNvme();
+        drive = new DtaDevLinuxNvme();
+    }
+    else if (!strncmp(devref, "/dev/s", 6))
+    {
+//        DtaDevLinuxSata *SataDrive = new DtaDevLinuxSata();
+        drive = new DtaDevLinuxSata();
+    }
+    else 
         {
-		LOG(E) << "DtaDevOS::init ERROR - unknown drive type";
+        LOG(E) << "DtaDevOS::init ERROR - unknown drive type";
                 isOpen = FALSE;
                 return;
         }
 
-	if (drive->init(devref))
-	{
-		isOpen = TRUE;
-		drive->identify(disk_info);
-		if (disk_info.devType != DEVICE_TYPE_OTHER)
-			discovery0();
-	}
-	else
-		isOpen = FALSE;
+    if (drive->init(devref))
+    {
+        isOpen = TRUE;
+        drive->identify(disk_info);
+        if (disk_info.devType != DEVICE_TYPE_OTHER)
+            discovery0();
+    }
+    else
+        isOpen = FALSE;
 
-	return;
+    return;
 }
 
 uint8_t DtaDevOS::sendCmd(ATACOMMAND cmd, uint8_t protocol, uint16_t comID,
-	void * buffer, uint32_t bufferlen)
+    void * buffer, uint32_t bufferlen)
 {
-	if (!isOpen) return 0xfe; //disk open failed so this will too
+    if (!isOpen) return 0xfe; //disk open failed so this will too
 
-	if (NULL == drive)
-	{
-		LOG(E) << "DtaDevOS::sendCmd ERROR - unknown drive type";
-		return 0xff;
-	}
+    if (NULL == drive)
+    {
+        LOG(E) << "DtaDevOS::sendCmd ERROR - unknown drive type";
+        return 0xff;
+    }
 
-	return drive->sendCmd(cmd, protocol, comID, buffer, bufferlen);
+    return drive->sendCmd(cmd, protocol, comID, buffer, bufferlen);
 }
 
 void DtaDevOS::identify(OPAL_DiskInfo& disk_info)
 {
-	if (!isOpen) return; //disk open failed so this will too
-	if (NULL == drive)
-	{
-		LOG(E) << "DtaDevOS::identify ERROR - unknown disk type";
-		return;
-	}
+    if (!isOpen) return; //disk open failed so this will too
+    if (NULL == drive)
+    {
+        LOG(E) << "DtaDevOS::identify ERROR - unknown disk type";
+        return;
+    }
 
-	drive->identify(disk_info);
+    drive->identify(disk_info);
 }
 
 void DtaDevOS::osmsSleep(uint32_t ms)
 {
-	usleep(ms * 1000); //convert to microseconds
+    usleep(ms * 1000); //convert to microseconds
     return;
 }
 int  DtaDevOS::diskScan()
@@ -151,24 +151,24 @@ int  DtaDevOS::diskScan()
                 snprintf(devname,23,"/dev/%s",devices[i].c_str());
                 printf("%-10s", devname);
                 d = new DtaDevGeneric(devname);
-		if (d->isAnySSC())
+        if (d->isAnySSC())
                     printf(" %s%s%s ", (d->isOpal1() ? "1" : " "),
-			(d->isOpal2() ? "2" : " "), (d->isEprise() ? "E" : " "));
-		else
+            (d->isOpal2() ? "2" : " "), (d->isEprise() ? "E" : " "));
+        else
                     printf("%s", " No  ");
                 
                 printf("%s %s\n",d->getModelNum(),d->getFirmwareRev());
                 delete d;
           }
-	printf("No more disks present ending scan\n");
+    printf("No more disks present ending scan\n");
         LOG(D1) << "Exiting DtaDevOS::scanDisk ";
-	return 0;
+    return 0;
 }
 
 /** Close the device reference so this object can be delete. */
 DtaDevOS::~DtaDevOS()
 {
     LOG(D1) << "Destroying DtaDevOS";
-	if (NULL != drive)
-		delete drive;
+    if (NULL != drive)
+        delete drive;
 }

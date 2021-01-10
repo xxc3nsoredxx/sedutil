@@ -19,31 +19,31 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 * C:E********************************************************************** */
 
 #ifndef _DTAOPTIONS_H
-#define	_DTAOPTIONS_H
+#define    _DTAOPTIONS_H
 
 /** Output modes */
 typedef enum _sedutiloutput {
-	sedutilNormal,
-	sedutilReadable,
-	sedutilJSON
+    sedutilNormal,
+    sedutilReadable,
+    sedutilJSON
 } sedutiloutput;
 
 /** Structure representing the command line issued to the program */
 typedef struct _DTA_OPTIONS {
     uint8_t password;   /**< password supplied */
-	uint8_t userid;   /**< userid supplied */
-	uint8_t newpassword;   /**< new password for password change */
-	uint8_t pbafile;   /**< file name for loadPBAimage command */
+    uint8_t userid;   /**< userid supplied */
+    uint8_t newpassword;   /**< new password for password change */
+    uint8_t pbafile;   /**< file name for loadPBAimage command */
     uint8_t device;   /**< device name  */
     uint8_t action;   /**< option requested */
-	uint8_t mbrstate;   /**< mbrstate for set mbr commands */
-	uint8_t lockingrange;  /**< locking range to be manipulated */
-	uint8_t lockingstate;  /**< locking state to set a lockingrange to */
-	uint8_t lrstart;		/** the starting block of a lockingrange */
-	uint8_t lrlength;		/** the length in blocks of a lockingrange */
+    uint8_t mbrstate;   /**< mbrstate for set mbr commands */
+    uint8_t lockingrange;  /**< locking range to be manipulated */
+    uint8_t lockingstate;  /**< locking state to set a lockingrange to */
+    uint8_t lrstart;        /** the starting block of a lockingrange */
+    uint8_t lrlength;        /** the length in blocks of a lockingrange */
 
-	bool no_hash_passwords; /** global parameter, disables hashing of passwords */
-	sedutiloutput output_format;
+    bool no_hash_passwords; /** global parameter, disables hashing of passwords */
+    sedutiloutput output_format;
 } DTA_OPTIONS;
 /** Print a usage message */
 void usage();
@@ -55,77 +55,77 @@ void usage();
 uint8_t DtaOptions(int argc, char * argv[], DTA_OPTIONS * opts);
 /** Command line options implemented in sedutil */
 typedef enum _sedutiloption {
-	deadbeef,    // 0 should indicate no action specified
-	initialSetup,
-	setSIDPassword,
-	setup_SUM,
-	setAdmin1Pwd,
-	setPassword,
-	setPassword_SUM,
-	loadPBAimage,
-	setLockingRange,
-	revertTPer,
-	revertNoErase,
-	setLockingRange_SUM,
-	revertLockingSP,
-	PSIDrevert,
-	PSIDrevertAdminSP,
-	yesIreallywanttoERASEALLmydatausingthePSID,
-	enableLockingRange,
-	disableLockingRange,
-	readonlyLockingRange,
-	setupLockingRange,
-	setupLockingRange_SUM,
-	listLockingRanges,
-	listLockingRange,
+    deadbeef,    // 0 should indicate no action specified
+    initialSetup,
+    setSIDPassword,
+    setup_SUM,
+    setAdmin1Pwd,
+    setPassword,
+    setPassword_SUM,
+    loadPBAimage,
+    setLockingRange,
+    revertTPer,
+    revertNoErase,
+    setLockingRange_SUM,
+    revertLockingSP,
+    PSIDrevert,
+    PSIDrevertAdminSP,
+    yesIreallywanttoERASEALLmydatausingthePSID,
+    enableLockingRange,
+    disableLockingRange,
+    readonlyLockingRange,
+    setupLockingRange,
+    setupLockingRange_SUM,
+    listLockingRanges,
+    listLockingRange,
     rekeyLockingRange,
     setBandsEnabled,
     setBandEnabled,
-	setMBREnable,
-	setMBRDone,
-	enableuser,
-	activateLockingSP,
-	activateLockingSP_SUM,
-	eraseLockingRange_SUM,
-	query,
-	scan,
-	isValidSED,
+    setMBREnable,
+    setMBRDone,
+    enableuser,
+    activateLockingSP,
+    activateLockingSP_SUM,
+    eraseLockingRange_SUM,
+    query,
+    scan,
+    isValidSED,
     eraseLockingRange,
-	takeOwnership,
-	validatePBKDF2,
-	objDump,
+    takeOwnership,
+    validatePBKDF2,
+    objDump,
     printDefaultPassword,
-	rawCmd,
+    rawCmd,
 
 } sedutiloption;
 /** verify the number of arguments passed */
 #define CHECKARGS(x) \
 if((x+baseOptions) != argc) { \
-	LOG(E) << "Incorrect number of paramaters for " << argv[i] << " command"; \
-	return 100; \
-	}
+    LOG(E) << "Incorrect number of paramaters for " << argv[i] << " command"; \
+    return 100; \
+    }
 /** Test the command input for a recognized argument */
 #define BEGIN_OPTION(cmdstring,args) \
-				else if (!(strcasecmp(#cmdstring, &argv[i][2]))) { \
-				CHECKARGS(args) \
-				opts->action = sedutiloption::cmdstring; \
+                else if (!(strcasecmp(#cmdstring, &argv[i][2]))) { \
+                CHECKARGS(args) \
+                opts->action = sedutiloption::cmdstring; \
 
 /** end of an OPTION */
 #define END_OPTION }
 /** test an argument for a value */
 #define TESTARG(literal,structfield,value) \
-				if (!(strcasecmp(#literal, argv[i + 1]))) \
-					{opts->structfield = value;} else
+                if (!(strcasecmp(#literal, argv[i + 1]))) \
+                    {opts->structfield = value;} else
 /** if all testargs fail then do this */
 #define TESTFAIL(msg) \
-	{ \
-	LOG(E) << msg << " " << argv[i+1]; \
-	return 1;\
-	} \
+    { \
+    LOG(E) << msg << " " << argv[i+1]; \
+    return 1;\
+    } \
 i++;
 
 /** set the argc value for this parameter in the options structure */
 #define OPTION_IS(option_field) \
-				opts->option_field = ++i; 
+                opts->option_field = ++i; 
 
 #endif /* _DTAOPTIONS_H */

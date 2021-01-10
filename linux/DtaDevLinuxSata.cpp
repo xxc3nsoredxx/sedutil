@@ -65,7 +65,7 @@ isSAS = 0;
 bool DtaDevLinuxSata::init(const char * devref)
 {
     LOG(D1) << "Creating DtaDevLinuxSata::DtaDev() " << devref;
-	bool isOpen = FALSE;
+    bool isOpen = FALSE;
 
     if(access("/dev/sda", R_OK | W_OK)) {
         LOG(E) << "You do not have permission to access the raw disk in write mode";
@@ -84,7 +84,7 @@ bool DtaDevLinuxSata::init(const char * devref)
     else {
         isOpen = TRUE;
     }
-	return isOpen;
+    return isOpen;
 }
 
 /** Send an ioctl to the device using pass through. */
@@ -259,7 +259,7 @@ void DtaDevLinuxSata::identify(OPAL_DiskInfo& disk_info)
     ifstream kopts;
     kopts.open("/sys/module/libata/parameters/allow_tpm", ios::in);
     if (!kopts) {
-	LOG(W) << "Unable to verify Kernel flag libata.allow_tpm ";
+    LOG(W) << "Unable to verify Kernel flag libata.allow_tpm ";
     } 
     else {
         if('1' !=  kopts.get()) {

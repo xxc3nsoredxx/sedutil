@@ -62,7 +62,7 @@ bool DtaDevLinuxNvme::init(const char * devref)
     else {
         isOpen = TRUE;
     }
-	return isOpen;
+    return isOpen;
 }
 
 /** Send an ioctl to the device using nvme admin commands. */
@@ -70,77 +70,77 @@ uint8_t DtaDevLinuxNvme::sendCmd(ATACOMMAND cmd, uint8_t protocol, uint16_t comI
                          void * buffer, uint32_t bufferlen)
 {
     struct nvme_admin_cmd nvme_cmd;
-	int err;
+    int err;
 
     LOG(D1) << "Entering DtaDevLinuxNvme::sendCmd";
 
-	memset(&nvme_cmd, 0, sizeof(nvme_cmd));
+    memset(&nvme_cmd, 0, sizeof(nvme_cmd));
 
-	if (IF_RECV == cmd) {
-		LOG(D3) << "Security Receive Command";
-		nvme_cmd.opcode = NVME_SECURITY_RECV;
-		nvme_cmd.cdw10 = protocol << 24 | comID << 8;
-		nvme_cmd.cdw11 = bufferlen;
-		nvme_cmd.data_len = bufferlen;
-		nvme_cmd.addr = (__u64)buffer;
-	}
-	else {
-		LOG(D3) << "Security Send Command";
-		nvme_cmd.opcode = NVME_SECURITY_SEND;
-		nvme_cmd.cdw10 = protocol << 24 | comID << 8;
-		nvme_cmd.cdw11 = bufferlen;
-		nvme_cmd.data_len = bufferlen;
-		nvme_cmd.addr = (__u64)buffer;
-	}
+    if (IF_RECV == cmd) {
+        LOG(D3) << "Security Receive Command";
+        nvme_cmd.opcode = NVME_SECURITY_RECV;
+        nvme_cmd.cdw10 = protocol << 24 | comID << 8;
+        nvme_cmd.cdw11 = bufferlen;
+        nvme_cmd.data_len = bufferlen;
+        nvme_cmd.addr = (__u64)buffer;
+    }
+    else {
+        LOG(D3) << "Security Send Command";
+        nvme_cmd.opcode = NVME_SECURITY_SEND;
+        nvme_cmd.cdw10 = protocol << 24 | comID << 8;
+        nvme_cmd.cdw11 = bufferlen;
+        nvme_cmd.data_len = bufferlen;
+        nvme_cmd.addr = (__u64)buffer;
+    }
 
-	err = ioctl(fd, NVME_IOCTL_ADMIN_CMD, &nvme_cmd);
-	if (err < 0)
-		return errno;
-	else if (err != 0) {
-		fprintf(stderr, "NVME Security Command Error:%d\n", err);
-		IFLOG(D4) DtaHexDump(&nvme_cmd, sizeof(nvme_cmd));
-	}
-	else
-		LOG(D3) << "NVME Security Command Success:" << nvme_cmd.result;
-	//LOG(D4) << "NVMe command:";
-	//IFLOG(D4) DtaHexDump(&nvme_cmd, sizeof(nvme_cmd));
-	//LOG(D4) << "NVMe buffer @ " << buffer;
-	//IFLOG(D4) DtaHexDump(buffer, bufferlen);
-	return err;
+    err = ioctl(fd, NVME_IOCTL_ADMIN_CMD, &nvme_cmd);
+    if (err < 0)
+        return errno;
+    else if (err != 0) {
+        fprintf(stderr, "NVME Security Command Error:%d\n", err);
+        IFLOG(D4) DtaHexDump(&nvme_cmd, sizeof(nvme_cmd));
+    }
+    else
+        LOG(D3) << "NVME Security Command Success:" << nvme_cmd.result;
+    //LOG(D4) << "NVMe command:";
+    //IFLOG(D4) DtaHexDump(&nvme_cmd, sizeof(nvme_cmd));
+    //LOG(D4) << "NVMe buffer @ " << buffer;
+    //IFLOG(D4) DtaHexDump(buffer, bufferlen);
+    return err;
 }
 
 void DtaDevLinuxNvme::identify(OPAL_DiskInfo& disk_info)
 {
-	LOG(D4) << "Entering DtaDevLinuxNvme::identify()";
+    LOG(D4) << "Entering DtaDevLinuxNvme::identify()";
 
-	struct nvme_admin_cmd cmd;
+    struct nvme_admin_cmd cmd;
         uint8_t ctrl[4096];
-	int err;
+    int err;
 
-	memset(&cmd, 0, sizeof(cmd));
-	cmd.opcode = NVME_IDENTIFY;
-	cmd.nsid = 0;
-	cmd.addr = (unsigned long)&ctrl;
-	cmd.data_len = 4096;
-	cmd.cdw10 = 1;
-	err = ioctl(fd, NVME_IOCTL_ADMIN_CMD, &cmd);
+    memset(&cmd, 0, sizeof(cmd));
+    cmd.opcode = NVME_IDENTIFY;
+    cmd.nsid = 0;
+    cmd.addr = (unsigned long)&ctrl;
+    cmd.data_len = 4096;
+    cmd.cdw10 = 1;
+    err = ioctl(fd, NVME_IOCTL_ADMIN_CMD, &cmd);
 
-	if (err) {
-		LOG(E) << "Identify error. NVMe status " << err;
-		disk_info.devType = DEVICE_TYPE_OTHER;
-		IFLOG(D4) DtaHexDump(&cmd, sizeof(cmd));
-		IFLOG(D4) DtaHexDump(&ctrl, sizeof(ctrl));
-		return;
-	}
+    if (err) {
+        LOG(E) << "Identify error. NVMe status " << err;
+        disk_info.devType = DEVICE_TYPE_OTHER;
+        IFLOG(D4) DtaHexDump(&cmd, sizeof(cmd));
+        IFLOG(D4) DtaHexDump(&ctrl, sizeof(ctrl));
+        return;
+    }
 
-	disk_info.devType = DEVICE_TYPE_NVME;
-	uint8_t *results = ctrl;
-	results += 4;
-	memcpy(disk_info.serialNum, results, sizeof(disk_info.serialNum));
-	results += sizeof(disk_info.serialNum);
-	memcpy(disk_info.modelNum, results, sizeof(disk_info.modelNum));
-	results += sizeof(disk_info.modelNum);
-	memcpy(disk_info.firmwareRev, results, sizeof(disk_info.firmwareRev));
+    disk_info.devType = DEVICE_TYPE_NVME;
+    uint8_t *results = ctrl;
+    results += 4;
+    memcpy(disk_info.serialNum, results, sizeof(disk_info.serialNum));
+    results += sizeof(disk_info.serialNum);
+    memcpy(disk_info.modelNum, results, sizeof(disk_info.modelNum));
+    results += sizeof(disk_info.modelNum);
+    memcpy(disk_info.firmwareRev, results, sizeof(disk_info.firmwareRev));
 
 
     return;

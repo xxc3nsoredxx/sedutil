@@ -46,13 +46,13 @@ public:
      * @param SignAuthority the Signing authority (in a simple session this is the user)
      *  */    
 #ifdef MULTISTART
-	uint8_t unistart(OPAL_UID SP, char * HostChallenge, vector<uint8_t> SignAuthority);
+    uint8_t unistart(OPAL_UID SP, char * HostChallenge, vector<uint8_t> SignAuthority);
 #endif
-	/** Start an authenticated session (OPAL only)
-	* @param SP the securitly provider to start the session with
-	* @param HostChallenge the password to start the session
-	* @param SignAuthority the Signing authority (in a simple session this is the user)
-	*/
+    /** Start an authenticated session (OPAL only)
+    * @param SP the securitly provider to start the session with
+    * @param HostChallenge the password to start the session
+    * @param SignAuthority the Signing authority (in a simple session this is the user)
+    */
     uint8_t start(OPAL_UID SP, char * HostChallenge, OPAL_UID SignAuthority);
     /** Start an authenticated session (OPAL only) 
      * @param SP the securitly provider to start the session with
@@ -79,8 +79,8 @@ public:
      * to suppress the normal error checking 
      */
     void expectAbort();
-	/** return the authorization the session has started under */
-	uint8_t authuser();
+    /** return the authorization the session has started under */
+    uint8_t authuser();
     /** send a command to the device in this session 
      * @param cmd  The DtaCommand object 
      * @param response The MesdResponse object 
@@ -98,9 +98,9 @@ private:
     uint32_t TSN = 0;   /**< TPer session number */
     uint32_t HSN = 0;  /**< Host session number */
     uint8_t willAbort = 0;   /**< Command is expected to abort */
-	uint8_t hashPwd = 1;  /**< hash the password when authenticating */
+    uint8_t hashPwd = 1;  /**< hash the password when authenticating */
     uint8_t SecurityProtocol = 0x01;  /**< The seurity protocol to be used */
-	uint8_t lastRC;  /**< last return code */
-	uint8_t sessionauth; /** authid for multistart */
+    uint8_t lastRC;  /**< last return code */
+    uint8_t sessionauth; /** authid for multistart */
 };
 

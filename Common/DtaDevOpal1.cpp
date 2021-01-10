@@ -25,8 +25,8 @@ using namespace std;
 
 DtaDevOpal1::DtaDevOpal1 (const char * devref)
 {
-	DtaDevOpal::init(devref);
-	assert(isOpal1());
+    DtaDevOpal::init(devref);
+    assert(isOpal1());
 }
 
 DtaDevOpal1::~DtaDevOpal1()

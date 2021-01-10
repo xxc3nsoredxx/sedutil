@@ -76,7 +76,7 @@ template <typename T>
 std::ostringstream& Log<T>::Get(TLogLevel level) {
     os << "- " << NowTime();
     os << " " << ToString(level) << ": ";
-    //	os << std::string(level > D ? level - D : 0, '\t');
+    //    os << std::string(level > D ? level - D : 0, '\t');
     return os;
 }
 
@@ -168,23 +168,23 @@ RLog<T>::RLog() {
 
 template <typename T>
 std::ostringstream& RLog<T>::Get(TLogLevel level, sedutiloutput output_format) {
-	curlevel = level;
-	outputformat = output_format;
-	if (output_format == sedutilNormal) {
-		os << "- " << NowTime();
-		os << " " << ToString(level) << ": ";
-	}
-    //	os << std::string(level > D ? level - D : 0, '\t');
+    curlevel = level;
+    outputformat = output_format;
+    if (output_format == sedutilNormal) {
+        os << "- " << NowTime();
+        os << " " << ToString(level) << ": ";
+    }
+    //    os << std::string(level > D ? level - D : 0, '\t');
     return os;
 }
 
 template <typename T>
 RLog<T>::~RLog() {
     os << std::endl;
-	if ((curlevel == I) && (outputformat != sedutilNormal))
-		T::Output(os.str());
-	else
-		T::OutputErr(os.str());
+    if ((curlevel == I) && (outputformat != sedutilNormal))
+        T::Output(os.str());
+    else
+        T::OutputErr(os.str());
 }
 
 template <typename T>
@@ -303,23 +303,23 @@ class FILELOG_DECLSPEC RCLog : public RLog<Output2FILE> {
 
 #if 0
 #define LOG(level) \
-	if (level > CLOG_MAX_LEVEL) ;\
-	else if (level > CLog::Level() || !Output2FILE::Stream()) ; \
-	else CLog().Get(level)
+    if (level > CLOG_MAX_LEVEL) ;\
+    else if (level > CLog::Level() || !Output2FILE::Stream()) ; \
+    else CLog().Get(level)
 #endif
 
 #define IFLOG(level) \
-	if (level > CLOG_MAX_LEVEL) ;\
-	else if (level > CLog::Level() || !Output2FILE::Stream()) ; \
-	else
+    if (level > CLOG_MAX_LEVEL) ;\
+    else if (level > CLog::Level() || !Output2FILE::Stream()) ; \
+    else
 
 extern sedutiloutput outputFormat;
 
-#define	LOGX(level) \
-	if (level > CLOG_MAX_LEVEL) ;\
-	else if (level > RCLog::Level() || !Output2FILE::Stream()) ; \
-	else RCLog().Get(level, outputFormat)
-#define	LOG LOGX
+#define    LOGX(level) \
+    if (level > CLOG_MAX_LEVEL) ;\
+    else if (level > RCLog::Level() || !Output2FILE::Stream()) ; \
+    else RCLog().Get(level, outputFormat)
+#define    LOG LOGX
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__)
 

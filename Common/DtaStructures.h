@@ -21,7 +21,7 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 #pragma pack(push)
 #pragma pack(1)
 
-#define FC_TPER		  0x0001
+#define FC_TPER          0x0001
 #define FC_LOCKING    0x0002
 #define FC_GEOMETRY   0x0003
 #define FC_ENTERPRISE 0x0100
@@ -152,12 +152,12 @@ typedef struct _Discovery0EnterpriseSSC {
 /** Opal V1 feature 
  */
 typedef struct _Discovery0OpalV100 {
-	uint16_t featureCode; /* 0x0200 */
-	uint8_t reserved_v : 4;
-	uint8_t version : 4;
-	uint8_t length;
-	uint16_t baseComID;
-	uint16_t numberComIDs;
+    uint16_t featureCode; /* 0x0200 */
+    uint8_t reserved_v : 4;
+    uint8_t version : 4;
+    uint8_t length;
+    uint16_t baseComID;
+    uint16_t numberComIDs;
 } Discovery0OpalV100;
 /** Single User Mode feature 
  */
@@ -227,7 +227,7 @@ union Discovery0Features {
     Discovery0EnterpriseSSC enterpriseSSC;
     Discovery0SingleUserMode singleUserMode;
     Discovery0OPALV200 opalv200;
-	Discovery0OpalV100 opalv100;
+    Discovery0OpalV100 opalv100;
     Discovery0DatastoreTable datastore;
 };
 
@@ -275,15 +275,15 @@ typedef enum _DTA_DEVICE_TYPE {
     DEVICE_TYPE_ATA,
     DEVICE_TYPE_SAS,
     DEVICE_TYPE_NVME,
-	DEVICE_TYPE_USB,
+    DEVICE_TYPE_USB,
     DEVICE_TYPE_OTHER,
 } DTA_DEVICE_TYPE;
 
 /** structure to store Disk information. */
 typedef struct _OPAL_DiskInfo {
     // parsed the Function block?
-	uint8_t Unknown;
-	uint8_t VendorSpecific;
+    uint8_t Unknown;
+    uint8_t VendorSpecific;
     uint8_t TPer : 1;
     uint8_t Locking : 1;
     uint8_t Geometry : 1;
@@ -291,9 +291,9 @@ typedef struct _OPAL_DiskInfo {
     uint8_t SingleUser : 1;
     uint8_t DataStore : 1;
     uint8_t OPAL20 : 1;
-	uint8_t OPAL10 : 1;
-	uint8_t Properties : 1;
-	uint8_t ANY_OPAL_SSC : 1;
+    uint8_t OPAL10 : 1;
+    uint8_t Properties : 1;
+    uint8_t ANY_OPAL_SSC : 1;
     // values ONLY VALID IF FUNCTION ABOVE IS TRUE!!!!!
     uint8_t TPer_ACKNACK : 1;
     uint8_t TPer_async : 1;
@@ -321,8 +321,8 @@ typedef struct _OPAL_DiskInfo {
     uint16_t DataStore_maxTables;
     uint32_t DataStore_maxTableSize;
     uint32_t DataStore_alignment;
-	uint16_t OPAL10_basecomID;
-	uint16_t OPAL10_numcomIDs;
+    uint16_t OPAL10_basecomID;
+    uint16_t OPAL10_numcomIDs;
     uint16_t OPAL20_basecomID;
     uint16_t OPAL20_numcomIDs;
     uint8_t OPAL20_initialPIN;
@@ -333,11 +333,11 @@ typedef struct _OPAL_DiskInfo {
     // IDENTIFY information
     DTA_DEVICE_TYPE devType;
     uint8_t serialNum[20];
-	uint8_t null0;  // make sn a cstring
+    uint8_t null0;  // make sn a cstring
     uint8_t firmwareRev[8];
-	uint8_t null1;  // make firmware rev a cstring
+    uint8_t null1;  // make firmware rev a cstring
     uint8_t modelNum[40];
-	uint8_t null2;  // make model number a cstring
+    uint8_t null2;  // make model number a cstring
 } OPAL_DiskInfo;
 /** Response returned by ATA Identify */
 typedef struct _IDENTIFY_RESPONSE {

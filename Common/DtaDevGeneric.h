@@ -41,7 +41,7 @@ public:
      *  */
     DtaDevGeneric(const char * devref);
     /** Default constructor */
-	~DtaDevGeneric();
+    ~DtaDevGeneric();
         /** OS specific initialization.
          * This function should perform the necessary authority and environment checking
          * to allow proper functioning of the program, open the device, perform an ATA
@@ -50,14 +50,14 @@ public:
          * the disk_info structure
          * @param devref character representation of the device is standard OS lexicon
          */
-	 void init(const char * devref) ;
-	/* sedutil.cpp */
+     void init(const char * devref) ;
+    /* sedutil.cpp */
          /** User command to prepare the device for management by sedutil. 
          * Specific to the SSC that the device supports
          * @param password the password that is to be assigned to the SSC master entities 
          */
-	 uint8_t initialSetup(char * password) ;
-	/** User command to prepare the drive for Single User Mode and rekey a SUM locking range.
+     uint8_t initialSetup(char * password) ;
+    /** User command to prepare the drive for Single User Mode and rekey a SUM locking range.
          * @param lockingrange locking range number to enable
          * @param start LBA to start locking range
          * @param length length (in blocks) for locking range
@@ -72,102 +72,102 @@ public:
          * @param hasholdpwd  is the old password to be hashed before being added to the bytestream
          * @param hashnewpwd  is the new password to be hashed before being added to the bytestream
          */ 
-	 uint8_t setSIDPassword(char * oldpassword, char * newpassword,
-		uint8_t hasholdpwd = 1, uint8_t hashnewpwd = 1) ;
+     uint8_t setSIDPassword(char * oldpassword, char * newpassword,
+        uint8_t hasholdpwd = 1, uint8_t hashnewpwd = 1) ;
          /** Set the password of a locking SP user.
           * @param password  current password
          * @param userid the userid whose password is to be changed 
          * @param newpassword  value password is to be changed to
          */
-	 uint8_t setPassword(char * password, char * userid, char * newpassword) ;
-	 /** Set the password of a locking SP user in Single User Mode.
+     uint8_t setPassword(char * password, char * userid, char * newpassword) ;
+     /** Set the password of a locking SP user in Single User Mode.
          * @param password  current user password
          * @param userid the userid whose password is to be changed
          * @param newpassword  value password is to be changed to
          */
-	 uint8_t setNewPassword_SUM(char * password, char * userid, char * newpassword) ;
+     uint8_t setNewPassword_SUM(char * password, char * userid, char * newpassword) ;
           /** Loads a disk image file to the shadow MBR table.
          * @param password the password for the administrative authority with access to the table
          * @param filename the filename of the disk image
          */
-	 uint8_t loadPBA(char * password, char * filename) ;
+     uint8_t loadPBA(char * password, char * filename) ;
          /** Change the locking state of a locking range 
          * @param lockingrange The number of the locking range (0 = global)
          * @param lockingstate  the locking state to set
          * @param Admin1Password password of administrative authority for locking range 
          */
-	 uint8_t setLockingRange(uint8_t lockingrange, uint8_t lockingstate,
-		char * Admin1Password) ;
-	 /** Change the locking state of a locking range in Single User Mode
+     uint8_t setLockingRange(uint8_t lockingrange, uint8_t lockingstate,
+        char * Admin1Password) ;
+     /** Change the locking state of a locking range in Single User Mode
          * @param lockingrange The number of the locking range (0 = global)
          * @param lockingstate  the locking state to set
          * @param password password of user authority for the locking range
          */
-	 uint8_t setLockingRange_SUM(uint8_t lockingrange, uint8_t lockingstate,
-		 char * password);
+     uint8_t setLockingRange_SUM(uint8_t lockingrange, uint8_t lockingstate,
+         char * password);
          /** Change the active state of a locking range 
          * @param lockingrange The number of the locking range (0 = global)
          * @param enabled  enable (true) or disable (false) the lockingrange
          * @param password password of administrative authority for locking range 
          */
-	 uint8_t configureLockingRange(uint8_t lockingrange, uint8_t enabled,
-		char * password) ;
-	 /** Setup a locking range.  Initialize a locking range, set it's start
-	 *  LBA and length, initialize it as unlocked with locking disabled.
-	 *  @paran lockingrange The Locking Range to be setup
-	 *  @param start  Starting LBA
-	 *  @param length Number of blocks
-	 *  @paran password Password of administrator
-	 */
-	 uint8_t setupLockingRange(uint8_t lockingrange, uint64_t start,
-		 uint64_t length, char * password);
-	 /** Setup a locking range in Single User Mode.  Initialize a locking range,
-	 *  set it's start LBA and length, initialize it as unlocked with locking enabled.
+     uint8_t configureLockingRange(uint8_t lockingrange, uint8_t enabled,
+        char * password) ;
+     /** Setup a locking range.  Initialize a locking range, set it's start
+     *  LBA and length, initialize it as unlocked with locking disabled.
+     *  @paran lockingrange The Locking Range to be setup
+     *  @param start  Starting LBA
+     *  @param length Number of blocks
+     *  @paran password Password of administrator
+     */
+     uint8_t setupLockingRange(uint8_t lockingrange, uint64_t start,
+         uint64_t length, char * password);
+     /** Setup a locking range in Single User Mode.  Initialize a locking range,
+     *  set it's start LBA and length, initialize it as unlocked with locking enabled.
          *  @paran lockingrange The Locking Range to be setup
          *  @param start  Starting LBA
          *  @param length Number of blocks
          *  @paran password Password of administrator
          */
-	 uint8_t setupLockingRange_SUM(uint8_t lockingrange, uint64_t start,
-		 uint64_t length, char * password);
+     uint8_t setupLockingRange_SUM(uint8_t lockingrange, uint64_t start,
+         uint64_t length, char * password);
          /** Primitive to set the MBRDone flag.
          * @param state 0 or 1  
          * @param Admin1Password Locking SP authority with access to flag
          */
-	 /** List status of locking ranges.
-	 *  @param password Password of administrator
-	 */
-	 uint8_t listLockingRanges(char * password, int16_t rangeid);
-	 /** Generate a new encryption key for a locking range.
-	 * @param lockingrange locking range number
-	 * @param password password of the locking administrative authority
-	 */
-	 uint8_t rekeyLockingRange(uint8_t lockingrange, char * password);
-	 /** Enable bands using MSID.
-	 * @param lockingrange locking range number
-	 */
-	 uint8_t setBandsEnabled(int16_t rangeid, char * password);
-	 uint8_t setMBRDone(uint8_t state, char * Admin1Password) ;
+     /** List status of locking ranges.
+     *  @param password Password of administrator
+     */
+     uint8_t listLockingRanges(char * password, int16_t rangeid);
+     /** Generate a new encryption key for a locking range.
+     * @param lockingrange locking range number
+     * @param password password of the locking administrative authority
+     */
+     uint8_t rekeyLockingRange(uint8_t lockingrange, char * password);
+     /** Enable bands using MSID.
+     * @param lockingrange locking range number
+     */
+     uint8_t setBandsEnabled(int16_t rangeid, char * password);
+     uint8_t setMBRDone(uint8_t state, char * Admin1Password) ;
          /** Primitive to set the MBREnable flag.
          * @param state 0 or 1  
          * @param Admin1Password Locking SP authority with access to flag
          */
-	 uint8_t setMBREnable(uint8_t state, char * Admin1Password) ;
+     uint8_t setMBREnable(uint8_t state, char * Admin1Password) ;
          /** enable a locking sp user.  
          * @param password password of locking sp administrative authority
          * @param userid  the user to be enabled
          */
-	 uint8_t enableUser(char * password, char * userid, OPAL_TOKEN status = OPAL_TOKEN::OPAL_TRUE) ;
+     uint8_t enableUser(char * password, char * userid, OPAL_TOKEN status = OPAL_TOKEN::OPAL_TRUE) ;
           /** Enable locking on the device
          * @param password password of the admin sp SID authority
          */
-	 uint8_t activateLockingSP(char * password) ;
-	/** Enable locking on the device in Single User Mode
-	 * @param lockingrange locking range to activate in SUM
-	 * @param password password of the admin sp SID authority
-	 */
-	 uint8_t activateLockingSP_SUM(uint8_t lockingrange, char * password);
-	/** Erase a Single User Mode locking range by calling the drive's erase method
+     uint8_t activateLockingSP(char * password) ;
+    /** Enable locking on the device in Single User Mode
+     * @param lockingrange locking range to activate in SUM
+     * @param password password of the admin sp SID authority
+     */
+     uint8_t activateLockingSP_SUM(uint8_t lockingrange, char * password);
+    /** Erase a Single User Mode locking range by calling the drive's erase method
          * @param lockingrange The Locking Range to erase
          * @param password The administrator password for the drive
          */
@@ -175,32 +175,32 @@ public:
         /** Change the SID password from it's MSID default 
          * @param newpassword  new password for SID and locking SP admins
          */ 
-	 uint8_t takeOwnership(char * newpassword) ;
+     uint8_t takeOwnership(char * newpassword) ;
          /** Reset the Locking SP to its factory default condition
          * ERASES ALL DATA!
          * @param password of Administrative user
          * @param keep true false for noerase function NOT WWORKING
          */
-	 uint8_t revertLockingSP(char * password, uint8_t keep ) ;
+     uint8_t revertLockingSP(char * password, uint8_t keep ) ;
          /** Reset the TPER to its factory condition   
          * ERASES ALL DATA!
          * @param password password of authority (SID or PSID)
          * @param PSID true or false is the authority the PSID
          *   */
-	 uint8_t revertTPer(char * password, uint8_t PSID, uint8_t AdminSP ) ;
-	    /** Erase a locking range
-	    * @param lockingrange The number of the locking range (0 = global)
-	    * @param password Password of administrative authority for locking range
-	    */
-	virtual uint8_t eraseLockingRange(uint8_t lockingrange, char * password);
+     uint8_t revertTPer(char * password, uint8_t PSID, uint8_t AdminSP ) ;
+        /** Erase a locking range
+        * @param lockingrange The number of the locking range (0 = global)
+        * @param password Password of administrative authority for locking range
+        */
+    virtual uint8_t eraseLockingRange(uint8_t lockingrange, char * password);
          /** Dumps an object for diagnostic purposes
          * @param sp index into the OPALUID table for the SP the object is in
          * @param auth the authority ti use for the dump
          * @param pass the password for the suthority
          * @param objID the UID of the object to dump
          */ 
-	 uint8_t objDump(char *sp, char * auth, char *pass,
-		char * objID) ;
+     uint8_t objDump(char *sp, char * auth, char *pass,
+        char * objID) ;
          /** Issue any command to the drive for diagnostic purposes
          * @param sp index into the OPALUID table for the SP the object is in
          * @param auth the authority ti use for the dump
@@ -210,18 +210,18 @@ public:
          * @param plist  the parameter list for the command
          * 
          */
-	 uint8_t rawCmd(char *sp, char * auth, char *pass,
-		char *invoker, char *method, char *plist) ;
-	/** Read MSID
-	 */
-	uint8_t printDefaultPassword();
-	/* DtaSession.cpp 	*/
+     uint8_t rawCmd(char *sp, char * auth, char *pass,
+        char *invoker, char *method, char *plist) ;
+    /** Read MSID
+     */
+    uint8_t printDefaultPassword();
+    /* DtaSession.cpp     */
         /** Send a command to the device and wait for the response
          * @param cmd the MswdCommand object containg the command
          * @param response the DtaResonse object containing the response
          * @param protocol The security protocol number to use for the command
          */
-	 uint8_t exec(DtaCommand * cmd, DtaResponse & resp, uint8_t protocol = 1) ;
+     uint8_t exec(DtaCommand * cmd, DtaResponse & resp, uint8_t protocol = 1) ;
          /** return the communications ID to be used for sessions to this device */
-	 uint16_t comID() ;
+     uint16_t comID() ;
 };

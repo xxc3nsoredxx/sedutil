@@ -34,17 +34,17 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 /** iomanip command to return to standard ascii output */
 #define HEXOFF std::dec << std::setw(0) << std::setfill(' ')
 /** Return Codes */
-#define DTAERROR_UNSUPORTED_LOCKING_RANGE	0x81
-#define DTAERROR_OBJECT_CREATE_FAILED		0x82
-#define DTAERROR_INVALID_PARAMETER			0x83
-#define DTAERROR_OPEN_ERR					0x84
-#define DTAERROR_INVALID_LIFECYCLE			0x85
-#define DTAERROR_INVALID_COMMAND			0x86
-#define DTAERROR_AUTH_FAILED 				0x87
-#define DTAERROR_COMMAND_ERROR				0x88
-#define DTAERROR_NO_METHOD_STATUS			0x89
-#define DTAERROR_NO_LOCKING_INFO			0x8a
+#define DTAERROR_UNSUPORTED_LOCKING_RANGE    0x81
+#define DTAERROR_OBJECT_CREATE_FAILED        0x82
+#define DTAERROR_INVALID_PARAMETER            0x83
+#define DTAERROR_OPEN_ERR                    0x84
+#define DTAERROR_INVALID_LIFECYCLE            0x85
+#define DTAERROR_INVALID_COMMAND            0x86
+#define DTAERROR_AUTH_FAILED                 0x87
+#define DTAERROR_COMMAND_ERROR                0x88
+#define DTAERROR_NO_METHOD_STATUS            0x89
+#define DTAERROR_NO_LOCKING_INFO            0x8a
 /** Locking Range Configurations */
-#define DTA_DISABLELOCKING		0x00
-#define DTA_READLOCKINGENABLED		0x01
-#define DTA_WRITELOCKINGENABLED	0x02
+#define DTA_DISABLELOCKING        0x00
+#define DTA_READLOCKINGENABLED        0x01
+#define DTA_WRITELOCKINGENABLED    0x02
