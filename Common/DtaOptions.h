@@ -19,7 +19,7 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 * C:E********************************************************************** */
 
 #ifndef _DTAOPTIONS_H
-#define    _DTAOPTIONS_H
+#define _DTAOPTIONS_H
 
 /** Output modes */
 typedef enum _sedutiloutput {
@@ -30,17 +30,17 @@ typedef enum _sedutiloutput {
 
 /** Structure representing the command line issued to the program */
 typedef struct _DTA_OPTIONS {
-    uint8_t password;   /**< password supplied */
-    uint8_t userid;   /**< userid supplied */
-    uint8_t newpassword;   /**< new password for password change */
-    uint8_t pbafile;   /**< file name for loadPBAimage command */
-    uint8_t device;   /**< device name  */
-    uint8_t action;   /**< option requested */
-    uint8_t mbrstate;   /**< mbrstate for set mbr commands */
-    uint8_t lockingrange;  /**< locking range to be manipulated */
-    uint8_t lockingstate;  /**< locking state to set a lockingrange to */
+    uint8_t password;       /**< password supplied */
+    uint8_t userid;         /**< userid supplied */
+    uint8_t newpassword;    /**< new password for password change */
+    uint8_t pbafile;        /**< file name for loadPBAimage command */
+    uint8_t device;         /**< device name  */
+    uint8_t action;         /**< option requested */
+    uint8_t mbrstate;       /**< mbrstate for set mbr commands */
+    uint8_t lockingrange;   /**< locking range to be manipulated */
+    uint8_t lockingstate;   /**< locking state to set a lockingrange to */
     uint8_t lrstart;        /** the starting block of a lockingrange */
-    uint8_t lrlength;        /** the length in blocks of a lockingrange */
+    uint8_t lrlength;       /** the length in blocks of a lockingrange */
 
     bool no_hash_passwords; /** global parameter, disables hashing of passwords */
     sedutiloutput output_format;
@@ -103,7 +103,7 @@ typedef enum _sedutiloption {
 if((x+baseOptions) != argc) { \
     LOG(E) << "Incorrect number of paramaters for " << argv[i] << " command"; \
     return 100; \
-    }
+}
 /** Test the command input for a recognized argument */
 #define BEGIN_OPTION(cmdstring,args) \
                 else if (!(strcasecmp(#cmdstring, &argv[i][2]))) { \
