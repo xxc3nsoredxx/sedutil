@@ -71,11 +71,11 @@ void DtaDevOS::init(const char * devref)
         drive = new DtaDevLinuxSata();
     }
     else 
-        {
+    {
         LOG(E) << "DtaDevOS::init ERROR - unknown drive type";
-                isOpen = FALSE;
-                return;
-        }
+        isOpen = FALSE;
+        return;
+    }
 
     if (drive->init(devref))
     {
@@ -148,20 +148,20 @@ int  DtaDevOS::diskScan()
     std::sort(devices.begin(),devices.end());
     printf("Scanning for Opal compliant disks\n");
     for(uint16_t i = 0; i < devices.size(); i++) {
-                snprintf(devname,23,"/dev/%s",devices[i].c_str());
-                printf("%-10s", devname);
-                d = new DtaDevGeneric(devname);
+        snprintf(devname,23,"/dev/%s",devices[i].c_str());
+        printf("%-10s", devname);
+        d = new DtaDevGeneric(devname);
         if (d->isAnySSC())
-                    printf(" %s%s%s ", (d->isOpal1() ? "1" : " "),
-            (d->isOpal2() ? "2" : " "), (d->isEprise() ? "E" : " "));
+            printf(" %s%s%s ", (d->isOpal1() ? "1" : " "),
+                (d->isOpal2() ? "2" : " "), (d->isEprise() ? "E" : " "));
         else
-                    printf("%s", " No  ");
+            printf("%s", " No  ");
                 
-                printf("%s %s\n",d->getModelNum(),d->getFirmwareRev());
-                delete d;
-          }
+        printf("%s %s\n",d->getModelNum(),d->getFirmwareRev());
+        delete d;
+    }
     printf("No more disks present ending scan\n");
-        LOG(D1) << "Exiting DtaDevOS::scanDisk ";
+    LOG(D1) << "Exiting DtaDevOS::scanDisk ";
     return 0;
 }
 
