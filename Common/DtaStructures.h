@@ -21,20 +21,20 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 #pragma pack(push)
 #pragma pack(1)
 
-#define FC_TPER          0x0001
-#define FC_LOCKING    0x0002
-#define FC_GEOMETRY   0x0003
-#define FC_ENTERPRISE 0x0100
-#define FC_DATASTORE  0x0202
-#define FC_SINGLEUSER 0x0201
-#define FC_OPALV100   0x0200
-#define FC_OPALV200   0x0203
+#define FC_TPER         0x0001
+#define FC_LOCKING      0x0002
+#define FC_GEOMETRY     0x0003
+#define FC_ENTERPRISE   0x0100
+#define FC_DATASTORE    0x0202
+#define FC_SINGLEUSER   0x0201
+#define FC_OPALV100     0x0200
+#define FC_OPALV200     0x0203
 /** The Discovery 0 Header. As defined in
-* Opal SSC Documentation
-*/
+ * Opal SSC Documentation
+ */
 typedef struct _Discovery0Header {
-    uint32_t length; /**< the lenght of the header 48 in 2.00.100*/
-    uint32_t revision; /**< revision of the header 1 in 2.00.100 */
+    uint32_t length;    /**< the lenght of the header 48 in 2.00.100*/
+    uint32_t revision;  /**< revision of the header 1 in 2.00.100 */
     uint32_t reserved01;
     uint32_t reserved02;
     // the remainder of the structure is vendor specific and will not be addressed now
@@ -46,8 +46,8 @@ typedef struct _Discovery0Header {
  */
 typedef struct _Discovery0TPerFeatures {
     uint16_t featureCode; /* 0x0001 in 2.00.100 */
-    uint8_t reserved_v : 4;
-    uint8_t version : 4;
+    uint8_t reserved_v          : 4;
+    uint8_t version             : 4;
     uint8_t length;
     /* big endian
     uint8_t reserved01 : 1;
@@ -59,14 +59,14 @@ typedef struct _Discovery0TPerFeatures {
     uint8_t async : 1;
     uint8_t sync : 1;
      */
-    uint8_t sync : 1;
-    uint8_t async : 1;
-    uint8_t acknack : 1;
-    uint8_t bufferManagement : 1;
-    uint8_t streaming : 1;
-    uint8_t reserved02 : 1;
-    uint8_t comIDManagement : 1;
-    uint8_t reserved01 : 1;
+    uint8_t sync                : 1;
+    uint8_t async               : 1;
+    uint8_t acknack             : 1;
+    uint8_t bufferManagement    : 1;
+    uint8_t streaming           : 1;
+    uint8_t reserved02          : 1;
+    uint8_t comIDManagement     : 1;
+    uint8_t reserved01          : 1;
 
     uint32_t reserved03;
     uint32_t reserved04;
@@ -79,8 +79,8 @@ typedef struct _Discovery0TPerFeatures {
  */
 typedef struct _Discovery0LockingFeatures {
     uint16_t featureCode; /* 0x0002 in 2.00.100 */
-    uint8_t reserved_v : 4;
-    uint8_t version : 4;
+    uint8_t reserved_v          : 4;
+    uint8_t version             : 4;
     uint8_t length;
     /* Big endian
     uint8_t reserved01 : 1;
@@ -92,14 +92,14 @@ typedef struct _Discovery0LockingFeatures {
     uint8_t lockingEnabled : 1;
     uint8_t lockingSupported : 1;
      */
-    uint8_t lockingSupported : 1;
-    uint8_t lockingEnabled : 1;
-    uint8_t locked : 1;
-    uint8_t mediaEncryption : 1;
-    uint8_t MBREnabled : 1;
-    uint8_t MBRDone : 1;
-    uint8_t reserved01 : 1;
-    uint8_t reserved02 : 1;
+    uint8_t lockingSupported    : 1;
+    uint8_t lockingEnabled      : 1;
+    uint8_t locked              : 1;
+    uint8_t mediaEncryption     : 1;
+    uint8_t MBREnabled          : 1;
+    uint8_t MBRDone             : 1;
+    uint8_t reserved01          : 1;
+    uint8_t reserved02          : 1;
 
     uint32_t reserved03;
     uint32_t reserved04;
@@ -112,15 +112,15 @@ typedef struct _Discovery0LockingFeatures {
  */
 typedef struct _Discovery0GeometryFeatures {
     uint16_t featureCode; /* 0x0003 in 2.00.100 */
-    uint8_t reserved_v : 4;
-    uint8_t version : 4;
+    uint8_t reserved_v  : 4;
+    uint8_t version     : 4;
     uint8_t length;
     /* big Endian
     uint8_t reserved01 : 7;
     uint8_t align : 1;
      */
-    uint8_t align : 1;
-    uint8_t reserved01 : 7;
+    uint8_t align       : 1;
+    uint8_t reserved01  : 7;
     uint8_t reserved02[7];
     uint32_t logicalBlockSize;
     uint64_t alignmentGranularity;
@@ -131,8 +131,8 @@ typedef struct _Discovery0GeometryFeatures {
  */
 typedef struct _Discovery0EnterpriseSSC {
     uint16_t featureCode; /* 0x0100 */
-    uint8_t reserved_v : 4;
-    uint8_t version : 4;
+    uint8_t reserved_v      : 4;
+    uint8_t version         : 4;
     uint8_t length;
     uint16_t baseComID;
     uint16_t numberComIDs;
@@ -140,8 +140,8 @@ typedef struct _Discovery0EnterpriseSSC {
     uint8_t reserved01 : 7;
     uint8_t rangeCrossing : 1;
      */
-    uint8_t rangeCrossing : 1;
-    uint8_t reserved01 : 7;
+    uint8_t rangeCrossing   : 1;
+    uint8_t reserved01      : 7;
 
     uint8_t reserved02;
     uint16_t reserved03;
@@ -153,8 +153,8 @@ typedef struct _Discovery0EnterpriseSSC {
  */
 typedef struct _Discovery0OpalV100 {
     uint16_t featureCode; /* 0x0200 */
-    uint8_t reserved_v : 4;
-    uint8_t version : 4;
+    uint8_t reserved_v  : 4;
+    uint8_t version     : 4;
     uint8_t length;
     uint16_t baseComID;
     uint16_t numberComIDs;
@@ -163,8 +163,8 @@ typedef struct _Discovery0OpalV100 {
  */
 typedef struct _Discovery0SingleUserMode {
     uint16_t featureCode; /* 0x0201 */
-    uint8_t reserved_v : 4;
-    uint8_t version : 4;
+    uint8_t reserved_v  : 4;
+    uint8_t version     : 4;
     uint8_t length;
     uint32_t numberLockingObjects;
     /* big endian
@@ -173,10 +173,10 @@ typedef struct _Discovery0SingleUserMode {
     uint8_t all : 1;
     uint8_t any : 1;
      */
-    uint8_t any : 1;
-    uint8_t all : 1;
-    uint8_t policy : 1;
-    uint8_t reserved01 : 5;
+    uint8_t any         : 1;
+    uint8_t all         : 1;
+    uint8_t policy      : 1;
+    uint8_t reserved01  : 5;
 
     uint8_t reserved02;
     uint16_t reserved03;
@@ -187,8 +187,8 @@ typedef struct _Discovery0SingleUserMode {
  */
 typedef struct _Discovery0DatastoreTable {
     uint16_t featureCode; /* 0x0203 */
-    uint8_t reserved_v : 4;
-    uint8_t version : 4;
+    uint8_t reserved_v  : 4;
+    uint8_t version     : 4;
     uint8_t length;
     uint16_t reserved01;
     uint16_t maxTables;
@@ -200,8 +200,8 @@ typedef struct _Discovery0DatastoreTable {
  */
 typedef struct _Discovery0OPALV200 {
     uint16_t featureCode; /* 0x0203 */
-    uint8_t reserved_v : 4;
-    uint8_t version : 4;
+    uint8_t reserved_v      : 4;
+    uint8_t version         : 4;
     uint8_t length;
     uint16_t baseCommID;
     uint16_t numCommIDs;
@@ -209,8 +209,8 @@ typedef struct _Discovery0OPALV200 {
     uint8_t reserved01 : 7;
     uint8_t rangeCrossing : 1;
      */
-    uint8_t rangeCrossing : 1;
-    uint8_t reserved01 : 7;
+    uint8_t rangeCrossing   : 1;
+    uint8_t reserved01      : 7;
 
     uint16_t numlockingAdminAuth;
     uint16_t numlockingUserAuth;
@@ -221,14 +221,14 @@ typedef struct _Discovery0OPALV200 {
 } Discovery0OPALV200;
 /** Union of features used to parse the discovery 0 response */
 union Discovery0Features {
-    Discovery0TPerFeatures TPer;
-    Discovery0LockingFeatures locking;
-    Discovery0GeometryFeatures geometry;
-    Discovery0EnterpriseSSC enterpriseSSC;
-    Discovery0SingleUserMode singleUserMode;
-    Discovery0OPALV200 opalv200;
-    Discovery0OpalV100 opalv100;
-    Discovery0DatastoreTable datastore;
+    Discovery0TPerFeatures      TPer;
+    Discovery0LockingFeatures   locking;
+    Discovery0GeometryFeatures  geometry;
+    Discovery0EnterpriseSSC     enterpriseSSC;
+    Discovery0SingleUserMode    singleUserMode;
+    Discovery0OPALV200          opalv200;
+    Discovery0OpalV100          opalv100;
+    Discovery0DatastoreTable    datastore;
 };
 
 /** ComPacket (header) for transmissions. */
@@ -266,9 +266,9 @@ typedef struct _OPALHeader {
 } OPALHeader;
 /** ATA commands needed for TCG storage communication */
 typedef enum _ATACOMMAND {
-    IF_RECV = 0x5c,
-    IF_SEND = 0x5e,
-    IDENTIFY = 0xec,
+    IF_RECV     = 0x5c,
+    IF_SEND     = 0x5e,
+    IDENTIFY    = 0xec,
 } ATACOMMAND;
 
 typedef enum _DTA_DEVICE_TYPE {
@@ -284,39 +284,39 @@ typedef struct _OPAL_DiskInfo {
     // parsed the Function block?
     uint8_t Unknown;
     uint8_t VendorSpecific;
-    uint8_t TPer : 1;
-    uint8_t Locking : 1;
-    uint8_t Geometry : 1;
-    uint8_t Enterprise : 1;
-    uint8_t SingleUser : 1;
-    uint8_t DataStore : 1;
-    uint8_t OPAL20 : 1;
-    uint8_t OPAL10 : 1;
-    uint8_t Properties : 1;
-    uint8_t ANY_OPAL_SSC : 1;
+    uint8_t TPer            : 1;
+    uint8_t Locking         : 1;
+    uint8_t Geometry        : 1;
+    uint8_t Enterprise      : 1;
+    uint8_t SingleUser      : 1;
+    uint8_t DataStore       : 1;
+    uint8_t OPAL20          : 1;
+    uint8_t OPAL10          : 1;
+    uint8_t Properties      : 1;
+    uint8_t ANY_OPAL_SSC    : 1;
     // values ONLY VALID IF FUNCTION ABOVE IS TRUE!!!!!
-    uint8_t TPer_ACKNACK : 1;
-    uint8_t TPer_async : 1;
-    uint8_t TPer_bufferMgt : 1;
-    uint8_t TPer_comIDMgt : 1;
-    uint8_t TPer_streaming : 1;
-    uint8_t TPer_sync : 1;
-    uint8_t Locking_locked : 1;
-    uint8_t Locking_lockingEnabled : 1;
-    uint8_t Locking_lockingSupported : 1;
-    uint8_t Locking_MBRDone : 1;
-    uint8_t Locking_MBREnabled : 1;
-    uint8_t Locking_mediaEncrypt : 1;
-    uint8_t Geometry_align : 1;
+    uint8_t TPer_ACKNACK    : 1;
+    uint8_t TPer_async      : 1;
+    uint8_t TPer_bufferMgt  : 1;
+    uint8_t TPer_comIDMgt   : 1;
+    uint8_t TPer_streaming  : 1;
+    uint8_t TPer_sync       : 1;
+    uint8_t Locking_locked              : 1;
+    uint8_t Locking_lockingEnabled      : 1;
+    uint8_t Locking_lockingSupported    : 1;
+    uint8_t Locking_MBRDone             : 1;
+    uint8_t Locking_MBREnabled          : 1;
+    uint8_t Locking_mediaEncrypt        : 1;
+    uint8_t Geometry_align              : 1;
     uint64_t Geometry_alignmentGranularity;
     uint32_t Geometry_logicalBlockSize;
     uint64_t Geometry_lowestAlignedLBA;
-    uint8_t Enterprise_rangeCrossing : 1;
+    uint8_t Enterprise_rangeCrossing    : 1;
     uint16_t Enterprise_basecomID;
     uint16_t Enterprise_numcomID;
-    uint8_t SingleUser_any : 1;
-    uint8_t SingleUser_all : 1;
-    uint8_t SingleUser_policy : 1;
+    uint8_t SingleUser_any              : 1;
+    uint8_t SingleUser_all              : 1;
+    uint8_t SingleUser_policy           : 1;
     uint32_t SingleUser_lockingObjects;
     uint16_t DataStore_maxTables;
     uint32_t DataStore_maxTableSize;
@@ -342,16 +342,14 @@ typedef struct _OPAL_DiskInfo {
 /** Response returned by ATA Identify */
 typedef struct _IDENTIFY_RESPONSE {
     uint8_t reserved0;
-    uint8_t reserved1 : 7;
-    uint8_t devType : 1;
+    uint8_t reserved1   : 7;
+    uint8_t devType     : 1;
     uint8_t reserved2[18];
     uint8_t serialNum[20];
     uint8_t reserved3[6];
     uint8_t firmwareRev[8];
     uint8_t modelNum[40];
 } IDENTIFY_RESPONSE;
-
-
 
 ////////////////////////////////////////////////////////////////////////////////
 class CScsiCmdInquiry
