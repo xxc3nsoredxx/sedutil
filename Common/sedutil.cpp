@@ -97,7 +97,7 @@ int main(int argc, char * argv[])
     }
 
     switch (opts.action) {
-     case sedutiloption::initialSetup:
+    case sedutiloption::initialSetup:
         LOG(D) << "Performing initial setup to use sedutil on drive " << argv[opts.device];
         return (d->initialSetup(argv[opts.password]));
     case sedutiloption::setup_SUM:
@@ -112,18 +112,20 @@ int main(int argc, char * argv[])
     case sedutiloption::setAdmin1Pwd:
         LOG(D) << "Performing setPAdmin1Pwd ";
         return d->setPassword(argv[opts.password], (char *) "Admin1",
-                            argv[opts.newpassword]);
+                              argv[opts.newpassword]);
         break;
     case sedutiloption::loadPBAimage:
         LOG(D) << "Loading PBA image " << argv[opts.pbafile] << " to " << opts.device;
         return d->loadPBA(argv[opts.password], argv[opts.pbafile]);
         break;
     case sedutiloption::setLockingRange:
-        LOG(D) << "Setting Locking Range " << (uint16_t) opts.lockingrange << " " << (uint16_t) opts.lockingstate;
+        LOG(D) << "Setting Locking Range " << (uint16_t) opts.lockingrange
+               << " " << (uint16_t) opts.lockingstate;
         return d->setLockingRange(opts.lockingrange, opts.lockingstate, argv[opts.password]);
         break;
     case sedutiloption::setLockingRange_SUM:
-        LOG(D) << "Setting Locking Range " << (uint16_t)opts.lockingrange << " " << (uint16_t)opts.lockingstate << " in Single User Mode";
+        LOG(D) << "Setting Locking Range " << (uint16_t)opts.lockingrange
+               << " " << (uint16_t)opts.lockingstate << " in Single User Mode";
         return d->setLockingRange_SUM(opts.lockingrange, opts.lockingstate, argv[opts.password]);
         break;
     case sedutiloption::enableLockingRange:
@@ -240,11 +242,13 @@ int main(int argc, char * argv[])
         break;
     case sedutiloption::yesIreallywanttoERASEALLmydatausingthePSID:
     case sedutiloption::PSIDrevert:
-        LOG(D) << "Performing a PSID Revert on " << argv[opts.device] << " with password " << argv[opts.password];
+        LOG(D) << "Performing a PSID Revert on " << argv[opts.device]
+               << " with password " << argv[opts.password];
         return d->revertTPer(argv[opts.password], 1, 0);
         break;
     case sedutiloption::PSIDrevertAdminSP:
-        LOG(D) << "Performing a PSID RevertAdminSP on " << argv[opts.device] << " with password " << argv[opts.password];
+        LOG(D) << "Performing a PSID RevertAdminSP on " << argv[opts.device]
+               << " with password " << argv[opts.password];
         return d->revertTPer(argv[opts.password], 1, 1);
         break;
     case sedutiloption::eraseLockingRange:
