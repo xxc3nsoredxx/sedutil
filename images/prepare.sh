@@ -61,8 +61,8 @@ pushd scratch &> /dev/null
         rm -rf package/sedutil
         cp -r ../../buildroot/packages/sedutil/ package/
 
-        # Add the busybox/getty patchs
-        echo 'Adding getty patches ...'
+        # Add the busybox patchs
+        echo 'Adding busybox patches ...'
         ls -w 1 ../../buildroot/packages/busybox/*.patch
         cp -r ../../buildroot/packages/busybox/ package/
 
