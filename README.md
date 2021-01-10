@@ -63,6 +63,7 @@ Unique to this repo are the following modifications:
 * SHA512 password hashing vs SHA1 on original SEDutil
 * Compatibile with AMD Ryzen and AMD Ryzen mobile systems
 * uClibc instead of glibc
+  * Cut the size of the initramfs in half
 * New build scripts
 * No BIOS support
 * Updated PBA: newer, stripped down kernel
