@@ -44,21 +44,21 @@ public:
      * @param SP the securitly provider to start the session with
      * @param HostChallenge the password to start the session
      * @param SignAuthority the Signing authority (in a simple session this is the user)
-     *  */    
+     */    
 #ifdef MULTISTART
     uint8_t unistart(OPAL_UID SP, char * HostChallenge, vector<uint8_t> SignAuthority);
 #endif
     /** Start an authenticated session (OPAL only)
-    * @param SP the securitly provider to start the session with
-    * @param HostChallenge the password to start the session
-    * @param SignAuthority the Signing authority (in a simple session this is the user)
-    */
+     * @param SP the securitly provider to start the session with
+     * @param HostChallenge the password to start the session
+     * @param SignAuthority the Signing authority (in a simple session this is the user)
+     */
     uint8_t start(OPAL_UID SP, char * HostChallenge, OPAL_UID SignAuthority);
     /** Start an authenticated session (OPAL only) 
      * @param SP the securitly provider to start the session with
      * @param HostChallenge the password to start the session
      * @param SignAuthority the Signing authority (in a simple session this is the user)
-     *  */
+     */
     uint8_t start(OPAL_UID SP, char * HostChallenge, vector<uint8_t> SignAuthority);
     /** Authenticate an already started session 
      * @param Authority the authority to authenticate
@@ -93,14 +93,13 @@ private:
      * @param status the method status code returned 
      */
     char * methodStatus(uint8_t status);
-    DtaDev * d;   /**< Pointer to device this session is with */
-    uint32_t bufferpos = 0;   /**< psooition in the response buffer the parser is at */
-    uint32_t TSN = 0;   /**< TPer session number */
-    uint32_t HSN = 0;  /**< Host session number */
-    uint8_t willAbort = 0;   /**< Command is expected to abort */
-    uint8_t hashPwd = 1;  /**< hash the password when authenticating */
-    uint8_t SecurityProtocol = 0x01;  /**< The seurity protocol to be used */
-    uint8_t lastRC;  /**< last return code */
-    uint8_t sessionauth; /** authid for multistart */
+    DtaDev * d;                         /**< Pointer to device this session is with */
+    uint32_t bufferpos          = 0;    /**< psooition in the response buffer the parser is at */
+    uint32_t TSN                = 0;    /**< TPer session number */
+    uint32_t HSN                = 0;    /**< Host session number */
+    uint8_t willAbort           = 0;    /**< Command is expected to abort */
+    uint8_t hashPwd             = 1;    /**< hash the password when authenticating */
+    uint8_t SecurityProtocol    = 0x01; /**< The seurity protocol to be used */
+    uint8_t lastRC;                     /**< last return code */
+    uint8_t sessionauth;                /** authid for multistart */
 };
-
