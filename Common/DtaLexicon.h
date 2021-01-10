@@ -51,20 +51,20 @@ static const uint8_t OPALUID[][8]{
     { 0x00, 0x00, 0x00, 0x08, 0x00, 0x03, 0xE8, 0x00 }, /**< ACE_Locking_Range_GLOBAL_Set_WrLocked UID */
     { 0x00, 0x00, 0x00, 0x08, 0x00, 0x03, 0xF8, 0x01 }, /**< ACE_MBRControl_Set_DoneToDOR */
     { 0x00, 0x00, 0x08, 0x03, 0x00, 0x00, 0x00, 0x01 }, /**< MBR Control */
-        { 0x00, 0x00, 0x08, 0x04, 0x00, 0x00, 0x00, 0x00 }, /**< Shadow MBR */
-        { 0x00, 0x00, 0x00, 0x09, 0x00, 0x00, 0x00, 0x00}, /**< AUTHORITY_TABLE */
-        { 0x00, 0x00, 0x00, 0x0B, 0x00, 0x00, 0x00, 0x00}, /**< C_PIN_TABLE */
-        { 0x00, 0x00, 0x08, 0x01, 0x00, 0x00, 0x00, 0x01 }, /**< OPAL Locking Info */
-        { 0x00, 0x00, 0x08, 0x01, 0x00, 0x00, 0x00, 0x00 }, /**< Enterprise Locking Info */
-        //C_PIN_TABLE object ID's
-        { 0x00, 0x00, 0x00, 0x0B, 0x00, 0x00, 0x84, 0x02}, /**< C_PIN_MSID */
-        { 0x00, 0x00, 0x00, 0x0B, 0x00, 0x00, 0x00, 0x01}, /**< C_PIN_SID */
-        { 0x00, 0x00, 0x00, 0x0B, 0x00, 0x01, 0x00, 0x01}, /**< C_PIN_ADMIN1 */
-        //half UID's (only first 4 bytes used)
-        { 0x00, 0x00, 0x0C, 0x05, 0xff, 0xff, 0xff, 0xff }, /** Half-UID – Authority_object_ref */
-        { 0x00, 0x00, 0x04, 0x0E, 0xff, 0xff, 0xff, 0xff }, /** Half-UID – Boolean ACE */
-        // special value for omitted optional parameter
-        { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff}, /**< HEXFF for omitted */
+    { 0x00, 0x00, 0x08, 0x04, 0x00, 0x00, 0x00, 0x00 }, /**< Shadow MBR */
+    { 0x00, 0x00, 0x00, 0x09, 0x00, 0x00, 0x00, 0x00}, /**< AUTHORITY_TABLE */
+    { 0x00, 0x00, 0x00, 0x0B, 0x00, 0x00, 0x00, 0x00}, /**< C_PIN_TABLE */
+    { 0x00, 0x00, 0x08, 0x01, 0x00, 0x00, 0x00, 0x01 }, /**< OPAL Locking Info */
+    { 0x00, 0x00, 0x08, 0x01, 0x00, 0x00, 0x00, 0x00 }, /**< Enterprise Locking Info */
+    //C_PIN_TABLE object ID's
+    { 0x00, 0x00, 0x00, 0x0B, 0x00, 0x00, 0x84, 0x02}, /**< C_PIN_MSID */
+    { 0x00, 0x00, 0x00, 0x0B, 0x00, 0x00, 0x00, 0x01}, /**< C_PIN_SID */
+    { 0x00, 0x00, 0x00, 0x0B, 0x00, 0x01, 0x00, 0x01}, /**< C_PIN_ADMIN1 */
+    //half UID's (only first 4 bytes used)
+    { 0x00, 0x00, 0x0C, 0x05, 0xff, 0xff, 0xff, 0xff }, /** Half-UID – Authority_object_ref */
+    { 0x00, 0x00, 0x04, 0x0E, 0xff, 0xff, 0xff, 0xff }, /** Half-UID – Boolean ACE */
+    // special value for omitted optional parameter
+    { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff}, /**< HEXFF for omitted */
 };
 /** Enum to index OPALUID array */
 typedef enum _OPAL_UID {
@@ -151,50 +151,50 @@ typedef enum _OPAL_METHOD {
  */
 typedef enum _OPAL_TOKEN {
     //Boolean
-    OPAL_TRUE = 0x01,
-    OPAL_FALSE = 0x00,
-    OPAL_BOOLEAN_EXPR = 0x03,
+    OPAL_TRUE           = 0x01,
+    OPAL_FALSE          = 0x00,
+    OPAL_BOOLEAN_EXPR   = 0x03,
     // cellblocks
-    TABLE = 0x00,
-    STARTROW = 0x01,
-    ENDROW = 0x02,
+    TABLE       = 0x00,
+    STARTROW    = 0x01,
+    ENDROW      = 0x02,
     STARTCOLUMN = 0x03,
-    ENDCOLUMN = 0x04,
-    VALUES = 0x01,
+    ENDCOLUMN   = 0x04,
+    VALUES      = 0x01,
     // authority table
     PIN = 0x03,
     // locking tokens
-    RANGESTART = 0x03,
-    RANGELENGTH = 0x04,
-    READLOCKENABLED = 0x05,
-    WRITELOCKENABLED = 0x06,
-    READLOCKED = 0x07,
-    WRITELOCKED = 0x08,
-    ACTIVEKEY = 0x0A,
+    RANGESTART          = 0x03,
+    RANGELENGTH         = 0x04,
+    READLOCKENABLED     = 0x05,
+    WRITELOCKENABLED    = 0x06,
+    READLOCKED          = 0x07,
+    WRITELOCKED         = 0x08,
+    ACTIVEKEY           = 0x0A,
     //locking info table
     MAXRANGES = 0x04,
     // mbr control
-    MBRENABLE = 0x01,
-    MBRDONE = 0x02,
+    MBRENABLE   = 0x01,
+    MBRDONE     = 0x02,
     // properties
-    HOSTPROPERTIES =0x00,
+    HOSTPROPERTIES = 0x00,
     // response tokenis() returned values
-    DTA_TOKENID_BYTESTRING = 0xe0,
-    DTA_TOKENID_SINT = 0xe1,
-    DTA_TOKENID_UINT = 0xe2,
-    DTA_TOKENID_TOKEN = 0xe3, // actual token is returned
+    DTA_TOKENID_BYTESTRING  = 0xe0,
+    DTA_TOKENID_SINT        = 0xe1,
+    DTA_TOKENID_UINT        = 0xe2,
+    DTA_TOKENID_TOKEN       = 0xe3, // actual token is returned
     // atoms
-    STARTLIST = 0xf0,
-    ENDLIST = 0xf1,
-    STARTNAME = 0xf2,
-    ENDNAME = 0xf3,
-    CALL = 0xf8,
-    ENDOFDATA = 0xf9,
-    ENDOFSESSION = 0xfa,
+    STARTLIST       = 0xf0,
+    ENDLIST         = 0xf1,
+    STARTNAME       = 0xf2,
+    ENDNAME         = 0xf3,
+    CALL            = 0xf8,
+    ENDOFDATA       = 0xf9,
+    ENDOFSESSION    = 0xfa,
     STARTTRANSACTON = 0xfb,
-    ENDTRANSACTON = 0xfC,
-    EMPTYATOM = 0xff,
-    WHERE = 0x00,
+    ENDTRANSACTON   = 0xfC,
+    EMPTYATOM       = 0xff,
+    WHERE           = 0x00,
 } OPAL_TOKEN;
 
 /** Useful tiny atoms.
@@ -222,16 +222,16 @@ typedef enum _OPAL_TINY_ATOM {
 /** Useful short atoms.
  */
 typedef enum _OPAL_SHORT_ATOM {
-    UINT_3 = 0x83,
+    UINT_3      = 0x83,
     BYTESTRING4 = 0xa4,
     BYTESTRING8 = 0xa8,
 } OPAL_SHORT_ATOM;
 /** Locking state for a locking range */
 typedef enum _OPAL_LOCKINGSTATE {
-    READWRITE = 0x01,
-    READONLY = 0x02,
-    LOCKED = 0x03,
-    ARCHIVELOCKED = 0x04,
+    READWRITE       = 0x01,
+    READONLY        = 0x02,
+    LOCKED          = 0x03,
+    ARCHIVELOCKED   = 0x04,
     ARCHIVEUNLOCKED = 0x05,
 } OPAL_LOCKINGSTATE;
 /*
@@ -243,24 +243,24 @@ typedef enum _OPAL_LOCKINGSTATE {
 /** method status codes.
  */
 typedef enum _OPALSTATUSCODE {
-    SUCCESS = 0x00,
-    NOT_AUTHORIZED = 0x01,
+    SUCCESS         = 0x00,
+    NOT_AUTHORIZED  = 0x01,
     //    OBSOLETE = 0x02,
-    SP_BUSY = 0x03,
-    SP_FAILED = 0x04,
-    SP_DISABLED = 0x05,
-    SP_FROZEN = 0x06,
-    NO_SESSIONS_AVAILABLE = 0x07,
-    UNIQUENESS_CONFLICT = 0x08,
-    INSUFFICIENT_SPACE = 0x09,
-    INSUFFICIENT_ROWS = 0x0A,
-    INVALID_FUNCTION = 0x0B, // defined in early specs, still used in some firmware
-    INVALID_PARAMETER = 0x0C,
-    INVALID_REFERENCE = 0x0D,
+    SP_BUSY         = 0x03,
+    SP_FAILED       = 0x04,
+    SP_DISABLED     = 0x05,
+    SP_FROZEN       = 0x06,
+    NO_SESSIONS_AVAILABLE   = 0x07,
+    UNIQUENESS_CONFLICT     = 0x08,
+    INSUFFICIENT_SPACE      = 0x09,
+    INSUFFICIENT_ROWS       = 0x0A,
+    INVALID_FUNCTION        = 0x0B, // defined in early specs, still used in some firmware
+    INVALID_PARAMETER       = 0x0C,
+    INVALID_REFERENCE       = 0x0D,
     //    OBSOLETE = 0x0E,
-    TPER_MALFUNCTION = 0x0F,
-    TRANSACTION_FAILURE = 0x10,
-    RESPONSE_OVERFLOW = 0x11,
-    AUTHORITY_LOCKED_OUT = 0x12,
+    TPER_MALFUNCTION        = 0x0F,
+    TRANSACTION_FAILURE     = 0x10,
+    RESPONSE_OVERFLOW       = 0x11,
+    AUTHORITY_LOCKED_OUT    = 0x12,
     FAIL = 0x3f,
 } OPALSTATUSCODE;
