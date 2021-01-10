@@ -114,7 +114,7 @@ void DtaDevLinuxNvme::identify(OPAL_DiskInfo& disk_info)
     LOG(D4) << "Entering DtaDevLinuxNvme::identify()";
 
     struct nvme_admin_cmd cmd;
-        uint8_t ctrl[4096];
+    uint8_t ctrl[4096];
     int err;
 
     memset(&cmd, 0, sizeof(cmd));
@@ -141,7 +141,6 @@ void DtaDevLinuxNvme::identify(OPAL_DiskInfo& disk_info)
     memcpy(disk_info.modelNum, results, sizeof(disk_info.modelNum));
     results += sizeof(disk_info.modelNum);
     memcpy(disk_info.firmwareRev, results, sizeof(disk_info.firmwareRev));
-
 
     return;
 }
