@@ -79,12 +79,13 @@ uint8_t DtaDevOpal::initialSetup(char * password)
         return lastRC;
     }
     
-    LOG(I) << "Initial setup of TPer complete on " << dev;
+    LOG(I)  << "Initial setup of TPer complete on " << dev;
     LOG(D1) << "Exiting initialSetup()";
     return 0;
 }
 
-uint8_t DtaDevOpal::setup_SUM(uint8_t lockingrange, uint64_t start, uint64_t length, char *Admin1Password, char * password)
+uint8_t DtaDevOpal::setup_SUM(uint8_t lockingrange, uint64_t start, uint64_t length,
+                              char *Admin1Password, char * password)
 {
     LOG(D1) << "Entering setup_SUM()";
     uint8_t lastRC;
@@ -117,7 +118,8 @@ uint8_t DtaDevOpal::setup_SUM(uint8_t lockingrange, uint64_t start, uint64_t len
             return lastRC;
         }
         if ((lastRC = setupLockingRange_SUM(lockingrange, start, length, defaultPW)) != 0) {
-            LOG(E) << "Setup_SUM failed - unable to setup locking range " << lockingrange << "(" << start << "," << length << ")";
+            LOG(E) << "Setup_SUM failed - unable to setup locking range "
+                   << lockingrange << "(" << start << "," << length << ")";
             return lastRC;
         }
     }
@@ -136,7 +138,8 @@ uint8_t DtaDevOpal::setup_SUM(uint8_t lockingrange, uint64_t start, uint64_t len
     {
         LOG(D1) << "Incorrect Locking Range " << lockingrange << " start/size. Attempting to correct...";
         if ((lastRC = setupLockingRange_SUM(lockingrange, start, length, defaultPW)) != 0) {
-            LOG(E) << "Setup_SUM failed - unable to setup locking range " << lockingrange << "(" << start << "," << length << ")";
+            LOG(E) << "Setup_SUM failed - unable to setup locking range "
+                   << lockingrange << "(" << start << "," << length << ")";
             return lastRC;
         }
         LOG(D1) << "Locking Range " << lockingrange << " start/size corrected.";
@@ -152,7 +155,7 @@ uint8_t DtaDevOpal::setup_SUM(uint8_t lockingrange, uint64_t start, uint64_t len
         return lastRC;
     }
 
-    LOG(I) << "Setup of SUM complete on " << dev;
+    LOG(I)  << "Setup of SUM complete on " << dev;
     LOG(D1) << "Exiting setup_SUM()";
     return 0;
 }
@@ -194,17 +197,18 @@ DtaDevOpal::lrStatus_t DtaDevOpal::getLockingRange_status(uint8_t lockingrange, 
         lrStatus.command_status = DTAERROR_NO_LOCKING_INFO;
         return lrStatus;
     }
-    lrStatus.command_status = 0;
-    lrStatus.lockingrange_num = lockingrange;
-    lrStatus.start = response.getUint64(4);
-    lrStatus.size = response.getUint64(8);
-    lrStatus.RLKEna = (response.getUint8(12) != 0);
-    lrStatus.WLKEna = (response.getUint8(16) != 0);
-    lrStatus.RLocked = (response.getUint8(20) != 0);
-    lrStatus.WLocked = (response.getUint8(24) != 0);
-    LOG(D1) << "Locking Range " << lockingrange << " Begin: " << lrStatus.start << " Length: "
-        << lrStatus.size << " RLKEna: " << lrStatus.RLKEna << " WLKEna: " << lrStatus.WLKEna
-        << " RLocked: " << lrStatus.RLocked << " WLocked: " << lrStatus.WLocked;
+    lrStatus.command_status     = 0;
+    lrStatus.lockingrange_num   = lockingrange;
+    lrStatus.start              = response.getUint64(4);
+    lrStatus.size               = response.getUint64(8);
+    lrStatus.RLKEna             = (response.getUint8(12) != 0);
+    lrStatus.WLKEna             = (response.getUint8(16) != 0);
+    lrStatus.RLocked            = (response.getUint8(20) != 0);
+    lrStatus.WLocked            = (response.getUint8(24) != 0);
+    LOG(D1) << "Locking Range " << lockingrange << " Begin: " << lrStatus.start
+            << " Length: " << lrStatus.size << " RLKEna: " << lrStatus.RLKEna
+            << " WLKEna: " << lrStatus.WLKEna << " RLocked: " << lrStatus.RLocked
+            << " WLocked: " << lrStatus.WLocked;
     delete session;
     LOG(D1) << "Exiting DtaDevOpal:getLockingRange_status()";
     return lrStatus;
@@ -251,12 +255,12 @@ uint8_t DtaDevOpal::listLockingRanges(char * password, int16_t rangeid)
             return lastRC;
         }
         LR[6] = 0x03;  // non global ranges are 00000802000300nn 
-        LOG(I) << "LR" << i << " Begin " << response.getUint64(4) <<
-            " for " << response.getUint64(8);
-        LOG(I)    << "            RLKEna =" << (response.getUint8(12) ? " Y " : " N ") <<
-            " WLKEna =" << (response.getUint8(16) ? " Y " : " N ") <<
-            " RLocked =" << (response.getUint8(20) ? " Y " : " N ") <<
-            " WLocked =" << (response.getUint8(24) ? " Y " : " N ");
+        LOG(I) << "LR" << i << " Begin " << response.getUint64(4)
+               << " for " << response.getUint64(8);
+        LOG(I) << "            RLKEna =" << (response.getUint8(12) ? " Y " : " N ")
+               << " WLKEna =" << (response.getUint8(16) ? " Y " : " N ")
+               << " RLocked =" << (response.getUint8(20) ? " Y " : " N ")
+               << " WLocked =" << (response.getUint8(24) ? " Y " : " N ");
     }
     delete session;
     LOG(D1) << "Exiting DtaDevOpal:listLockingRanges()";
@@ -339,8 +343,8 @@ uint8_t DtaDevOpal::setupLockingRange(uint8_t lockingrange, uint64_t start,
         LOG(E) << "setupLockingRange Unable to reKey Locking range -- Possible security issue ";
         return lastRC;
     }
-    LOG(I) << "LockingRange" << (uint16_t)lockingrange << " starting block " << start <<
-        " for " << length << " blocks configured as unlocked range";
+    LOG(I)  << "LockingRange" << (uint16_t)lockingrange << " starting block " << start
+            << " for " << length << " blocks configured as unlocked range";
     LOG(D1) << "Exiting DtaDevOpal:setupLockingRange()";
     return 0;
 }
@@ -428,8 +432,8 @@ uint8_t DtaDevOpal::setupLockingRange_SUM(uint8_t lockingrange, uint64_t start,
         LOG(E) << "setupLockingRange Unable to reKey Locking range -- Possible security issue ";
         return lastRC;
     }
-    LOG(I) << "LockingRange" << (uint16_t)lockingrange << " starting block " << start <<
-        " for " << length << " blocks configured as LOCKED range";
+    LOG(I)  << "LockingRange" << (uint16_t)lockingrange << " starting block " << start
+            << " for " << length << " blocks configured as LOCKED range";
     LOG(D1) << "Exiting DtaDevOpal:setupLockingRange_SUM()";
     return 0;
 }
@@ -487,11 +491,11 @@ uint8_t DtaDevOpal::configureLockingRange(uint8_t lockingrange, uint8_t enabled,
     }
     delete set;
     delete session;
-    LOG(I) << "LockingRange" << (uint16_t) lockingrange 
-        << (enabled ? " enabled " : " disabled ") 
-        << ((enabled & DTA_READLOCKINGENABLED) ? "ReadLocking" : "")
-        << ((enabled == (DTA_WRITELOCKINGENABLED | DTA_READLOCKINGENABLED)) ? "," : "")
-        << ((enabled & DTA_WRITELOCKINGENABLED) ? "WriteLocking" : "");
+    LOG(I)  << "LockingRange" << (uint16_t) lockingrange 
+            << (enabled ? " enabled " : " disabled ") 
+            << ((enabled & DTA_READLOCKINGENABLED) ? "ReadLocking" : "")
+            << ((enabled == (DTA_WRITELOCKINGENABLED | DTA_READLOCKINGENABLED)) ? "," : "")
+            << ((enabled & DTA_WRITELOCKINGENABLED) ? "WriteLocking" : "");
     LOG(D1) << "Exiting DtaDevOpal::configureLockingRange()";
     return 0;
 }
@@ -540,7 +544,7 @@ uint8_t DtaDevOpal::rekeyLockingRange(uint8_t lockingrange, char * password)
     }
     delete rekey;
     delete session;
-    LOG(I) << "LockingRange" << (uint16_t)lockingrange << " reKeyed ";
+    LOG(I)  << "LockingRange" << (uint16_t)lockingrange << " reKeyed ";
     LOG(D1) << "Exiting DtaDevOpal::rekeyLockingRange()";
     return 0;
 }
@@ -581,7 +585,7 @@ uint8_t DtaDevOpal::rekeyLockingRange_SUM(vector<uint8_t> LR, vector<uint8_t>  U
     }
     delete rekey;
     delete session;
-    LOG(I) << "LockingRange reKeyed ";
+    LOG(I)  << "LockingRange reKeyed ";
     LOG(D1) << "Exiting DtaDevOpal::rekeyLockingRange_SUM()";
     return 0;
 }
@@ -589,7 +593,7 @@ uint8_t DtaDevOpal::setBandsEnabled(int16_t lockingrange, char * password)
 {
     if (password == NULL) { LOG(D4) << "Password is NULL"; } // unreferenced formal parameter
     LOG(D1) << "Entering DtaDevOpal::setBandsEnabled()" << lockingrange << " " << dev;
-    LOG(I) << "setBandsEnabled is not implemented.  It is not part of the Opal SSC ";
+    LOG(I)  << "setBandsEnabled is not implemented.  It is not part of the Opal SSC ";
     LOG(D1) << "Exiting DtaDevOpal::setBandsEnabled()";
     return 0;
 }
@@ -616,7 +620,7 @@ uint8_t DtaDevOpal::revertLockingSP(char * password, uint8_t keep)
     if ((lastRC = session->start(OPAL_UID::OPAL_LOCKINGSP_UID, password, OPAL_UID::OPAL_ADMIN1_UID)) != 0) {
         delete cmd;
         delete session;
-                LOG(E) << "Start session failed";
+        LOG(E) << "Start session failed";
         return lastRC;
     }
     cmd->reset(OPAL_UID::OPAL_THISSP_UID, OPAL_METHOD::REVERTSP);
@@ -630,7 +634,7 @@ uint8_t DtaDevOpal::revertLockingSP(char * password, uint8_t keep)
     cmd->addToken(OPAL_TOKEN::ENDLIST);
     cmd->complete();
     if ((lastRC = session->sendCommand(cmd, response)) != 0) {
-                LOG(E) << "Command failed";
+        LOG(E) << "Command failed";
         delete cmd;
         delete session;
         return lastRC;
@@ -646,7 +650,7 @@ uint8_t DtaDevOpal::eraseLockingRange(uint8_t lockingrange, char * password)
 {
     LOG(D1) << "Entering DtaDevOpal::eraseLockingRange()" << lockingrange << " " << dev;
     if (password == NULL) { LOG(D4) << "Referencing formal parameters " << lockingrange; }
-    LOG(I) << "eraseLockingRange is not implemented.  It is not part of the Opal SSC ";
+    LOG(I)  << "eraseLockingRange is not implemented.  It is not part of the Opal SSC ";
     LOG(D1) << "Exiting DtaDevOpal::eraseLockingRange()";
     return 0;
 }
@@ -654,7 +658,7 @@ uint8_t DtaDevOpal::getAuth4User(char * userid, uint8_t uidorcpin, std::vector<u
 {
     LOG(D1) << "Entering DtaDevOpal::getAuth4User()";
     userData.clear();
-    userData. push_back(OPAL_SHORT_ATOM::BYTESTRING8);
+    userData.push_back(OPAL_SHORT_ATOM::BYTESTRING8);
     userData.push_back(0x00);
     userData.push_back(0x00);
     userData.push_back(0x00);
@@ -767,7 +771,7 @@ uint8_t DtaDevOpal::setNewPassword_SUM(char * password, char * userid, char * ne
         delete session;
         return lastRC;
     }
-    LOG(I) << userid << " password changed";
+    LOG(I)  << userid << " password changed";
     delete session;
     LOG(D1) << "Exiting DtaDevOpal::setNewPassword_SUM()";
     return 0;
@@ -776,11 +780,11 @@ uint8_t DtaDevOpal::setMBREnable(uint8_t mbrstate,    char * Admin1Password)
 {
     LOG(D1) << "Entering DtaDevOpal::setMBREnable";
     uint8_t lastRC;
-        // set MBRDone before changing MBREnable so the PBA isn't presented
-        if ((lastRC = setMBRDone(1, Admin1Password)) != 0){
+    // set MBRDone before changing MBREnable so the PBA isn't presented
+    if ((lastRC = setMBRDone(1, Admin1Password)) != 0){
         LOG(E) << "unable to set MBRDone";
-                return lastRC;
-        }
+        return lastRC;
+    }
     if (mbrstate) {
         if ((lastRC = setLockingSPvalue(OPAL_UID::OPAL_MBRCONTROL, OPAL_TOKEN::MBRENABLE,
             OPAL_TOKEN::OPAL_TRUE, Admin1Password, NULL)) != 0) {
@@ -793,10 +797,10 @@ uint8_t DtaDevOpal::setMBREnable(uint8_t mbrstate,    char * Admin1Password)
     } 
     else {
         if ((lastRC = setLockingSPvalue(OPAL_UID::OPAL_MBRCONTROL, OPAL_TOKEN::MBRENABLE,
-                OPAL_TOKEN::OPAL_FALSE, Admin1Password, NULL)) != 0) {
-                LOG(E) << "Unable to set setMBREnable off";
-                return lastRC;
-            }
+            OPAL_TOKEN::OPAL_FALSE, Admin1Password, NULL)) != 0) {
+            LOG(E) << "Unable to set setMBREnable off";
+            return lastRC;
+        }
         else {
             LOG(I) << "MBREnable set off ";
         }
@@ -914,7 +918,7 @@ uint8_t DtaDevOpal::setLockingRange(uint8_t lockingrange, uint8_t lockingstate,
     }
     delete set;
     delete session;
-    LOG(I) << "LockingRange" << (uint16_t)lockingrange << " set to " << msg;
+    LOG(I)  << "LockingRange" << (uint16_t)lockingrange << " set to " << msg;
     LOG(D1) << "Exiting DtaDevOpal::setLockingRange";
     return 0;
 }
@@ -1014,7 +1018,7 @@ uint8_t DtaDevOpal::setLockingRange_SUM(uint8_t lockingrange, uint8_t lockingsta
     }
     delete set;
     delete session;
-    LOG(I) << "LockingRange" << (uint16_t)lockingrange << " set to " << msg;
+    LOG(I)  << "LockingRange" << (uint16_t)lockingrange << " set to " << msg;
     LOG(D1) << "Exiting DtaDevOpal::setLockingRange_SUM";
     return 0;
 }
@@ -1076,7 +1080,7 @@ uint8_t DtaDevOpal::enableUser(char * password, char * userid, OPAL_TOKEN status
         delete session;
         return lastRC;
     }
-    LOG(I) << userid << " has been enabled ";
+    LOG(I)  << userid << " has been enabled ";
     delete session;
     LOG(D1) << "Exiting DtaDevOpal::enableUser()";
     return 0;
@@ -1100,7 +1104,7 @@ uint8_t DtaDevOpal::revertTPer(char * password, uint8_t PSID, uint8_t AdminSP)
     if (PSID) {
         session->dontHashPwd(); // PSID pwd should be passed as entered
         uid = OPAL_UID::OPAL_PSID_UID;
-        }
+    }
     if ((lastRC = session->start(OPAL_UID::OPAL_ADMINSP_UID, password, uid)) != 0) {
         delete cmd;
         delete session;
@@ -1116,7 +1120,7 @@ uint8_t DtaDevOpal::revertTPer(char * password, uint8_t PSID, uint8_t AdminSP)
         delete session;
         return lastRC;
     }
-    LOG(I) << "revertTper completed successfully";
+    LOG(I)  << "revertTper completed successfully";
     delete cmd;
     delete session;
     LOG(D1) << "Exiting DtaDevOpal::revertTPer()";
@@ -1194,13 +1198,15 @@ uint8_t DtaDevOpal::loadPBA(char * password, char * filename) {
             return lastRC;
         }
         filepos += blockSize;
-        cout << filepos << " of " << eofpos << " " << (uint16_t) (((float)filepos/(float)eofpos) * 100) << "% blk=" << blockSize << " \r";
+        cout << filepos << " of " << eofpos << " "
+             << (uint16_t) (((float)filepos/(float)eofpos) * 100)
+             << "% blk=" << blockSize << " \r";
     }
     cout << "\n";
     delete cmd;
     delete session;
     pbafile.close();
-    LOG(I) << "PBA image  " << filename << " written to " << dev;
+    LOG(I)  << "PBA image  " << filename << " written to " << dev;
     LOG(D1) << "Exiting DtaDevOpal::loadPBAimage()";
     return 0;
 }
@@ -1317,16 +1323,16 @@ uint8_t DtaDevOpal::activateLockingSP_SUM(uint8_t lockingrange, char * password)
     }*/
     cmd->reset(OPAL_UID::OPAL_LOCKINGSP_UID, OPAL_METHOD::ACTIVATE);
     cmd->addToken(OPAL_TOKEN::STARTLIST);
-        cmd->addToken(OPAL_TOKEN::STARTNAME);
-            //SingleUserModeSelectionList parameter
-            cmd->addToken(OPAL_SHORT_ATOM::UINT_3);
-            cmd->addToken(OPAL_TINY_ATOM::UINT_06);
-            cmd->addToken(OPAL_TINY_ATOM::UINT_00);
-            cmd->addToken(OPAL_TINY_ATOM::UINT_00);
-            cmd->addToken(OPAL_TOKEN::STARTLIST);
-                cmd->addToken(LR);
-            cmd->addToken(OPAL_TOKEN::ENDLIST);
-        cmd->addToken(OPAL_TOKEN::ENDNAME);
+    cmd->addToken(OPAL_TOKEN::STARTNAME);
+    //SingleUserModeSelectionList parameter
+    cmd->addToken(OPAL_SHORT_ATOM::UINT_3);
+    cmd->addToken(OPAL_TINY_ATOM::UINT_06);
+    cmd->addToken(OPAL_TINY_ATOM::UINT_00);
+    cmd->addToken(OPAL_TINY_ATOM::UINT_00);
+    cmd->addToken(OPAL_TOKEN::STARTLIST);
+    cmd->addToken(LR);
+    cmd->addToken(OPAL_TOKEN::ENDLIST);
+    cmd->addToken(OPAL_TOKEN::ENDNAME);
     cmd->addToken(OPAL_TOKEN::ENDLIST);
     cmd->complete();
     if ((lastRC = session->sendCommand(cmd, response)) != 0) {
@@ -1386,7 +1392,7 @@ uint8_t DtaDevOpal::eraseLockingRange_SUM(uint8_t lockingrange, char * password)
     }
     delete cmd;
     delete session;
-    LOG(I) << "LockingRange" << (uint16_t)lockingrange << " erased";
+    LOG(I)  << "LockingRange" << (uint16_t)lockingrange << " erased";
     LOG(D1) << "Exiting DtaDevOpal::eraseLockingRange_SUM";
     return 0;
 }
@@ -1403,7 +1409,7 @@ uint8_t DtaDevOpal::takeOwnership(char * newpassword)
         LOG(E) << "takeOwnership failed";
         return lastRC;
     }
-    LOG(I) << "takeOwnership complete";
+    LOG(I)  << "takeOwnership complete";
     LOG(D1) << "Exiting takeOwnership()";
     return 0;
 }
@@ -1464,7 +1470,7 @@ uint8_t DtaDevOpal::setSIDPassword(char * oldpassword, char * newpassword,
         return lastRC;
     }
     table.clear();
-    table. push_back(OPAL_SHORT_ATOM::BYTESTRING8);
+    table.push_back(OPAL_SHORT_ATOM::BYTESTRING8);
     for (int i = 0; i < 8; i++) {
         table.push_back(OPALUID[OPAL_UID::OPAL_C_PIN_SID][i]);
     }
@@ -1674,7 +1680,8 @@ void DtaDevOpal::puke()
                 if (OPAL_TOKEN::DTA_TOKENID_BYTESTRING != propertiesResponse.tokenIs(i + 1))
                     cout << std::endl << "Host Properties: " << std::endl;
                 else
-                    cout << "  " << propertiesResponse.getString(i + 1) << " = " << propertiesResponse.getUint64(i + 2);
+                    cout << "  " << propertiesResponse.getString(i + 1)
+                         << " = " << propertiesResponse.getUint64(i + 2);
                 i += 2;
             }
             if (!(i % 6)) cout << std::endl;
