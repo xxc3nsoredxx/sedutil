@@ -20,35 +20,44 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 #include "os.h"
 #include <stdio.h>
 #include <ctype.h>
-void DtaHexDump(void * address, int length) {
-    uint8_t display[17];
-    uint8_t * cpos = (uint8_t *)address;
-    uint8_t * epos = cpos + length;
+
+void DtaHexDump (void *address, int length) {
+    uint8_t display [17];
+    uint8_t *cpos = (uint8_t *)address;
+    uint8_t *epos = cpos + length;
     LOG(D1) << "Entering hexDump";
     int rpos = 0;
     int dpos = 0;
-    fprintf( stderr,"%04x ",rpos);
+    fprintf(stderr, "%04x ", rpos);
     while (cpos < epos){
-        fprintf( stderr,"%02x", cpos[0]);
-        if (!((++rpos) % 4))fprintf( stderr," ");
-        display[dpos++] = (isprint(cpos[0]) ? cpos[0] : 0x2e );
+        fprintf(stderr, "%02x", cpos[0]);
+        if (!((++rpos) % 4)) {
+            fprintf(stderr, " ");
+        }
+        display[dpos++] = (isprint(cpos[0]) ? cpos[0] : 0x2e);
         cpos += 1;
         if (16 == dpos) {
             dpos = 0;
             display[16] = 0x00;
-            fprintf( stderr," %s \n", display);
-            if(cpos < epos) fprintf( stderr,"%04x ", rpos);
-            memset(&display,0,sizeof(display));
+            fprintf(stderr, " %s \n", display);
+            if(cpos < epos) {
+                fprintf(stderr, "%04x ", rpos);
+            }
+            memset(&display, 0, sizeof(display));
         }
     }
     if (dpos != 0) {
-        if (dpos % 4) fprintf( stderr," ");
-            fprintf( stderr,"  ");
-        for (int i = dpos ; i < 15; i++) {
-            if (!(i % 4)) fprintf( stderr," ");
-            fprintf( stderr,"  ");
+        if (dpos % 4) {
+            fprintf(stderr, " ");
+        }
+        fprintf(stderr, "  ");
+        for (int i = dpos; i < 15; i++) {
+            if (!(i % 4)) {
+                fprintf(stderr, " ");
+            }
+            fprintf(stderr, "  ");
         }
         display[dpos] = 0x00;
-        fprintf( stderr," %s\n", display);
+        fprintf(stderr, " %s\n", display);
     }
 }

@@ -22,7 +22,8 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 #include <stdio.h>
 #include <iostream>
 #include <fstream>
-#include<iomanip>
+#include <iomanip>
+#include <vector>
 #include "DtaDevEnterprise.h"
 #include "DtaHashPwd.h"
 #include "DtaEndianFixup.h"
@@ -32,66 +33,48 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 #include "DtaSession.h"
 #include "DtaHexDump.h"
 #include "DtaAnnotatedDump.h"
+
 #ifdef _MSC_VER
 #pragma warning(push)
 #pragma warning(disable:4100)
 #endif
-using namespace std;
 
-
-////////////////////////////////////////////////////////////////////////////////
-static const bool is_NULL_UID(std::vector<uint8_t> & v)
-////////////////////////////////////////////////////////////////////////////////
-{
-    return
-        v.size() == 9
-        && v[0] == 0xa8
-        && v[1] == 0x00
-        && v[2] == 0x00
-        && v[3] == 0x00
-        && v[4] == 0x00
-        && v[5] == 0x00
-        && v[6] == 0x00
-        && v[7] == 0x00
-        && v[8] == 0x00
-        ;
+static const bool is_NULL_UID (std::vector<uint8_t>& v) {
+    return v.size() == 9
+            && v[0] == 0xa8
+            && v[1] == 0x00
+            && v[2] == 0x00
+            && v[3] == 0x00
+            && v[4] == 0x00
+            && v[5] == 0x00
+            && v[6] == 0x00
+            && v[7] == 0x00
+            && v[8] == 0x00;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-static void set8(vector<uint8_t> & v, const uint8_t value[8])
-////////////////////////////////////////////////////////////////////////////////
-{
+static void set8 (std::vector<uint8_t>& v, const uint8_t value [8]) {
     v.clear();
     v.push_back(OPAL_SHORT_ATOM::BYTESTRING8);
-    for (int i = 0; i < 8; i++)
-    {
+
+    for (int i = 0; i < 8; i++) {
         v.push_back(value[i]);
     }
 }
 
-////////////////////////////////////////////////////////////////////////////////
-static void setband(vector<uint8_t> & v, uint16_t i)
-////////////////////////////////////////////////////////////////////////////////
-{
+static void setband (std::vector<uint8_t>& v, uint16_t i) {
     const uint16_t j = i+1;
-    v[1+6] = (uint8_t(j >> 8) | v[1+6]) & 0xF0;
+    v[1+6] = (uint8_t(j >> 8) | v[1+6]) & 0xf0;
     v[1+7] = uint8_t(j);
 }
 
-////////////////////////////////////////////////////////////////////////////////
-static void user2cpin(vector<uint8_t> & dst, vector<uint8_t> & src)
-////////////////////////////////////////////////////////////////////////////////
-{
+static void user2cpin (std::vector<uint8_t>& dst, std::vector<uint8_t>& src) {
     // this works for BandMasterN and EraseMaster
     // Table 29 Locking C_PIN table, p. 72 of Enterprise SSC rev 3.00
     dst = src;
-    dst[1+3] = 0x0B;
+    dst[1+3] = 0x0b;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-uint8_t DtaDevEnterprise::getMaxRanges(char * password, uint16_t *maxRanges)
-////////////////////////////////////////////////////////////////////////////////
-{
+uint8_t DtaDevEnterprise::getMaxRanges (char *password, uint16_t *maxRanges) {
     uint8_t lastRC;
 
     // 5.7.2.1.5 MaxRanges
@@ -113,7 +96,7 @@ uint8_t DtaDevEnterprise::getMaxRanges(char * password, uint16_t *maxRanges)
     }
 
     //** Table 36 "LockingInfo table", p. 72 of Enterprise SSC rev 3.00
-    vector<uint8_t> table;
+    std::vector<uint8_t> table;
     set8(table, OPALUID[ENTERPRISE_LOCKING_INFO_TABLE]);
 
     // query row 1 of LockingInfo table
@@ -128,10 +111,7 @@ uint8_t DtaDevEnterprise::getMaxRanges(char * password, uint16_t *maxRanges)
     return 0;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-uint8_t DtaDevEnterprise::getMaxRangesOpal(char * password, uint16_t *maxRanges)
-////////////////////////////////////////////////////////////////////////////////
-{
+uint8_t DtaDevEnterprise::getMaxRangesOpal (char *password, uint16_t *maxRanges) {
     uint8_t lastRC;
 
     // create session
@@ -146,7 +126,7 @@ uint8_t DtaDevEnterprise::getMaxRangesOpal(char * password, uint16_t *maxRanges)
     }
 
     //** Table 36 "LockingInfo table", p. 72 of Enterprise SSC rev 3.00
-    vector<uint8_t> table;
+    std::vector<uint8_t> table;
     set8(table, OPALUID[OPAL_LOCKING_INFO_TABLE]);
 
     // query row 1 of LockingInfo table
@@ -162,17 +142,17 @@ uint8_t DtaDevEnterprise::getMaxRangesOpal(char * password, uint16_t *maxRanges)
     return 0;
 }
 
-DtaDevEnterprise::DtaDevEnterprise(const char * devref)
-{
+DtaDevEnterprise::DtaDevEnterprise (const char *devref) {
     DtaDevOS::init(devref);
     assert(isEprise());
-    if (properties()) { LOG(E) << "Properties exchange failed"; }
+    if (properties()) {
+        LOG(E) << "Properties exchange failed";
+    }
 }
-DtaDevEnterprise::~DtaDevEnterprise()
-{
-}
-uint8_t DtaDevEnterprise::initialSetup(char * password)
-{
+
+DtaDevEnterprise::~DtaDevEnterprise () {}
+
+uint8_t DtaDevEnterprise::initialSetup (char *password) {
     LOG(D1) << "Entering initialSetup()";
     uint8_t lastRC;
 
@@ -180,14 +160,15 @@ uint8_t DtaDevEnterprise::initialSetup(char * password)
         LOG(E) << "Initial setup failed - unable to take ownership";
         return lastRC;
     }
-    if ((lastRC = setLockingRange(0,
-        OPAL_LOCKINGSTATE::READWRITE, password)) != 0) {
+    if ((lastRC = setLockingRange(0, OPAL_LOCKINGSTATE::READWRITE,
+        password)) != 0)
+    {
         LOG(E) << "Initial setup failed - unable to unlock for read/write";
         return lastRC;
     }
-    
     if ((lastRC = configureLockingRange(0,
-        (DTA_READLOCKINGENABLED | DTA_WRITELOCKINGENABLED), password)) != 0) {
+        (DTA_READLOCKINGENABLED | DTA_WRITELOCKINGENABLED), password)) != 0)
+    {
         LOG(E) << "Initial setup failed - unable to enable read/write locking";
         return lastRC;
     }
@@ -196,13 +177,17 @@ uint8_t DtaDevEnterprise::initialSetup(char * password)
     LOG(D1) << "Exiting initialSetup()";
     return 0;
 }
-uint8_t DtaDevEnterprise::setup_SUM(uint8_t lockingrange, uint64_t start, uint64_t length, char *Admin1Password, char * password)
+
+uint8_t DtaDevEnterprise::setup_SUM (uint8_t lockingrange, uint64_t start,
+    uint64_t length, char *Admin1Password, char *password)
 {
     LOG(D1) << "Entering DtaDevEnterprise::setup_SUM";
     LOG(I)  << "setup_SUM not supported on DtaDevEnterprise";
     return 1;
 }
-uint8_t DtaDevEnterprise::configureLockingRange(uint8_t lockingrange, uint8_t enabled, char * password)
+
+uint8_t DtaDevEnterprise::configureLockingRange (uint8_t lockingrange,
+    uint8_t enabled, char *password)
 {
     uint8_t lastRC;
     LOG(D1) << "Entering DtaDevEnterprise::configureLockingRange()";
@@ -213,7 +198,7 @@ uint8_t DtaDevEnterprise::configureLockingRange(uint8_t lockingrange, uint8_t en
     setband(user, lockingrange);
 
     //** Global_Range UID of Table 33 Locking SP Locking table, p. 84 of Enterprise SSC rev 3.00
-    vector<uint8_t> object;
+    std::vector<uint8_t> object;
     set8(object, OPALUID[OPAL_UID::OPAL_LOCKINGRANGE_GLOBAL]);
     setband(object, lockingrange);
 
@@ -222,7 +207,9 @@ uint8_t DtaDevEnterprise::configureLockingRange(uint8_t lockingrange, uint8_t en
         LOG(E) << "Unable to create session object ";
         return DTAERROR_OBJECT_CREATE_FAILED;
     }
-    if ((lastRC = session->start(OPAL_UID::ENTERPRISE_LOCKINGSP_UID, password, user)) != 0) {
+    if ((lastRC = session->start(OPAL_UID::ENTERPRISE_LOCKINGSP_UID,
+        password, user)) != 0)
+    {
         delete session;
         return lastRC;
     }
@@ -231,7 +218,7 @@ uint8_t DtaDevEnterprise::configureLockingRange(uint8_t lockingrange, uint8_t en
      * read & write lockenabled be changed at the same time.  I can find no
      * written doc on such a restriction but .....
      */
-    vector<uint8_t> method;
+    std::vector<uint8_t> method;
     set8(method, OPALMETHOD[OPAL_METHOD::ESET]);
 
     DtaCommand *set = new DtaCommand();
@@ -277,18 +264,18 @@ uint8_t DtaDevEnterprise::configureLockingRange(uint8_t lockingrange, uint8_t en
     LOG(D1) << "Exiting DtaDevEnterprise::configureLockingRange()";
     return 0;
 }
-uint8_t DtaDevEnterprise::rekeyLockingRange(uint8_t lockingrange, char * password)
-{
+
+uint8_t DtaDevEnterprise::rekeyLockingRange (uint8_t lockingrange, char *password) {
     LOG(D1) << "Entering DtaDevEnterprise::rekeyLockingRange()";
     uint8_t lastRC;
 
     //** BandMaster0 UID of Table 28 Locking SP Authority table, p. 70 of Enterprise SSC rev 3.00
-    vector<uint8_t> user;
+    std::vector<uint8_t> user;
     set8(user, OPALUID[ENTERPRISE_BANDMASTER0_UID]);
     setband(user, lockingrange);
 
     //** Global_Range UID of Table 33 Locking SP Locking table, p. 84 of Enterprise SSC rev 3.00
-    vector<uint8_t> table;
+    std::vector<uint8_t> table;
     set8(table, OPALUID[OPAL_UID::OPAL_LOCKINGRANGE_GLOBAL]);
     setband(table, lockingrange);
 
@@ -306,23 +293,26 @@ uint8_t DtaDevEnterprise::rekeyLockingRange(uint8_t lockingrange, char * passwor
         return lastRC;
     }
     std::vector<uint8_t> ActiveKey = response.getRawToken(5);
-    if (is_NULL_UID(ActiveKey))
-    {
+    if (is_NULL_UID(ActiveKey)) {
         LOG(I) << "LockingRange" << (uint16_t)lockingrange << " remains in plaintext ";
         delete session;
         return 0;
     }
+
     DtaCommand *rekey = new DtaCommand();
+
     if (NULL == rekey) {
         LOG(E) << "Unable to create command object ";
         delete session;
         return DTAERROR_OBJECT_CREATE_FAILED;
     }
+
     rekey->reset(OPAL_UID::OPAL_AUTHORITY_TABLE, OPAL_METHOD::GENKEY);
     rekey->changeInvokingUid(ActiveKey);
     rekey->addToken(OPAL_TOKEN::STARTLIST);
     rekey->addToken(OPAL_TOKEN::ENDLIST);
     rekey->complete();
+
     if ((lastRC = session->sendCommand(rekey, response)) != 0) {
         LOG(E) << "rekeyLockingRange Failed ";
         delete rekey;
@@ -335,10 +325,12 @@ uint8_t DtaDevEnterprise::rekeyLockingRange(uint8_t lockingrange, char * passwor
     LOG(D1) << "Exiting DtaDevEnterprise::rekeyLockingRange()";
     return 0;
 }
-uint8_t DtaDevEnterprise::revertLockingSP(char * password, uint8_t keep)
-{
+
+uint8_t DtaDevEnterprise::revertLockingSP (char *password, uint8_t keep) {
     LOG(D1) << "Entering DtaDevEnterprise::revertLockingSP()";
-    if(password == NULL) { LOG(D4) << "Referencing formal parameters " << keep; }
+    if(password == NULL) {
+        LOG(D4) << "Referencing formal parameters " << keep;
+    }
     uint8_t lastRC;
     DtaCommand *cmd = new DtaCommand();
     if (NULL == cmd) {
@@ -377,12 +369,13 @@ uint8_t DtaDevEnterprise::revertLockingSP(char * password, uint8_t keep)
     LOG(D1) << "Exiting DtaDevEnterprise::revertLockingSP()";
     return 0;
 }
-uint8_t DtaDevEnterprise::setPassword(char * password, char * userid, char * newpassword)
-{
+
+uint8_t DtaDevEnterprise::setPassword (char *password, char *userid, char *newpassword) {
     LOG(D1) << "Entering DtaDevEnterprise::setPassword" ;
     uint8_t lastRC;
-    string defaultPassword;
-    char *pwd = password, *newpwd = newpassword;
+    std::string defaultPassword;
+    char *pwd = password;
+    char *newpwd = newpassword;
 
     if (11 > strnlen(userid, 15)) {
         LOG(E) << "Invalid Userid " << userid;
@@ -398,17 +391,16 @@ uint8_t DtaDevEnterprise::setPassword(char * password, char * userid, char * new
         }
         set8(user, OPALUID[OPAL_UID::ENTERPRISE_BANDMASTER0_UID]);
         setband(user, band);
-    }
-    else if (!memcmp("EraseMaster", userid, 11)) {
+    } else if (!memcmp("EraseMaster", userid, 11)) {
         set8(user, OPALUID[OPAL_UID::ENTERPRISE_ERASEMASTER_UID]);
-    }
-    else {
+    } else {
         LOG(E) << "Invalid Userid " << userid;
         return DTAERROR_INVALID_PARAMETER;
     }
 
     if ((password == NULL) || (*password == '\0') || (newpassword == NULL) ||
-        (*newpassword == '\0')) {
+        (*newpassword == '\0'))
+    {
         if ((lastRC = getDefaultPassword()) != 0) {
             LOG(E) << "setPassword failed to retrieve MSID";
             return lastRC;
@@ -428,8 +420,9 @@ uint8_t DtaDevEnterprise::setPassword(char * password, char * userid, char * new
         LOG(E) << "Unable to create session object ";
         return DTAERROR_OBJECT_CREATE_FAILED;
     }
-    if ((password == NULL) || (*password == '\0'))
+    if ((password == NULL) || (*password == '\0')) {
         session->dontHashPwd();
+    }
     if ((lastRC = session->start(OPAL_UID::ENTERPRISE_LOCKINGSP_UID, pwd, user)) != 0) {
         delete session;
         return lastRC;
@@ -463,31 +456,38 @@ uint8_t DtaDevEnterprise::setPassword(char * password, char * userid, char * new
     LOG(D1) << "Exiting DtaDevEnterprise::setPassword()";
     return 0;
 }
-uint8_t DtaDevEnterprise::setNewPassword_SUM(char * password, char * userid, char * newpassword)
+
+uint8_t DtaDevEnterprise::setNewPassword_SUM (char *password, char *userid,
+    char *newpassword)
 {
     LOG(D1) << "Entering DtaDevEnterprise::setNewPassword_SUM()";
     LOG(I)  << "setNewPassword_SUM is not in the Enterprise SSC and not supported";
     LOG(D1) << "Exiting DtaDevEnterprise::setNewPassword_SUM()";
     return 0;
 }
-uint8_t DtaDevEnterprise::setMBREnable(uint8_t mbrstate, char * Admin1Password)
-{
+
+uint8_t DtaDevEnterprise::setMBREnable (uint8_t mbrstate, char *Admin1Password) {
     LOG(D1) << "Entering DtaDevEnterprise::setMBREnable";
-    if (NULL == Admin1Password) { LOG(E) << "This shouldn't happen " << mbrstate; }
+    if (NULL == Admin1Password) {
+        LOG(E) << "This shouldn't happen " << mbrstate;
+    }
     LOG(I)  << "MBR shadowing is optional in the Enterprise SSC and not supported";
     LOG(D1) << "Exiting DtaDevEnterprise::setMBREnable";
     return 0;
 }
-uint8_t DtaDevEnterprise::setMBRDone(uint8_t mbrstate, char * Admin1Password)
-{
+
+uint8_t DtaDevEnterprise::setMBRDone (uint8_t mbrstate, char *Admin1Password) {
     LOG(D1) << "Entering DtaDevEnterprise::setMBRDone";
-    if (NULL == Admin1Password) { LOG(E) << "This shouldn't happen " << mbrstate; }
+    if (NULL == Admin1Password) {
+        LOG(E) << "This shouldn't happen " << mbrstate;
+    }
     LOG(I)  << "MBR shadowing is optional in the Enterprise SSC and not supported";
     LOG(D1) << "Exiting DtaDevEnterprise::setMBRDone";
     return 0;
 }
 
-uint8_t DtaDevEnterprise::setupLockingRange(uint8_t lockingrange, uint64_t start, uint64_t length, char * password)
+uint8_t DtaDevEnterprise::setupLockingRange (uint8_t lockingrange,
+    uint64_t start, uint64_t length, char *password)
 {
     uint8_t lastRC;
     LOG(D1) << "Entering DtaDevEnterprise::setupLockingRange";
@@ -497,27 +497,28 @@ uint8_t DtaDevEnterprise::setupLockingRange(uint8_t lockingrange, uint64_t start
     if ((lastRC = getMaxRanges(password, &MaxRanges)) != 0) {
         return (lastRC);
     }
-    if (MaxRanges == 0 || MaxRanges >= 1024)
+    if (MaxRanges == 0 || MaxRanges >= 1024) {
         return DTAERROR_UNSUPORTED_LOCKING_RANGE;
+    }
 
     // make sure lockingrange is in bounds
-    if (lockingrange > MaxRanges)
-    {
-        LOG(E) << "Requested locking range " << lockingrange << " greater than MaxRanges " << MaxRanges;
+    if (lockingrange > MaxRanges) {
+        LOG(E) << "Requested locking range " << lockingrange
+               << " greater than MaxRanges " << MaxRanges;
         return DTAERROR_UNSUPORTED_LOCKING_RANGE;
     }
 
     //** BandMaster0 UID of Table 28 Locking SP Authority table, p. 70 of Enterprise SSC rev 3.00
-    vector<uint8_t> user;
+    std::vector<uint8_t> user;
     set8(user, OPALUID[OPAL_UID::ENTERPRISE_BANDMASTER0_UID]);
     setband(user, lockingrange);
 
     //** Global_Range UID of Table 33 Locking SP Locking table, p. 84 of Enterprise SSC rev 3.00
-    vector<uint8_t> object;
+    std::vector<uint8_t> object;
     set8(object, OPALUID[OPAL_UID::OPAL_LOCKINGRANGE_GLOBAL]);
     setband(object, lockingrange);
 
-    vector<uint8_t> method;
+    std::vector<uint8_t> method;
     set8(method, OPALMETHOD[OPAL_METHOD::ESET]);
 
     DtaCommand *set = new DtaCommand();
@@ -583,26 +584,28 @@ uint8_t DtaDevEnterprise::setupLockingRange(uint8_t lockingrange, uint64_t start
     LOG(D1) << "Exiting DtaDevEnterprise::setupLockingRange";
     return 0;
 }
-uint8_t DtaDevEnterprise::setupLockingRange_SUM(uint8_t lockingrange, uint64_t start,
-    uint64_t length, char * password) {
+
+uint8_t DtaDevEnterprise::setupLockingRange_SUM (uint8_t lockingrange,
+    uint64_t start, uint64_t length, char *password)
+{
     LOG(D1) << "Entering DtaDevEnterprise::setupLockingRange_SUM";
-    if (0 == lockingrange) { LOG(E) << start << length << password; }
+    if (0 == lockingrange) {
+        LOG(E) << start << length << password;
+    }
     LOG(D1) << "Exiting DtaDevEnterprise::setupLockingRange_SUM";
     return 0;
 }
-////////////////////////////////////////////////////////////////////////////////
-uint8_t DtaDevEnterprise::listLockingRanges(char * password, int16_t rangeid)
-////////////////////////////////////////////////////////////////////////////////
-{
+
+uint8_t DtaDevEnterprise::listLockingRanges (char *password, int16_t rangeid) {
     LOG(D1) << "Entering DtaDevEnterprise::listLockingRanges";
-    uint8_t lastRC = 0, failRC = 0;
-    int one_succeeded = 0;
-    string defaultPassword;
-    char *pwd = NULL;
+    uint8_t lastRC      = 0;
+    uint8_t failRC      = 0;
+    int one_succeeded   = 0;
+    std::string defaultPassword;
+    char *pwd           = NULL;
 
     // if (NULL == password) { LOG(E) << "password NULL"; }
     if ((password == NULL) || (*password == '\0')) {
-
         if ((lastRC = getDefaultPassword()) != 0) {
             LOG(E) << __func__ << ": unable to retrieve MSID";
             return lastRC;
@@ -620,29 +623,30 @@ uint8_t DtaDevEnterprise::listLockingRanges(char * password, int16_t rangeid)
         lastRC = getMaxRanges(password, &MaxRanges);
         if (lastRC != 0)
             return lastRC;
-    } else
+    } else {
         MaxRanges = rangeid;
+    }
 
-    if (MaxRanges >= 1024)
+    if (MaxRanges >= 1024) {
         return DTAERROR_UNSUPORTED_LOCKING_RANGE;
+    }
 
     if(rangeid == -1) {
         LOG(I) << "Maximum ranges supported: " << MaxRanges;
     }
 
     //** BandMaster0 UID of Table 28 Locking SP Authority table, p. 70 of Enterprise SSC rev 3.00
-    vector<uint8_t> user;
+    std::vector<uint8_t> user;
     user.clear();
     set8(user, OPALUID[ENTERPRISE_BANDMASTER0_UID]);
 
     //** Global_Range UID of Table 33 Locking SP Locking table, p. 84 of Enterprise SSC rev 3.00
-    vector<uint8_t> table;
+    std::vector<uint8_t> table;
     table.clear();
     set8(table, OPALUID[OPAL_LOCKINGRANGE_GLOBAL]);
 
-    uint16_t start = (rangeid == -1)? 0: rangeid;
-    for (uint16_t i = start; i <= MaxRanges; i++)
-    {
+    uint16_t start = (rangeid == -1) ? 0 : rangeid;
+    for (uint16_t i = start; i <= MaxRanges; i++) {
         uint8_t curRC = 0;
 
         setband(user, i);
@@ -657,11 +661,11 @@ uint8_t DtaDevEnterprise::listLockingRanges(char * password, int16_t rangeid)
             LOG(E) << "Unable to create session object ";
             return DTAERROR_OBJECT_CREATE_FAILED;
         }
-        if (!defaultPassword.empty())
+        if (!defaultPassword.empty()) {
             session->dontHashPwd();
+        }
 
-        if ((curRC = session->start(OPAL_UID::ENTERPRISE_LOCKINGSP_UID, pwd, user)) != 0)
-        {
+        if ((curRC = session->start(OPAL_UID::ENTERPRISE_LOCKINGSP_UID, pwd, user)) != 0) {
             if ((output_format == sedutilNormal) || (rangeid != -1)) {
                 LOG(I) << "    could not establish session for row[" << i << "]";
             }
@@ -669,8 +673,7 @@ uint8_t DtaDevEnterprise::listLockingRanges(char * password, int16_t rangeid)
             delete session;
             continue;
         }
-        if (getTable(table, "Name", "LockOnReset"))
-        {
+        if (getTable(table, "Name", "LockOnReset")) {
             LOG(I) << "    row[" << i << "] not found in LOCKING table";
             delete session;
             continue;
@@ -748,16 +751,16 @@ uint8_t DtaDevEnterprise::listLockingRanges(char * password, int16_t rangeid)
 
     // If we're getting the list of ranges and none succeed, that is an error.
     // If we're getting one range, return any failure.
-    if (((rangeid == -1) && (one_succeeded == 0))
-        || (rangeid != -1))
+    if (((rangeid == -1) && (one_succeeded == 0)) || (rangeid != -1)) {
         lastRC = failRC;
+    }
 
     LOG(D1) << "Exiting DtaDevEnterprise::listLockingRanges";
     return lastRC;
 }
 
-uint8_t DtaDevEnterprise::setLockingRange(uint8_t lockingrange, uint8_t lockingstate,
-                                          char * password)
+uint8_t DtaDevEnterprise::setLockingRange (uint8_t lockingrange,
+    uint8_t lockingstate, char *password)
 {
     LOG(D1) << "Entering DtaDevEnterprise::setLockingRange";
     uint8_t lastRC;
@@ -785,27 +788,28 @@ uint8_t DtaDevEnterprise::setLockingRange(uint8_t lockingrange, uint8_t lockings
     if ((lastRC = getMaxRanges(password, &MaxRanges)) != 0) {
         return lastRC;
     }
-    if (MaxRanges == 0 || MaxRanges >= 1024)
+    if (MaxRanges == 0 || MaxRanges >= 1024) {
         return DTAERROR_UNSUPORTED_LOCKING_RANGE;
+    }
 
     // make sure lockingrange is in bounds
-    if (lockingrange > MaxRanges)
-    {
-        LOG(E) << "Requested locking range " << lockingrange << " greater than MaxRanges " << MaxRanges;
+    if (lockingrange > MaxRanges) {
+        LOG(E) << "Requested locking range " << lockingrange
+               << " greater than MaxRanges " << MaxRanges;
         return DTAERROR_UNSUPORTED_LOCKING_RANGE;
     }
 
     //** BandMaster0 UID of Table 28 Locking SP Authority table, p. 70 of Enterprise SSC rev 3.00
-    vector<uint8_t> user;
+    std::vector<uint8_t> user;
     set8(user, OPALUID[OPAL_UID::ENTERPRISE_BANDMASTER0_UID]);
     setband(user, lockingrange);
 
     //** Band0 UID of Table 33 Locking SP Locking table, p. 84 of Enterprise SSC rev 3.00
-    vector<uint8_t> object;
+    std::vector<uint8_t> object;
     set8(object, OPALUID[OPAL_UID::OPAL_LOCKINGRANGE_GLOBAL]);
     setband(object, lockingrange);
 
-    vector<uint8_t> method;
+    std::vector<uint8_t> method;
     set8(method, OPALMETHOD[OPAL_METHOD::ESET]);
 
     DtaCommand *set = new DtaCommand();
@@ -833,7 +837,8 @@ uint8_t DtaDevEnterprise::setLockingRange(uint8_t lockingrange, uint8_t lockings
         return DTAERROR_OBJECT_CREATE_FAILED;
     }
     if ((lastRC = session->start(OPAL_UID::ENTERPRISE_LOCKINGSP_UID, password, user))
-        != 0) {
+        != 0)
+    {
         delete session;
         return lastRC;
     }
@@ -849,25 +854,31 @@ uint8_t DtaDevEnterprise::setLockingRange(uint8_t lockingrange, uint8_t lockings
     LOG(D1) << "Exiting DtaDevEnterprise::setLockingRange";
     return 0;
 }
-uint8_t DtaDevEnterprise::setLockingRange_SUM(uint8_t lockingrange, uint8_t lockingstate,
-    char * password) {
-        LOG(D1) << "Entering DtaDevEnterprise::setLockingRange_SUM()";
-        LOG(E)  << "setLockingRange_SUM not implemented";
-        LOG(D1) << "Exiting DtaDevEnterprise::setLockingRange_SUM()";
+
+uint8_t DtaDevEnterprise::setLockingRange_SUM (uint8_t lockingrange,
+    uint8_t lockingstate, char *password)
+{
+    LOG(D1) << "Entering DtaDevEnterprise::setLockingRange_SUM()";
+    LOG(E)  << "setLockingRange_SUM not implemented";
+    LOG(D1) << "Exiting DtaDevEnterprise::setLockingRange_SUM()";
     return DTAERROR_INVALID_PARAMETER;
 }
-uint8_t DtaDevEnterprise::enableUser(char * password, char * userid, OPAL_TOKEN status)
-{
+
+uint8_t DtaDevEnterprise::enableUser (char *password, char *userid, OPAL_TOKEN status) {
     LOG(D1) << "Entering DtaDevEnterprise::enableUser";
     LOG(E)  << "enableUser not implemented";
-    if (!password && !userid) { LOG(E) << "Formal Parameters"; }
+    if (!password && !userid) {
+        LOG(E) << "Formal Parameters";
+    }
     LOG(D1) << "Exiting DtaDevEnterprise::enableUser()";
     return DTAERROR_INVALID_PARAMETER;
 }
-uint8_t DtaDevEnterprise::revertTPer(char * password, uint8_t PSID, uint8_t AdminSP)
-{
+
+uint8_t DtaDevEnterprise::revertTPer (char *password, uint8_t PSID, uint8_t AdminSP) {
     LOG(D1) << "Entering DtaDevEnterprise::revertTPer()";
-    if (password == NULL) { LOG(D4) << "Referencing formal parameters " << PSID; }
+    if (password == NULL) {
+        LOG(D4) << "Referencing formal parameters " << PSID;
+    }
     uint8_t lastRC;
     DtaCommand *cmd = new DtaCommand();
     if (NULL == cmd) {
@@ -890,10 +901,11 @@ uint8_t DtaDevEnterprise::revertTPer(char * password, uint8_t PSID, uint8_t Admi
         delete session;
         return lastRC;
     }
-    if (AdminSP)
+    if (AdminSP) {
         cmd->reset(OPAL_UID::OPAL_ADMINSP_UID, OPAL_METHOD::REVERT);
-    else
+    } else {
         cmd->reset(OPAL_UID::OPAL_THISSP_UID, OPAL_METHOD::REVERTSP);
+    }
     cmd->addToken(OPAL_TOKEN::STARTLIST);
     cmd->addToken(OPAL_TOKEN::ENDLIST);
     cmd->complete();
@@ -909,10 +921,10 @@ uint8_t DtaDevEnterprise::revertTPer(char * password, uint8_t PSID, uint8_t Admi
     LOG(D1) << "Exiting DtaDevEnterprise::revertTPer()";
     return 0;
 }
-uint8_t DtaDevEnterprise::eraseLockingRange(uint8_t lockingrange, char * password)
-{
+
+uint8_t DtaDevEnterprise::eraseLockingRange (uint8_t lockingrange, char *password) {
     uint8_t lastRC;
-    string defaultPassword;
+    std::string defaultPassword;
     char *pwd = NULL;
     LOG(D1) << "Entering DtaDevEnterprise::eraseLockingRange";
 
@@ -920,7 +932,6 @@ uint8_t DtaDevEnterprise::eraseLockingRange(uint8_t lockingrange, char * passwor
     uint16_t MaxRanges = 0;
 
     if ((password == NULL) || (*password == '\0')) {
-
         if ((lastRC = getDefaultPassword()) != 0) {
             LOG(E) << __func__ << ": unable to retrieve MSID";
             return lastRC;
@@ -934,26 +945,27 @@ uint8_t DtaDevEnterprise::eraseLockingRange(uint8_t lockingrange, char * passwor
     if ((lastRC = getMaxRanges(pwd, &MaxRanges)) != 0) {
         return lastRC;
     }
-    if (MaxRanges == 0 || MaxRanges >= 1024)
+    if (MaxRanges == 0 || MaxRanges >= 1024) {
         return DTAERROR_UNSUPORTED_LOCKING_RANGE;
+    }
 
     // make sure lockingrange is in bounds
-    if (lockingrange > MaxRanges)
-    {
-        LOG(E) << "Requested locking range " << lockingrange << " greater than MaxRanges " << MaxRanges;
+    if (lockingrange > MaxRanges) {
+        LOG(E) << "Requested locking range " << lockingrange
+               << " greater than MaxRanges " << MaxRanges;
         return DTAERROR_UNSUPORTED_LOCKING_RANGE;
     }
 
     //** EraseMaster UID of Table 28 Locking SP Authority table, p. 70 of Enterprise SSC rev 3.00
-    vector<uint8_t> user;
+    std::vector<uint8_t> user;
     set8(user, OPALUID[OPAL_UID::ENTERPRISE_ERASEMASTER_UID]);
 
     //** Band0 UID of Table 33 Locking SP Locking table, p. 84 of Enterprise SSC rev 3.00
-    vector<uint8_t> object;
+    std::vector<uint8_t> object;
     set8(object, OPALUID[OPAL_UID::OPAL_LOCKINGRANGE_GLOBAL]);
     setband(object, lockingrange);
 
-    vector<uint8_t> method;
+    std::vector<uint8_t> method;
     set8(method, OPALMETHOD[OPAL_METHOD::ERASE]);
 
     DtaCommand *erase = new DtaCommand();
@@ -971,8 +983,9 @@ uint8_t DtaDevEnterprise::eraseLockingRange(uint8_t lockingrange, char * passwor
         LOG(E) << "Unable to create session object ";
         return DTAERROR_OBJECT_CREATE_FAILED;
     }
-    if (!defaultPassword.empty())
+    if (!defaultPassword.empty()) {
         session->dontHashPwd();
+    }
 
     if ((lastRC = session->start(OPAL_UID::ENTERPRISE_LOCKINGSP_UID, pwd, user)) != 0) {
         delete session;
@@ -990,41 +1003,50 @@ uint8_t DtaDevEnterprise::eraseLockingRange(uint8_t lockingrange, char * passwor
     LOG(D1) << "Exiting DtaDevEnterprise::eraseLockingRange";
     return 0;
 }
-uint8_t DtaDevEnterprise::loadPBA(char * password, char * filename) {
+
+uint8_t DtaDevEnterprise::loadPBA (char *password, char *filename) {
     LOG(D1) << "Entering DtaDevEnterprise::loadPBAimage()" << filename << " " << dev;
-    if (password == NULL) { LOG(D4) << "Referencing formal parameters " << filename; }
+    if (password == NULL) {
+        LOG(D4) << "Referencing formal parameters " << filename;
+    }
     LOG(I)  << "loadPBA is not implemented.  It is not a mandatory part of  ";
     LOG(I)  << "the enterprise SSC ";
     LOG(D1) << "Exiting DtaDevEnterprise::loadPBAimage()";
     return DTAERROR_INVALID_PARAMETER;
 }
-uint8_t DtaDevEnterprise::activateLockingSP(char * password)
-{
+
+uint8_t DtaDevEnterprise::activateLockingSP (char *password) {
     LOG(D1) << "Entering DtaDevEnterprise::activateLockingSP()";
-    if (password == NULL) { LOG(D4) << "Referencing formal parameters "; }
+    if (password == NULL) {
+        LOG(D4) << "Referencing formal parameters ";
+    }
     LOG(E)  << "activate Locking SP is not a part of the Enterprise SSC ";
     LOG(D1) << "Exiting DtaDevEnterprise::activatLockingSP()";
     return DTAERROR_INVALID_PARAMETER;
 }
-uint8_t DtaDevEnterprise::activateLockingSP_SUM(uint8_t lockingrange, char * password)
-{
+
+uint8_t DtaDevEnterprise::activateLockingSP_SUM (uint8_t lockingrange, char *password) {
     LOG(D1) << "Entering DtaDevEnterprise::activateLockingSP_SUM()";
-    if (password == NULL) { LOG(D4) << "Referencing formal parameters "; }
+    if (password == NULL) {
+        LOG(D4) << "Referencing formal parameters ";
+    }
     LOG(E)  << "activate Locking SP SUM is not a part of the Enterprise SSC ";
     LOG(D1) << "Exiting DtaDevEnterprise::activateLockingSP_SUM()";
     return DTAERROR_INVALID_PARAMETER;
 }
-uint8_t DtaDevEnterprise::eraseLockingRange_SUM(uint8_t lockingrange, char * password)
-{
+
+uint8_t DtaDevEnterprise::eraseLockingRange_SUM (uint8_t lockingrange, char *password) {
     LOG(D1) << "Entering DtaDevEnterprise::eraseLockingRange_SUM()";
-    if (password == NULL) { LOG(D4) << "Referencing formal parameters "; }
+    if (password == NULL) {
+        LOG(D4) << "Referencing formal parameters ";
+    }
     LOG(E)  << "Erase Locking Range SUM is not a part of the Enterprise SSC ";
     LOG(D1) << "Exiting DtaDevEnterprise::eraseLockingRange_SUM()";
     return DTAERROR_INVALID_PARAMETER;
 }
-uint8_t DtaDevEnterprise::takeOwnership(char * newpassword)
-{
-    string defaultPassword;
+
+uint8_t DtaDevEnterprise::takeOwnership (char *newpassword) {
+    std::string defaultPassword;
     uint8_t lastRC;
 
     LOG(D1) << "Entering DtaDevEnterprise::takeOwnership()";
@@ -1045,10 +1067,8 @@ uint8_t DtaDevEnterprise::takeOwnership(char * newpassword)
     LOG(D1) << "Exiting takeOwnership()";
     return 0;
 }
-////////////////////////////////////////////////////////////////////////////////
-uint8_t DtaDevEnterprise::setBandsEnabled(int16_t lockingrange, char * password)
-////////////////////////////////////////////////////////////////////////////////
-{
+
+uint8_t DtaDevEnterprise::setBandsEnabled (int16_t lockingrange, char *password) {
     uint8_t lastRC = 0;
     LOG(D1) << "Entering DtaDevEnterprise::eraseLockingRange";
 
@@ -1058,55 +1078,50 @@ uint8_t DtaDevEnterprise::setBandsEnabled(int16_t lockingrange, char * password)
     if ((lastRC = getMaxRanges(password, &MaxRanges)) != 0) {
         return lastRC;
     }
-    if (MaxRanges >= 1024)
+    if (MaxRanges >= 1024) {
         return DTAERROR_UNSUPORTED_LOCKING_RANGE;
+    }
 
     // calculate starting and ending bands
-    int lo, hi;
-    if (lockingrange < 0)
-    {
+    int lo;
+    int hi;
+    if (lockingrange < 0) {
         lo = 0;
         hi = MaxRanges;
-    }
-    else if (lockingrange > MaxRanges)
-    {
-        LOG(E) << "Requested locking range " << lockingrange << " greater than MaxRanges " << MaxRanges;
+    } else if (lockingrange > MaxRanges) {
+        LOG(E) << "Requested locking range " << lockingrange
+               << " greater than MaxRanges " << MaxRanges;
         return DTAERROR_UNSUPORTED_LOCKING_RANGE;
-    }
-    else
-    {
+    } else {
         lo = lockingrange;
         hi = lockingrange;
     }
 
     // get password (usually MSID)
-    string pwd;
-    const bool useMSID = password == NULL || *password == '\0';
-    if (!useMSID)
-    {
+    std::string pwd;
+    const bool useMSID = (password == NULL) || (*password == '\0');
+    if (!useMSID) {
         pwd = password;
-    }
-    else
-    {
-        if ((lastRC = getDefaultPassword()) != 0)
+    } else {
+        if ((lastRC = getDefaultPassword()) != 0) {
             return lastRC;
+        }
         pwd = response.getString(5);
     }
 
-    vector<uint8_t> erasemaster;
+    std::vector<uint8_t> erasemaster;
     set8(erasemaster, OPALUID[OPAL_UID::ENTERPRISE_ERASEMASTER_UID]);
 
     //** BandMaster0 UID of Table 28 Locking SP Authority table, p. 70 of Enterprise SSC rev 3.00
-    vector<uint8_t> object;
+    std::vector<uint8_t> object;
     set8(object, OPALUID[OPAL_UID::ENTERPRISE_BANDMASTER0_UID]);
 
     // method is enterprise set
-    vector<uint8_t> method;
+    std::vector<uint8_t> method;
     set8(method, OPALMETHOD[OPAL_METHOD::ESET]);
 
     // set Enabled=TRUE in BandMaster[n] row of (Table 28) Locking SP Authority
-    for(int n=lo; n<=hi && lastRC==0; n++)
-    {
+    for(int n = lo; n <= hi && lastRC == 0; n++) {
         // BandMaster[n] row
         setband(object, (uint16_t) n);
 
@@ -1140,12 +1155,14 @@ uint8_t DtaDevEnterprise::setBandsEnabled(int16_t lockingrange, char * password)
         }
 
         // MSID ?
-        if (useMSID) session->dontHashPwd();
+        if (useMSID) {
+            session->dontHashPwd();
+        }
 
         // start session
-        lastRC = session->start(OPAL_UID::ENTERPRISE_LOCKINGSP_UID, (char *)pwd.c_str(), erasemaster);
-        if (lastRC == 0)
-        {
+        lastRC = session->start(OPAL_UID::ENTERPRISE_LOCKINGSP_UID,
+            (char *)pwd.c_str(), erasemaster);
+        if (lastRC == 0) {
             // send command
             lastRC = session->sendCommand(cmd, response);
         }
@@ -1157,13 +1174,16 @@ uint8_t DtaDevEnterprise::setBandsEnabled(int16_t lockingrange, char * password)
     return lastRC;
 }
 
-uint8_t DtaDevEnterprise::initLSPUsers(char * defaultPassword, char * newPassword)
-{
-    vector<uint8_t> user, usercpin, hash, erasemaster, table;
+uint8_t DtaDevEnterprise::initLSPUsers (char *defaultPassword, char *newPassword) {
+    std::vector<uint8_t> user;
+    std::vector<uint8_t> usercpin;
+    std::vector<uint8_t> hash;
+    std::vector<uint8_t> erasemaster;
+    std::vector<uint8_t> table;
     uint8_t lastRC;
     LOG(D1) << "Entering DtaDevEnterprise::initLSPUsers()";
 
-// do erasemaster
+    // do erasemaster
     session = new DtaSession(this);
     if (session == NULL) {
         LOG(E) << "Unable to create session object ";
@@ -1171,7 +1191,9 @@ uint8_t DtaDevEnterprise::initLSPUsers(char * defaultPassword, char * newPasswor
     }
     session->dontHashPwd();
     set8(erasemaster, OPALUID[OPAL_UID::ENTERPRISE_ERASEMASTER_UID]);
-    if ((lastRC = session->start(OPAL_UID::ENTERPRISE_LOCKINGSP_UID, defaultPassword, erasemaster)) != 0) {
+    if ((lastRC = session->start(OPAL_UID::ENTERPRISE_LOCKINGSP_UID,
+        defaultPassword, erasemaster)) != 0)
+    {
         delete session;
         return lastRC;
     }
@@ -1189,11 +1211,12 @@ uint8_t DtaDevEnterprise::initLSPUsers(char * defaultPassword, char * newPasswor
     if ((lastRC = getMaxRanges(NULL, &MaxRanges)) != 0) {
         return lastRC;
     }
-    if (MaxRanges == 0 || MaxRanges >= 1024)
+    if (MaxRanges == 0 || MaxRanges >= 1024) {
         return DTAERROR_UNSUPORTED_LOCKING_RANGE;
+    }
 
     LOG(I) << "Maximum ranges supported " << MaxRanges;
-// do bandmasters
+    // do bandmasters
     set8(user, OPALUID[ENTERPRISE_BANDMASTER0_UID]);
     for (uint16_t i = 0; i <= MaxRanges; i++) {
         setband(user, i);
@@ -1204,7 +1227,9 @@ uint8_t DtaDevEnterprise::initLSPUsers(char * defaultPassword, char * newPasswor
             return DTAERROR_OBJECT_CREATE_FAILED;
         }
         session->dontHashPwd();
-        if ((lastRC = session->start(OPAL_UID::ENTERPRISE_LOCKINGSP_UID, defaultPassword, user)) != 0) {
+        if ((lastRC = session->start(OPAL_UID::ENTERPRISE_LOCKINGSP_UID,
+            defaultPassword, user)) != 0)
+        {
             delete session;
             // We only return failure if we fail to set BandMaster0.
             if (i == 0) {
@@ -1216,7 +1241,7 @@ uint8_t DtaDevEnterprise::initLSPUsers(char * defaultPassword, char * newPasswor
         DtaHashPwd(hash, newPassword, this);
         user2cpin(usercpin, user);
         if ((lastRC = setTable(usercpin, "PIN", hash)) != 0) {
-            LOG(E) << "Unable to set BandMaster" << (uint16_t) i << " new password ";
+            LOG(E) << "Unable to set BandMaster" << (uint16_t)i << " new password ";
             // We only return failure if we fail to set BandMaster0.
             if (i == 0) {
                 delete session;
@@ -1230,11 +1255,11 @@ uint8_t DtaDevEnterprise::initLSPUsers(char * defaultPassword, char * newPasswor
     LOG(D1) << "Exiting DtaDevEnterprise::initLSPUsers()";
     return 0;
 }
-uint8_t DtaDevEnterprise::getDefaultPassword()
-{
+
+uint8_t DtaDevEnterprise::getDefaultPassword () {
     LOG(D1) << "Entering DtaDevEnterprise::getDefaultPassword()";
     uint8_t lastRC;
-    vector<uint8_t> hash;
+    std::vector<uint8_t> hash;
     session = new DtaSession(this);
     if (session == NULL) {
         LOG(E) << "Unable to create session object ";
@@ -1245,7 +1270,7 @@ uint8_t DtaDevEnterprise::getDefaultPassword()
         delete session;
         return lastRC;
     }
-    vector<uint8_t> table;
+    std::vector<uint8_t> table;
     table.push_back(OPAL_SHORT_ATOM::BYTESTRING8);
     for (int i = 0; i < 8; i++) {
         table.push_back(OPALUID[OPAL_UID::OPAL_C_PIN_MSID][i]);
@@ -1258,72 +1283,72 @@ uint8_t DtaDevEnterprise::getDefaultPassword()
     LOG(D1) << "Exiting getDefaultPassword()";
     return 0;
 }
-uint8_t DtaDevEnterprise::printDefaultPassword()
-{
+
+uint8_t DtaDevEnterprise::printDefaultPassword () {
     const uint8_t rc = getDefaultPassword();
     if (rc) {
         LOG(E) << "unable to retrieve MSID";
         return rc;
     }
-    string defaultPassword = response.getString(5);
+    std::string defaultPassword = response.getString(5);
     fprintf(stdout, "MSID: %s\n", (char *)defaultPassword.c_str());
     return 0;
 }
-uint8_t DtaDevEnterprise::setSIDPassword(char * oldpassword, char * newpassword,
-                                         uint8_t hasholdpwd, uint8_t hashnewpwd)
+
+uint8_t DtaDevEnterprise::setSIDPassword (char *oldpassword, char *newpassword,
+    uint8_t hasholdpwd, uint8_t hashnewpwd)
 {
     LOG(D1) << "Entering DtaDevEnterprise::setSIDPassword()";
     uint8_t lastRC;
 
-    vector<uint8_t> user;
+    std::vector<uint8_t> user;
     set8(user, OPALUID[OPAL_SID_UID]);
 
-    vector<uint8_t> usercpin;
+    std::vector<uint8_t> usercpin;
     set8(usercpin, OPALUID[OPAL_C_PIN_SID]);
 
-    if (*oldpassword == '\0')
-    {
+    if (*oldpassword == '\0') {
         if ((lastRC = getDefaultPassword()) != 0) {
             LOG(E) << "setPassword failed to retrieve MSID";
             return lastRC;
         }
-        string defaultPassword = response.getString(5);
+        std::string defaultPassword = response.getString(5);
         session = new DtaSession(this);
         if (session == NULL) {
             LOG(E) << "Unable to create session object ";
             return DTAERROR_OBJECT_CREATE_FAILED;
         }
         session->dontHashPwd();
-        if ((lastRC = session->start(OPAL_UID::OPAL_ADMINSP_UID, (char *)defaultPassword.c_str(), user)) != 0) {
+        if ((lastRC = session->start(OPAL_UID::OPAL_ADMINSP_UID,
+            (char *)defaultPassword.c_str(), user)) != 0)
+        {
             delete session;
             return lastRC;
         }
-    }
-    else
-    {
+    } else {
         session = new DtaSession(this);
         if (session == NULL) {
             LOG(E) << "Unable to create session object ";
             return DTAERROR_OBJECT_CREATE_FAILED;
         }
         session->dontHashPwd();
-        if (!hasholdpwd) session->dontHashPwd();
-        if ((lastRC = session->start(OPAL_UID::OPAL_ADMINSP_UID, oldpassword, user)) != 0) {
+        if (!hasholdpwd) {
+            session->dontHashPwd();
+        }
+        if ((lastRC = session->start(OPAL_UID::OPAL_ADMINSP_UID, oldpassword,
+            user)) != 0)
+        {
             delete session;
             return lastRC;
         }
     }
-    vector<uint8_t> hash;
-    if (hashnewpwd)
-    {
+    std::vector<uint8_t> hash;
+    if (hashnewpwd) {
         DtaHashPwd(hash, newpassword, this);
-    }
-    else
-    {
+    } else {
         hash.push_back(0xd0);
         hash.push_back((uint8_t)strnlen(newpassword, 255));
-        for (uint16_t i = 0; i < strnlen(newpassword, 255); i++)
-        {
+        for (uint16_t i = 0; i < strnlen(newpassword, 255); i++) {
             hash.push_back(newpassword[i]);
         }
     }
@@ -1336,15 +1361,17 @@ uint8_t DtaDevEnterprise::setSIDPassword(char * oldpassword, char * newpassword,
     LOG(D1) << "Exiting DtaDevEnterprise::setSIDPassword()";
     return 0;
 }
-uint8_t DtaDevEnterprise::setTable(vector<uint8_t> table, const char *name,
-                                   OPAL_TOKEN value)
+
+uint8_t DtaDevEnterprise::setTable (std::vector<uint8_t> table,
+    const char *name, OPAL_TOKEN value)
 {
-    vector <uint8_t> token;
+    std::vector <uint8_t> token;
     token.push_back((uint8_t) value);
-    return(setTable(table, name, token));
+    return setTable(table, name, token);
 }
-uint8_t DtaDevEnterprise::setTable(vector<uint8_t> table, const char *name, 
-    vector<uint8_t> value)
+
+uint8_t DtaDevEnterprise::setTable (std::vector<uint8_t> table,
+    const char *name, std::vector<uint8_t> value)
 {
     LOG(D1) << "Entering DtaDevEnterprise::setTable";
     uint8_t lastRC;
@@ -1377,8 +1404,9 @@ uint8_t DtaDevEnterprise::setTable(vector<uint8_t> table, const char *name,
     LOG(D1) << "Leaving DtaDevEnterprise::setTable";
     return 0;
 }
-uint8_t DtaDevEnterprise::getTable(vector<uint8_t> table, const char * startcol, 
-                                   const char * endcol)
+
+uint8_t DtaDevEnterprise::getTable (std::vector<uint8_t> table,
+    const char *startcol, const char *endcol)
 {
     LOG(D1) << "Entering DtaDevEnterprise::getTable";
     uint8_t lastRC;
@@ -1409,35 +1437,33 @@ uint8_t DtaDevEnterprise::getTable(vector<uint8_t> table, const char * startcol,
     delete get;
     return 0;
 }
-uint16_t DtaDevEnterprise::comID()
-{
+
+uint16_t DtaDevEnterprise::comID () {
     LOG(D1) << "Entering DtaDevEnterprise::comID()";
     return disk_info.Enterprise_basecomID;
 }
-uint8_t DtaDevEnterprise::exec(DtaCommand * cmd, DtaResponse & resp, uint8_t protocol)
-{
+
+uint8_t DtaDevEnterprise::exec (DtaCommand *cmd, DtaResponse& resp, uint8_t protocol) {
     uint8_t rc = 0;
-    OPALHeader * hdr = (OPALHeader *) cmd->getCmdBuffer();
-    LOG(D3) << endl << "Dumping command buffer";
+    OPALHeader *hdr = (OPALHeader *)cmd->getCmdBuffer();
+    LOG(D3) << std::endl << "Dumping command buffer";
     IFLOG(D) DtaAnnotatedDump(IF_SEND, cmd->getCmdBuffer(), cmd->outputBufferSize());
-    IFLOG(D3) DtaHexDump(cmd->getCmdBuffer(), SWAP32(hdr->cp.length) + sizeof (OPALComPacket));
+    IFLOG(D3) DtaHexDump(cmd->getCmdBuffer(), SWAP32(hdr->cp.length) + sizeof(OPALComPacket));
     rc = sendCmd(IF_SEND, protocol, comID(), cmd->getCmdBuffer(), cmd->outputBufferSize());
     if (0 != rc) {
         LOG(E) << "Command failed on send " << (uint16_t) rc;
         return rc;
     }
-    hdr = (OPALHeader *) cmd->getRespBuffer();
+    hdr = (OPALHeader *)cmd->getRespBuffer();
     do {
         //LOG(I) << "read loop";
         osmsSleep(25);
         memset(cmd->getRespBuffer(), 0, MIN_BUFFER_LENGTH);
         rc = sendCmd(IF_RECV, protocol, comID(), cmd->getRespBuffer(), MIN_BUFFER_LENGTH);
-
-    }
-    while ((0 != hdr->cp.outstandingData) && (0 == hdr->cp.minTransfer));
+    } while ((0 != hdr->cp.outstandingData) && (0 == hdr->cp.minTransfer));
     LOG(D3) << std::endl << "Dumping reply buffer";
-    IFLOG(D) DtaAnnotatedDump(IF_RECV, cmd->getRespBuffer(), SWAP32(hdr->cp.length) + sizeof (OPALComPacket));
-    IFLOG(D3) DtaHexDump(cmd->getRespBuffer(), SWAP32(hdr->cp.length) + sizeof (OPALComPacket));
+    IFLOG(D) DtaAnnotatedDump(IF_RECV, cmd->getRespBuffer(), SWAP32(hdr->cp.length) + sizeof(OPALComPacket));
+    IFLOG(D3) DtaHexDump(cmd->getRespBuffer(), SWAP32(hdr->cp.length) + sizeof(OPALComPacket));
     if (0 != rc) {
         LOG(E) << "Command failed on recv" << (uint16_t) rc;
         return rc;
@@ -1445,8 +1471,8 @@ uint8_t DtaDevEnterprise::exec(DtaCommand * cmd, DtaResponse & resp, uint8_t pro
     resp.init(cmd->getRespBuffer());
     return 0;
 }
-uint8_t DtaDevEnterprise::properties()
-{
+
+uint8_t DtaDevEnterprise::properties () {
     LOG(D1) << "Entering DtaDevEnterprise::properties()";
     uint8_t lastRC;
     session = new DtaSession(this);  // use the session IO without starting a session
@@ -1454,7 +1480,8 @@ uint8_t DtaDevEnterprise::properties()
         LOG(E) << "Unable to create session object ";
         return DTAERROR_OBJECT_CREATE_FAILED;
     }
-    DtaCommand *props = new DtaCommand(OPAL_UID::OPAL_SMUID_UID, OPAL_METHOD::PROPERTIES);
+    DtaCommand *props = new DtaCommand(OPAL_UID::OPAL_SMUID_UID,
+        OPAL_METHOD::PROPERTIES);
     if (props == NULL) {
         LOG(E) << "Unable to create command object ";
         delete session;
@@ -1501,49 +1528,58 @@ uint8_t DtaDevEnterprise::properties()
     LOG(D1) << "Leaving DtaDevEnterprise::properties()";
     return 0;
 }
-void DtaDevEnterprise::puke()
-{
 
+void DtaDevEnterprise::puke () {
     LOG(D1) << "Entering DtaDevEnterprise::puke()";
     DtaDev::puke();
     if (disk_info.Properties) {
-        uint32_t i = 0, j = 0;
+        uint32_t i = 0;
+        uint32_t j = 0;
 
-        cout << std::endl << "TPer Properties: " << std::endl;
+        std::cout << std::endl << "TPer Properties: " << std::endl;
         for (i = 0, j = 1; i < propertiesResponse.getTokenCount(); i++) {
             if (OPAL_TOKEN::ENDLIST == propertiesResponse.tokenIs(i)) {
                 if (OPAL_TOKEN::STARTNAME == propertiesResponse.tokenIs(i + 1)) {
-                    cout << std::endl << "Host Properties: " << std::endl;
+                    std::cout << std::endl << "Host Properties: " << std::endl;
                     i += 2;
                     j = 1;
                     continue;
-                }
-                else {
+                } else {
                     break;
                 }
             }
             if (OPAL_TOKEN::STARTNAME == propertiesResponse.tokenIs(i)) {
-                if (OPAL_TOKEN::DTA_TOKENID_BYTESTRING == propertiesResponse.tokenIs(i + 1)) {
-                    cout << "  "  << propertiesResponse.getString(i + 1)
-                         << " = " << propertiesResponse.getUint64(i + 2);
+                if (OPAL_TOKEN::DTA_TOKENID_BYTESTRING
+                    == propertiesResponse.tokenIs(i + 1))
+                {
+                    std::cout << "  " << propertiesResponse.getString(i + 1)
+                              << " = " << propertiesResponse.getUint64(i + 2);
                     i += 2;
                     j++;
-                    if (!(j % 3)) cout << std::endl;
+                    if (!(j % 3)) {
+                        std::cout << std::endl;
+                    }
                 }
             }
         }
-        if ((j % 3) != 0)
-            cout << std::endl;
+        if ((j % 3) != 0) {
+            std::cout << std::endl;
+        }
     }
 }
-uint8_t DtaDevEnterprise::rawCmd(char *sp, char *hexauth, char *pass,
+
+uint8_t DtaDevEnterprise::rawCmd (char *sp, char *hexauth, char *pass,
     char *hexinvokingUID, char *hexmethod,char *hexparms)
 {
     LOG(D1) << "Entering DtaDevEnterprise::rawCmd";
     LOG(D1) << sp << " " << hexauth << " " << pass << " " ;
     LOG(D1) << hexinvokingUID << " " << hexmethod << " " << hexparms;
     uint8_t lastRC;
-    vector<uint8_t> authority, object, invokingUID, method, parms;
+    std::vector<uint8_t> authority;
+    std::vector<uint8_t> object;
+    std::vector<uint8_t> invokingUID;
+    std::vector<uint8_t> method;
+    std::vector<uint8_t> parms;
     uint8_t work;
     if (16 != strnlen(hexauth, 32)) {
         LOG(E) << "Authority must be 16 byte ascii string of hex authority uid";
@@ -1551,8 +1587,12 @@ uint8_t DtaDevEnterprise::rawCmd(char *sp, char *hexauth, char *pass,
     }
     authority.push_back(OPAL_SHORT_ATOM::BYTESTRING8);
     for (uint32_t i = 0; i < 16; i += 2) {
-        work = hexauth[i] & 0x40 ? 16 * ((hexauth[i] & 0xf) + 9) : 16 * (hexauth[i] & 0x0f);
-        work += hexauth[i + 1] & 0x40 ? (hexauth[i + 1] & 0xf) + 9 : hexauth[i + 1] & 0x0f;
+        work = hexauth[i] & 0x40
+             ? 16 * ((hexauth[i] & 0xf) + 9)
+             : 16 * (hexauth[i] & 0x0f);
+        work += hexauth[i + 1] & 0x40
+             ? (hexauth[i + 1] & 0xf) + 9
+             : hexauth[i + 1] & 0x0f;
         authority.push_back(work);
     }
     if (16 != strnlen(hexinvokingUID, 32)) {
@@ -1561,8 +1601,12 @@ uint8_t DtaDevEnterprise::rawCmd(char *sp, char *hexauth, char *pass,
     }
     invokingUID.push_back(OPAL_SHORT_ATOM::BYTESTRING8);
     for (uint32_t i = 0; i < 16; i += 2) {
-        work = hexinvokingUID[i] & 0x40 ? 16 * ((hexinvokingUID[i] & 0xf) + 9) : 16 * (hexinvokingUID[i] & 0x0f);
-        work += hexinvokingUID[i + 1] & 0x40 ? (hexinvokingUID[i + 1] & 0xf) + 9 : hexinvokingUID[i + 1] & 0x0f;
+        work = hexinvokingUID[i] & 0x40
+             ? 16 * ((hexinvokingUID[i] & 0xf) + 9)
+             : 16 * (hexinvokingUID[i] & 0x0f);
+        work += hexinvokingUID[i + 1] & 0x40
+             ? (hexinvokingUID[i + 1] & 0xf) + 9
+             : hexinvokingUID[i + 1] & 0x0f;
         invokingUID.push_back(work);
     }
     if (16 != strnlen(hexmethod, 32)) {
@@ -1571,8 +1615,12 @@ uint8_t DtaDevEnterprise::rawCmd(char *sp, char *hexauth, char *pass,
     }
     method.push_back(OPAL_SHORT_ATOM::BYTESTRING8);
     for (uint32_t i = 0; i < 16; i += 2) {
-        work = hexmethod[i] & 0x40 ? 16 * ((hexmethod[i] & 0xf) + 9) : 16 * (hexmethod[i] & 0x0f);
-        work += hexmethod[i + 1] & 0x40 ? (hexmethod[i + 1] & 0xf) + 9 : hexmethod[i + 1] & 0x0f;
+        work = hexmethod[i] & 0x40
+             ? 16 * ((hexmethod[i] & 0xf) + 9)
+             : 16 * (hexmethod[i] & 0x0f);
+        work += hexmethod[i + 1] & 0x40
+             ? (hexmethod[i + 1] & 0xf) + 9
+             : hexmethod[i + 1] & 0x0f;
         method.push_back(work);
     }
     if (1020 < strnlen(hexparms, 1024)) {
@@ -1585,8 +1633,12 @@ uint8_t DtaDevEnterprise::rawCmd(char *sp, char *hexauth, char *pass,
     }
 
     for (uint32_t i = 0; i < strnlen(hexparms, 1024); i += 2) {
-        work = hexparms[i] & 0x40 ? 16 * ((hexparms[i] & 0xf) + 9) : 16 * (hexparms[i] & 0x0f);
-        work += hexparms[i + 1] & 0x40 ? (hexparms[i + 1] & 0xf) + 9 : hexparms[i + 1] & 0x0f;
+        work = hexparms[i] & 0x40
+             ? 16 * ((hexparms[i] & 0xf) + 9)
+             : 16 * (hexparms[i] & 0x0f);
+        work += hexparms[i + 1] & 0x40
+             ? (hexparms[i + 1] & 0xf) + 9
+             : hexparms[i + 1] & 0x0f;
         parms.push_back(work);
     }
     DtaCommand *cmd = new DtaCommand();
@@ -1623,13 +1675,12 @@ uint8_t DtaDevEnterprise::rawCmd(char *sp, char *hexauth, char *pass,
     LOG(D1) << "Exiting DtaDevEnterprise::rawCmd";
     return 0;
 }
-uint8_t DtaDevEnterprise::objDump(char *sp, char * auth, char *pass,
-    char * objID)
-{
+
+uint8_t DtaDevEnterprise::objDump (char *sp, char *auth, char *pass, char *objID) {
     LOG(D1) << "Entering DtaDevEnterprise::objDump";
     LOG(D1) << sp << " " << auth << " " << pass << " " << objID;
     DtaCommand *get = new DtaCommand();
-    vector<uint8_t> authority, object;
+    std::vector<uint8_t> authority, object;
     uint8_t work;
     if (16 != strnlen(auth, 32)) {
         LOG(E) << "Authority must be 16 byte ascii string of hex authority uid";
@@ -1641,14 +1692,22 @@ uint8_t DtaDevEnterprise::objDump(char *sp, char * auth, char *pass,
     }
     authority.push_back(OPAL_SHORT_ATOM::BYTESTRING8);
     for (uint32_t i = 0; i < 16; i += 2) {
-        work = auth[i] & 0x40 ? 16 * ((auth[i] & 0xf) + 9) : 16 * (auth[i] & 0x0f);
-        work += auth[i + 1] & 0x40 ? (auth[i + 1] & 0xf) + 9 : auth[i + 1] & 0x0f;
+        work = auth[i] & 0x40
+             ? 16 * ((auth[i] & 0xf) + 9)
+             : 16 * (auth[i] & 0x0f);
+        work += auth[i + 1] & 0x40
+             ? (auth[i + 1] & 0xf) + 9
+             : auth[i + 1] & 0x0f;
         authority.push_back(work);
     }
     object.push_back(OPAL_SHORT_ATOM::BYTESTRING8);
     for (uint32_t i = 0; i < 16; i += 2) {
-        work = objID[i] & 0x40 ? 16 * ((objID[i] & 0xf) + 9) : 16 * (objID[i] & 0x0f);
-        work += objID[i + 1] & 0x40 ? (objID[i + 1] & 0xf) + 9 : objID[i + 1] & 0x0f;
+        work = objID[i] & 0x40
+             ? 16 * ((objID[i] & 0xf) + 9)
+             : 16 * (objID[i] & 0x0f);
+        work += objID[i + 1] & 0x40
+             ? (objID[i + 1] & 0xf) + 9
+             : objID[i + 1] & 0x0f;
         object.push_back(work);
     }
     get->reset(OPAL_UID::OPAL_AUTHORITY_TABLE, OPAL_METHOD::EGET);
@@ -1678,6 +1737,7 @@ uint8_t DtaDevEnterprise::objDump(char *sp, char * auth, char *pass,
     LOG(D1) << "Exiting DtaDevEnterprise::objDump";
     return 0;
 }
+
 #ifdef _MSC_VER
 #pragma warning(pop)
 #endif

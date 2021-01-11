@@ -20,6 +20,7 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 #include "os.h"
 #include <iostream>
 #include <iomanip>
+#include <vector>
 #include "DtaHashPwd.h"
 #include "DtaLexicon.h"
 #include "DtaOptions.h"
@@ -30,15 +31,16 @@ extern "C" {
 #include "pbkdf2.h"
 #include "sha2.h"
 }
-using namespace std;
 
-void DtaHashPassword(vector<uint8_t> &hash, char * password, vector<uint8_t> salt,
-    unsigned int iter, uint8_t hashsize)
+void DtaHashPassword (std::vector<uint8_t>& hash, char *password,
+    std::vector<uint8_t> salt, unsigned int iter, uint8_t hashsize)
 {
     LOG(D1) << " Entered DtaHashPassword";
     // if the hashsize can be > 255 the token overhead logic needs to be fixed
     assert(1 == sizeof(hashsize));
-    if (253 < hashsize) { LOG(E) << "Hashsize > 253 incorrect token generated"; }
+    if (253 < hashsize) {
+        LOG(E) << "Hashsize > 253 incorrect token generated";
+    }
     
     hash.clear();
     // don't hash the devault OPAL password ''
@@ -63,72 +65,84 @@ exit:    // add the token overhead
     hash.insert(hash.begin(), 0xd0);
 }
 
-void DtaHashPwd(vector<uint8_t> &hash, char * password, DtaDev * d)
-{
+void DtaHashPwd (std::vector<uint8_t>& hash, char *password, DtaDev *d) {
     LOG(D1) << " Entered DtaHashPwd";
     char *serNum;
 
     if (d->no_hash_passwords) {
         hash.clear();
-    for (uint16_t i = 0; i < strnlen(password, 32); i++)
-        hash.push_back(password[i]);
-    // add the token overhead
-    hash.insert(hash.begin(), (uint8_t)hash.size());
-    hash.insert(hash.begin(), 0xd0);
-    LOG(D1) << " Exit DtaHashPwd";
-    return;
+        for (uint16_t i = 0; i < strnlen(password, 32); i++) {
+            hash.push_back(password[i]);
+        }
+        // add the token overhead
+        hash.insert(hash.begin(), (uint8_t)hash.size());
+        hash.insert(hash.begin(), 0xd0);
+        LOG(D1) << " Exit DtaHashPwd";
+        return;
     }
     serNum = d->getSerialNum();
-    vector<uint8_t> salt(serNum, serNum + 20);
+    std::vector<uint8_t> salt(serNum, serNum + 20);
     //    vector<uint8_t> salt(DEFAULTSALT);
     DtaHashPassword(hash, password, salt);
     LOG(D1) << " Exit DtaHashPwd"; // log for hash timing
 }
 
-struct PBKDF_TestTuple
-{
+struct PBKDF_TestTuple {
     uint8_t hashlen;
     unsigned int iterations;
-    const char *Password, *Salt, *hexDerivedKey;
+    const char *Password;
+    const char *Salt;
+    const char *hexDerivedKey;
 };
 
-int testresult(std::vector<uint8_t> &result, const char * expected, size_t len) {
-    char work[50];
-    if (len > 50) return 1;
+int testresult (std::vector<uint8_t>& result, const char *expected, size_t len) {
+    char work [50];
+    if (len > 50) {
+        return 1;
+    }
     int p = 0;
     printf("Expected Result: %s\nActual Result  : ", expected);
-    for (uint32_t i = 0; i < len; i++) { printf("%02x", result[i + 2]); }; printf("\n");
+    for (uint32_t i = 0; i < len; i++) {
+        printf("%02x", result[i + 2]);
+    }
+    printf("\n");
     for (uint32_t i = 0; i < len * 2; i += 2) {
-        work[p] = expected[i] & 0x40 ? 16 * ((expected[i] & 0xf) + 9) : 16 * (expected[i] & 0xf);
-        work[p] += expected[i + 1] & 0x40 ? (expected[i + 1] & 0xf) + 9 : expected[i + 1] & 0xf;
+        work[p] = expected[i] & 0x40
+                ? 16 * ((expected[i] & 0xf) + 9)
+                : 16 * (expected[i] & 0xf);
+        work[p] += expected[i + 1] & 0x40
+                ? (expected[i + 1] & 0xf) + 9
+                : expected[i + 1] & 0xf;
         p++;
     }
-    return memcmp(result.data()+2, work, len);
+    return memcmp(result.data() + 2, work, len);
 }
 
-int Testsedutil(const PBKDF_TestTuple *testSet, unsigned int testSetSize)
-{
+int Testsedutil (const PBKDF_TestTuple *testSet, unsigned int testSetSize) {
     int pass = 1;
-    std::vector<uint8_t> hash, seaSalt;
+    std::vector<uint8_t> hash;
+    std::vector<uint8_t> seaSalt;
 
     for (unsigned int i = 0; i < testSetSize; i++) {
-        const PBKDF_TestTuple &tuple = testSet[i];
+        const PBKDF_TestTuple& tuple = testSet[i];
         hash.clear();
         seaSalt.clear();
         for (uint16_t j = 0; j < strnlen(tuple.Salt, 255); j++) {
             seaSalt.push_back(tuple.Salt[j]);
         }
-        printf("Password %s Salt %s Iterations %i Length %i\n", (char *)tuple.Password,
-            (char *) tuple.Salt, tuple.iterations, tuple.hashlen);
-        DtaHashPassword(hash, (char *) tuple.Password, seaSalt, tuple.iterations, tuple.hashlen);
+        printf("Password %s Salt %s Iterations %i Length %i\n",
+            (char *)tuple.Password, (char *)tuple.Salt, tuple.iterations,
+            tuple.hashlen);
+        DtaHashPassword(hash, (char *)tuple.Password, seaSalt,
+            tuple.iterations, tuple.hashlen);
         int fail = (testresult(hash, tuple.hexDerivedKey, tuple.hashlen) == 0);
         pass = pass & fail;
     }
 
     return pass;
 }
-int TestPBKDF2()
-{
+
+int TestPBKDF2 () {
     int pass = 1;
     // from draft-ietf-smime-password-03.txt, at http://www.imc.org/draft-ietf-smime-password
     PBKDF_TestTuple testSet[] = {
@@ -149,13 +163,13 @@ int TestPBKDF2()
         // program receives char * from OS so this test would fail but is not possible IRL
     };
 
-    cout << "\nPKCS #5 PBKDF2 validation suite running ... \n\n";
-    pass = Testsedutil(testSet, sizeof (testSet) / sizeof (testSet[0])) && pass;
-    cout << "\nPKCS #5 PBKDF2 validation suite ... ";
-    if (pass)
-        cout << "passed\n";
-    else
-        cout << "**FAILED**\n";
+    std::cout << "\nPKCS #5 PBKDF2 validation suite running ... \n\n";
+    pass = Testsedutil(testSet, sizeof(testSet) / sizeof(testSet[0])) && pass;
+    std::cout << "\nPKCS #5 PBKDF2 validation suite ... ";
+    if (pass) {
+        std::cout << "passed\n";
+    } else {
+        std::cout << "**FAILED**\n";
+    }
     return 0;
 }
-

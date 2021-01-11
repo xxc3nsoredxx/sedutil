@@ -21,8 +21,8 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 #include "DtaOptions.h"
 #include "DtaLexicon.h"
 #include "Version.h"
-void usage()
-{
+
+void usage( ) {
     printf("sedutil v%s Copyright 2014-2017 Bright Plaza Inc. <drivetrust@drivetrust.com>\n", GIT_VERSION);
     printf("a utility to manage self encrypting drives that conform\n");
     printf("to the Trusted Computing Group OPAL 2.0 SSC specification\n");
@@ -106,9 +106,8 @@ void usage()
     return;
 }
 
-uint8_t DtaOptions(int argc, char * argv[], DTA_OPTIONS * opts)
-{
-    memset(opts, 0, sizeof (DTA_OPTIONS));
+uint8_t DtaOptions (int argc, char *argv [], DTA_OPTIONS *opts) {
+    memset(opts, 0, sizeof(DTA_OPTIONS));
     uint16_t loggingLevel = 2;
     uint8_t baseOptions = 2; // program and option
     CLog::Level() = CLog::FromInt(loggingLevel);
@@ -121,32 +120,31 @@ uint8_t DtaOptions(int argc, char * argv[], DTA_OPTIONS * opts)
         if (!(strcmp("-h", argv[i])) || !(strcmp("--help", argv[i]))) {
             usage();
             return DTAERROR_INVALID_COMMAND;
-        }
-        else if ('v' == argv[i][1])
-        {
+        } else if ('v' == argv[i][1]) {
             baseOptions += 1;
             loggingLevel += (uint16_t)(strlen(argv[i]) - 1);
-            if (loggingLevel > 7) loggingLevel = 7;
+            if (loggingLevel > 7) {
+                loggingLevel = 7;
+            }
             CLog::Level() = CLog::FromInt(loggingLevel);
             LOG(D) << "Log level set to " << CLog::ToString(CLog::FromInt(loggingLevel));
             LOG(D) << "sedutil version : " << GIT_VERSION;
-        }
-        else if (!(strcmp("-n", argv[i]))) {
+        } else if (!(strcmp("-n", argv[i]))) {
             baseOptions += 1;
             opts->no_hash_passwords = true;
             LOG(D) << "Password hashing is disabled";
-                }
-        else if (!strcmp("-l", argv[i])) {
+        } else if (!strcmp("-l", argv[i])) {
             baseOptions += 1;
             opts->output_format = sedutilNormal;
             outputFormat = sedutilNormal;
-        }
-        else if (!(('-' == argv[i][0]) && ('-' == argv[i][1])) && 
-            (0 == opts->action))
+        } else if (!(('-' == argv[i][0]) && ('-' == argv[i][1]))
+            && (0 == opts->action))
         {
-            LOG(E) << "Argument " << (uint16_t) i << " (" << argv[i] << ") should be a command";
+            LOG(E) << "Argument " << (uint16_t) i << " ("
+                   << argv[i] << ") should be a command";
             return DTAERROR_INVALID_COMMAND;
         }
+
         BEGIN_OPTION(initialSetup, 2) OPTION_IS(password) OPTION_IS(device) END_OPTION
         BEGIN_OPTION(setSIDPassword, 3) OPTION_IS(password) OPTION_IS(newpassword) 
         OPTION_IS(device) END_OPTION

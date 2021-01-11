@@ -19,6 +19,7 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
  * C:E********************************************************************** */
 #include "os.h"
 #include <stdio.h>
+#include <vector>
 #include "DtaSession.h"
 #include "DtaOptions.h"
 #include "DtaDev.h"
@@ -29,45 +30,39 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 #include "DtaHashPwd.h"
 #include "DtaStructures.h"
 
-using namespace std;
-
-DtaSession::DtaSession(DtaDev * device)
-{
+DtaSession::DtaSession (DtaDev *device) {
     LOG(D1) << "Creating DtaSsession()";
     sessionauth = 0;
     d = device;
 }
 
-uint8_t
-DtaSession::start(OPAL_UID SP)
-{
-    return (start(SP, NULL, OPAL_UID::OPAL_UID_HEXFF));
+uint8_t DtaSession::start (OPAL_UID SP) {
+    return start(SP, NULL, OPAL_UID::OPAL_UID_HEXFF);
 }
 
-uint8_t 
-DtaSession::start(OPAL_UID SP, char * HostChallenge, OPAL_UID SignAuthority)
-{
+uint8_t DtaSession::start (OPAL_UID SP, char *HostChallenge, OPAL_UID SignAuthority) {
     LOG(D1) << "Entering DtaSession::startSession ";
-    vector<uint8_t> auth;
+    std::vector<uint8_t> auth;
     auth.push_back(OPAL_SHORT_ATOM::BYTESTRING8);
     for (int i = 0; i < 8; i++) {
         auth.push_back(OPALUID[SignAuthority][i]);
     }
-    return(start(SP, HostChallenge, auth));
+    return start(SP, HostChallenge, auth);
 }
-uint8_t DtaSession::authuser() {
+
+uint8_t DtaSession::authuser () {
     return sessionauth;
 }
+
 #ifdef MULTISTART
-uint8_t
-DtaSession::start(OPAL_UID SP, char * HostChallenge, vector<uint8_t> SignAuthority)
+uint8_t DtaSession::start (OPAL_UID SP, char *HostChallenge,
+    std::vector<uint8_t> SignAuthority)
 {
-    vector <uint8_t> auth;
+    std::vector<uint8_t> auth;
     if ((lastRC = unistart(SP, HostChallenge, SignAuthority)) == 0) {
         sessionauth = 0;
         return 0;
-    }
-    else {
+    } else {
         for (uint8_t i = 1; i < 9; i++) {
             // { 0x00, 0x00, 0x00, 0x09, 0x00, 0x03, 0x00, 0x01 }, /**< USER1 */
             auth.clear();
@@ -85,19 +80,16 @@ DtaSession::start(OPAL_UID SP, char * HostChallenge, vector<uint8_t> SignAuthori
                 return 0;
             }
         }
-
     }
     return lastRC;
 }
-uint8_t
-DtaSession::unistart(OPAL_UID SP, char * HostChallenge, vector<uint8_t> SignAuthority)
+uint8_t DtaSession::unistart (OPAL_UID SP, char *HostChallenge, std::vector<uint8_t> SignAuthority)
 #else
-uint8_t
-DtaSession::start(OPAL_UID SP, char * HostChallenge, vector<uint8_t> SignAuthority)
+uint8_t DtaSession::start (OPAL_UID SP, char *HostChallenge, std::vector<uint8_t> SignAuthority)
 #endif
 {
     LOG(D1) << "Entering DtaSession::startSession ";
-    vector<uint8_t> hash;
+    std::vector<uint8_t> hash;
     lastRC = 0;
 
     DtaCommand *cmd = new DtaCommand();
@@ -155,34 +147,35 @@ DtaSession::start(OPAL_UID SP, char * HostChallenge, vector<uint8_t> SignAuthori
     }
     return 0;
 }
-uint8_t
-DtaSession::authenticate(vector<uint8_t> Authority, char * Challenge)
-{
+
+uint8_t DtaSession::authenticate (std::vector<uint8_t> Authority, char *Challenge) {
     LOG(D1) << "Entering DtaSession::authenticate ";
-    vector<uint8_t> hash;
+    std::vector<uint8_t> hash;
     DtaCommand *cmd = new DtaCommand();
     if (NULL == cmd) {
         LOG(E) << "Unable to create session object ";
         return DTAERROR_OBJECT_CREATE_FAILED;
     }
     DtaResponse response;
-    cmd->reset(OPAL_UID::OPAL_THISSP_UID, d->isEprise() ? OPAL_METHOD::EAUTHENTICATE : OPAL_METHOD::AUTHENTICATE);
+    cmd->reset(OPAL_UID::OPAL_THISSP_UID, d->isEprise()
+        ? OPAL_METHOD::EAUTHENTICATE
+        : OPAL_METHOD::AUTHENTICATE);
     cmd->addToken(OPAL_TOKEN::STARTLIST); // [  (Open Bracket)
     cmd->addToken(Authority);
-    if (Challenge && *Challenge)
-    {
+    if (Challenge && *Challenge) {
         cmd->addToken(OPAL_TOKEN::STARTNAME);
-        if (d->isEprise())
+        if (d->isEprise()) {
             cmd->addToken("Challenge");
-        else
+        } else {
             cmd->addToken(OPAL_TINY_ATOM::UINT_00);
+        }
         if (hashPwd) {
             hash.clear();
             DtaHashPwd(hash, Challenge, d);
             cmd->addToken(hash);
-        }
-        else
+        } else {
             cmd->addToken(Challenge);
+        }
         cmd->addToken(OPAL_TOKEN::ENDNAME);
     }
     cmd->addToken(OPAL_TOKEN::ENDLIST); // ]  (Close Bracket)
@@ -202,17 +195,15 @@ DtaSession::authenticate(vector<uint8_t> Authority, char * Challenge)
     delete cmd;
     return 0;
 }
-uint8_t
-DtaSession::sendCommand(DtaCommand * cmd, DtaResponse & response)
-{
+
+uint8_t DtaSession::sendCommand (DtaCommand *cmd, DtaResponse& response) {
     LOG(D1) << "Entering DtaSession::sendCommand()";
     cmd->setHSN(HSN);
     cmd->setTSN(TSN);
     cmd->setcomID(d->comID());
 
     uint8_t exec_rc = d->exec(cmd, response, SecurityProtocol);
-    if (0 != exec_rc)
-    {
+    if (0 != exec_rc) {
         LOG(E) << "Command failed on exec " << (uint16_t) exec_rc;
         return exec_rc;
     }
@@ -221,9 +212,10 @@ DtaSession::sendCommand(DtaCommand * cmd, DtaResponse & response)
      * have a sane reply to work with
      */
     // zero lengths -- these are big endian but it doesn't matter for uint = 0
-    if ((0 == response.h.cp.length) ||
-        (0 == response.h.pkt.length) ||
-        (0 == response.h.subpkt.length)) {
+    if ((0 == response.h.cp.length)
+        || (0 == response.h.pkt.length)
+        || (0 == response.h.subpkt.length))
+    {
         LOG(E) << "One or more header fields have 0 length";
         return DTAERROR_COMMAND_ERROR;
     }
@@ -232,8 +224,9 @@ DtaSession::sendCommand(DtaCommand * cmd, DtaResponse & response)
         return 0;
     }
     // IF we received a method status return it
-    if (!((OPAL_TOKEN::ENDLIST == response.tokenIs(response.getTokenCount() - 1)) &&
-        (OPAL_TOKEN::STARTLIST == response.tokenIs(response.getTokenCount() - 5)))) {
+    if (!((OPAL_TOKEN::ENDLIST == response.tokenIs(response.getTokenCount() - 1))
+        && (OPAL_TOKEN::STARTLIST == response.tokenIs(response.getTokenCount() - 5))))
+    {
         // no method status so we hope we reported the error someplace else
         LOG(E) << "Method Status missing";
         return DTAERROR_NO_METHOD_STATUS;
@@ -245,83 +238,73 @@ DtaSession::sendCommand(DtaCommand * cmd, DtaResponse & response)
     return response.getUint8(response.getTokenCount() - 4);
 }
 
-void
-DtaSession::setProtocol(uint8_t value)
-{
+void DtaSession::setProtocol (uint8_t value) {
     LOG(D1) << "Entering DtaSession::setProtocol";
     SecurityProtocol = value;
 }
 
-void
-DtaSession::dontHashPwd()
-{
+void DtaSession::dontHashPwd () {
     LOG(D1) << "Entering DtaSession::setProtocol";
     hashPwd = 0;
 }
 
-void
-DtaSession::expectAbort()
-{
+void DtaSession::expectAbort () {
     LOG(D1) << "Entering DtaSession::methodStatus()";
     willAbort = 1;
 }
 
-char *
-DtaSession::methodStatus(uint8_t status)
-{
+char* DtaSession::methodStatus (uint8_t status) {
     LOG(D1) << "Entering DtaSession::methodStatus()";
     switch (status) {
     case OPALSTATUSCODE::AUTHORITY_LOCKED_OUT:
-        return (char *) "AUTHORITY_LOCKED_OUT";
+        return (char *)"AUTHORITY_LOCKED_OUT";
     case OPALSTATUSCODE::FAIL:
-        return (char *) "FAIL";
+        return (char *)"FAIL";
     case OPALSTATUSCODE::INSUFFICIENT_ROWS:
-        return (char *) "INSUFFICIENT_ROWS";
+        return (char *)"INSUFFICIENT_ROWS";
     case OPALSTATUSCODE::INSUFFICIENT_SPACE:
-        return (char *) "INSUFFICIENT_SPACE";
+        return (char *)"INSUFFICIENT_SPACE";
     case OPALSTATUSCODE::INVALID_FUNCTION:
-        return (char *) "INVALID_FUNCTION";
+        return (char *)"INVALID_FUNCTION";
     case OPALSTATUSCODE::INVALID_PARAMETER:
-        return (char *) "INVALID_PARAMETER";
+        return (char *)"INVALID_PARAMETER";
     case OPALSTATUSCODE::INVALID_REFERENCE:
-        return (char *) "INVALID_REFERENCE";
+        return (char *)"INVALID_REFERENCE";
     case OPALSTATUSCODE::NOT_AUTHORIZED:
-        return (char *) "NOT_AUTHORIZED";
+        return (char *)"NOT_AUTHORIZED";
     case OPALSTATUSCODE::NO_SESSIONS_AVAILABLE:
-        return (char *) "NO_SESSIONS_AVAILABLE";
+        return (char *)"NO_SESSIONS_AVAILABLE";
     case OPALSTATUSCODE::RESPONSE_OVERFLOW:
-        return (char *) "RESPONSE_OVERFLOW";
+        return (char *)"RESPONSE_OVERFLOW";
     case OPALSTATUSCODE::SP_BUSY:
-        return (char *) "SP_BUSY";
+        return (char *)"SP_BUSY";
     case OPALSTATUSCODE::SP_DISABLED:
-        return (char *) "SP_DISABLED";
+        return (char *)"SP_DISABLED";
     case OPALSTATUSCODE::SP_FAILED:
-        return (char *) "SP_FAILED";
+        return (char *)"SP_FAILED";
     case OPALSTATUSCODE::SP_FROZEN:
-        return (char *) "SP_FROZEN";
+        return (char *)"SP_FROZEN";
     case OPALSTATUSCODE::SUCCESS:
-        return (char *) "SUCCESS";
+        return (char *)"SUCCESS";
     case OPALSTATUSCODE::TPER_MALFUNCTION:
-        return (char *) "TPER_MALFUNCTION";
+        return (char *)"TPER_MALFUNCTION";
     case OPALSTATUSCODE::TRANSACTION_FAILURE:
-        return (char *) "TRANSACTION_FAILURE";
+        return (char *)"TRANSACTION_FAILURE";
     case OPALSTATUSCODE::UNIQUENESS_CONFLICT:
-        return (char *) "UNIQUENESS_CONFLICT";
+        return (char *)"UNIQUENESS_CONFLICT";
     default:
-        return (char *) "Unknown status code";
+        return (char *)"Unknown status code";
     }
 }
 
-DtaSession::~DtaSession()
-{
+DtaSession::~DtaSession () {
     LOG(D1) << "Destroying DtaSession";
     DtaResponse response;
     if (!willAbort) {
         DtaCommand *cmd = new DtaCommand();
         if (NULL == cmd) {
             LOG(E) << "Unable to create command object ";
-        } 
-        else {
+        } else {
             cmd->reset();
             cmd->addToken(OPAL_TOKEN::ENDOFSESSION);
             cmd->complete(0);
