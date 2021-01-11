@@ -78,6 +78,6 @@ std::string GetPassPhrase (const char *prompt, bool show_asterisk) {
             }
         }
     }
-    
+
     return password;
 }

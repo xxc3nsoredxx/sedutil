@@ -41,7 +41,7 @@ uint8_t UnlockSEDs (char *password) {
     dir = opendir("/dev");
     if (dir != NULL) {
         while ((dirent = readdir(dir)) != NULL) {
-            if((!fnmatch("sd[a-z]", dirent->d_name, 0))
+            if ((!fnmatch("sd[a-z]", dirent->d_name, 0))
                 || (!fnmatch("nvme[0-9]", dirent->d_name, 0))
                 || (!fnmatch("nvme[0-9][0-9]", dirent->d_name, 0)))
             {
@@ -53,7 +53,7 @@ uint8_t UnlockSEDs (char *password) {
     }
     std::sort(devices.begin(), devices.end());
     printf("\nScanning....\n");
-    for(uint16_t i = 0; i < devices.size(); i++) {
+    for (uint16_t i = 0; i < devices.size(); i++) {
         snprintf(devref, 23, "/dev/%s", devices[i].c_str());
         tempDev = new DtaDevGeneric(devref);
         if (!tempDev->isPresent()) {
