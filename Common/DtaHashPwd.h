@@ -21,7 +21,6 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 #include <vector>
 class DtaDev;
 
-using namespace std;
 /** Hash the password using the drive serial number as salt.
  * This is far from ideal but it's better that a single salt as
  * it should prevent attacking the password with a prebuilt table
@@ -32,7 +31,7 @@ using namespace std;
  * @param password The password to be hashed
  * @param device the device where the password is to be used
  */
-void DtaHashPwd(vector<uint8_t> &hash, char * password, DtaDev * device);
+void DtaHashPwd (std::vector<uint8_t>& hash, char *password, DtaDev *device);
 /** Hash a passwor using the PBDKF2<SHA2> function 
  *
  * @param hash Field where hash returned
@@ -41,7 +40,7 @@ void DtaHashPwd(vector<uint8_t> &hash, char * password, DtaDev * device);
  * @param iter number of iterations to be preformed 
  * @param hashsize size of hash to be returned
  */
-void DtaHashPassword(vector<uint8_t> &hash, char * password, vector<uint8_t> salt,
-        unsigned int iter = 500000, uint8_t hashsize = 32);
+void DtaHashPassword (std::vector<uint8_t>& hash, char *password,
+    std::vector<uint8_t> salt, unsigned int iter = 500000, uint8_t hashsize = 32);
 /** Test the hshing function using publicly available test cased and report */
-int TestPBKDF2();
+int TestPBKDF2 ();

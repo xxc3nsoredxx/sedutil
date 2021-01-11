@@ -46,13 +46,13 @@ typedef struct _DTA_OPTIONS {
     sedutiloutput output_format;
 } DTA_OPTIONS;
 /** Print a usage message */
-void usage();
+void usage ();
 /** Parse the command line and return a structure that describes the action desired
  * @param argc program argc parameter 
  * @param argv program argv paramater
  * @param opts pointer to options structure to be filled out
  */
-uint8_t DtaOptions(int argc, char * argv[], DTA_OPTIONS * opts);
+uint8_t DtaOptions (int argc, char *argv [], DTA_OPTIONS *opts);
 /** Command line options implemented in sedutil */
 typedef enum _sedutiloption {
     deadbeef,    // 0 should indicate no action specified
@@ -96,7 +96,6 @@ typedef enum _sedutiloption {
     objDump,
     printDefaultPassword,
     rawCmd,
-
 } sedutiloption;
 /** verify the number of arguments passed */
 #define CHECKARGS(x) \

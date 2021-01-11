@@ -44,7 +44,7 @@
 #include <stdlib.h>
 #include "DtaOptions.h"
 
-inline std::string NowTime();
+inline std::string NowTime ();
 
 enum TLogLevel {
     E, W, I, D, D1, D2, D3, D4
@@ -53,53 +53,55 @@ enum TLogLevel {
 template <typename T>
 class Log {
 public:
-    Log();
-    virtual ~Log();
-    std::ostringstream& Get(TLogLevel level = I);
+    Log ();
+    virtual ~Log ();
+    std::ostringstream& Get (TLogLevel level = I);
 public:
-    static TLogLevel& Level();
-    static std::string ToString(TLogLevel level);
-    static TLogLevel FromString(const std::string& level);
-    static TLogLevel FromInt(const int level);
+    static TLogLevel& Level ();
+    static std::string ToString (TLogLevel level);
+    static TLogLevel FromString (const std::string& level);
+    static TLogLevel FromInt (const int level);
 protected:
     std::ostringstream os;
 private:
-    Log(const Log&);
+    Log (const Log&);
     Log& operator =(const Log&);
 };
 
 template <typename T>
-Log<T>::Log() {
-}
+Log<T>::Log () {}
 
 template <typename T>
-std::ostringstream& Log<T>::Get(TLogLevel level) {
+std::ostringstream& Log<T>::Get (TLogLevel level) {
     os << "- " << NowTime();
-    os << " " << ToString(level) << ": ";
+    os << " "  << ToString(level) << ": ";
     //    os << std::string(level > D ? level - D : 0, '\t');
     return os;
 }
 
 template <typename T>
-Log<T>::~Log() {
+Log<T>::~Log () {
     os << std::endl;
     T::Output(os.str());
 }
 
 template <typename T>
-TLogLevel& Log<T>::Level() {
+TLogLevel& Log<T>::Level () {
     static TLogLevel Level = D4;
     return Level;
 }
 
 template <typename T>
-std::string Log<T>::ToString(TLogLevel level) {
-    static const char* const buffer[] = {"ERR ", "WARN", "INFO", "DBG ", "DBG1", "DBG2", "DBG3", "DBG4"};
+std::string Log<T>::ToString (TLogLevel level) {
+    static const char* const buffer [] = {
+        "ERR ", "WARN", "INFO", "DBG ",
+        "DBG1", "DBG2", "DBG3", "DBG4"
+    };
     return buffer[level];
 }
 
 template <typename T>
-TLogLevel Log<T>::FromString(const std::string& level) {
+TLogLevel Log<T>::FromString (const std::string& level) {
     if (level == "DEBUG4")
         return D4;
     if (level == "DEBUG3")
@@ -116,12 +118,13 @@ TLogLevel Log<T>::FromString(const std::string& level) {
         return W;
     if (level == "ERROR")
         return E;
-    Log<T>().Get(W) << "Unknown logging level '" << level << "'. Using INFO level as default.";
+    Log<T>().Get(W) << "Unknown logging level '" << level
+                    << "'. Using INFO level as default.";
     return I;
 }
 
 template <typename T>
-TLogLevel Log<T>::FromInt(const int level) {
+TLogLevel Log<T>::FromInt (const int level) {
     if (level == 7)
         return D4;
     if (level == 6)
@@ -138,48 +141,48 @@ TLogLevel Log<T>::FromInt(const int level) {
         return W;
     if (level == 0)
         return E;
-    Log<T>().Get(W) << "Unknown logging level '" << level << "'. Using INFO level as default.";
+    Log<T>().Get(W) << "Unknown logging level '" << level
+                    << "'. Using INFO level as default.";
     return I;
 }
 
 template <typename T>
 class RLog {
 public:
-    RLog();
-    virtual ~RLog();
-    std::ostringstream& Get(TLogLevel level = I, sedutiloutput format = sedutilReadable);
+    RLog ();
+    virtual ~RLog ();
+    std::ostringstream& Get (TLogLevel level = I, sedutiloutput format = sedutilReadable);
 public:
-    static TLogLevel& Level();
-    static std::string ToString(TLogLevel level);
-    static TLogLevel FromString(const std::string& level);
-    static TLogLevel FromInt(const int level);
+    static TLogLevel& Level ();
+    static std::string ToString (TLogLevel level);
+    static TLogLevel FromString (const std::string& level);
+    static TLogLevel FromInt (const int level);
 protected:
     std::ostringstream os;
 private:
-    RLog(const RLog&);
+    RLog (const RLog&);
     RLog& operator =(const RLog&);
     TLogLevel curlevel;
     sedutiloutput outputformat;
 };
 
 template <typename T>
-RLog<T>::RLog() {
-}
+RLog<T>::RLog () {}
 
 template <typename T>
-std::ostringstream& RLog<T>::Get(TLogLevel level, sedutiloutput output_format) {
+std::ostringstream& RLog<T>::Get (TLogLevel level, sedutiloutput output_format) {
     curlevel = level;
     outputformat = output_format;
     if (output_format == sedutilNormal) {
         os << "- " << NowTime();
-        os << " " << ToString(level) << ": ";
+        os << " "  << ToString(level) << ": ";
     }
     //    os << std::string(level > D ? level - D : 0, '\t');
     return os;
 }
 
 template <typename T>
-RLog<T>::~RLog() {
+RLog<T>::~RLog () {
     os << std::endl;
     if ((curlevel == I) && (outputformat != sedutilNormal))
         T::Output(os.str());
@@ -188,19 +191,22 @@ RLog<T>::~RLog() {
 }
 
 template <typename T>
-TLogLevel& RLog<T>::Level() {
+TLogLevel& RLog<T>::Level () {
     static TLogLevel Level = D4;
     return Level;
 }
 
 template <typename T>
-std::string RLog<T>::ToString(TLogLevel level) {
-    static const char* const buffer[] = {"ERR ", "WARN", "INFO", "DBG ", "DBG1", "DBG2", "DBG3", "DBG4"};
+std::string RLog<T>::ToString (TLogLevel level) {
+    static const char* const buffer [] = {
+        "ERR ", "WARN", "INFO", "DBG ",
+        "DBG1", "DBG2", "DBG3", "DBG4"
+    };
     return buffer[level];
 }
 
 template <typename T>
-TLogLevel RLog<T>::FromString(const std::string& level) {
+TLogLevel RLog<T>::FromString (const std::string& level) {
     if (level == "DEBUG4")
         return D4;
     if (level == "DEBUG3")
@@ -217,12 +223,13 @@ TLogLevel RLog<T>::FromString(const std::string& level) {
         return W;
     if (level == "ERROR")
         return E;
-    RLog<T>().Get(W, sedutilNormal) << "Unknown logging level '" << level << "'. Using INFO level as default.";
+    RLog<T>().Get(W, sedutilNormal) << "Unknown logging level '" << level
+                                    << "'. Using INFO level as default.";
     return I;
 }
 
 template <typename T>
-TLogLevel RLog<T>::FromInt(const int level) {
+TLogLevel RLog<T>::FromInt (const int level) {
     if (level == 7)
         return D4;
     if (level == 6)
@@ -239,39 +246,40 @@ TLogLevel RLog<T>::FromInt(const int level) {
         return W;
     if (level == 0)
         return E;
-    RLog<T>().Get(W, sedutilNormal) << "Unknown logging level '" << level << "'. Using INFO level as default.";
+    RLog<T>().Get(W, sedutilNormal) << "Unknown logging level '" << level
+                                    << "'. Using INFO level as default.";
     return I;
 }
 
 
 class Output2FILE {
 public:
-    static FILE*& Stream();
-    static FILE*& StreamStdout();
-    static void Output(const std::string& msg);
-    static void OutputErr(const std::string& msg);
+    static FILE*& Stream ();
+    static FILE*& StreamStdout ();
+    static void Output (const std::string& msg);
+    static void OutputErr (const std::string& msg);
 };
 
-inline FILE*& Output2FILE::StreamStdout() {
-    static FILE* pStream = stdout;
+inline FILE*& Output2FILE::StreamStdout () {
+    static FILE *pStream = stdout;
     return pStream;
 }
 
-inline FILE*& Output2FILE::Stream() {
-    static FILE* pStream = stderr;
+inline FILE*& Output2FILE::Stream () {
+    static FILE *pStream = stderr;
     return pStream;
 }
 
-inline void Output2FILE::OutputErr(const std::string& msg) {
-    FILE* pStream = Stream();
+inline void Output2FILE::OutputErr (const std::string& msg) {
+    FILE *pStream = Stream();
     if (!pStream)
         return;
     fprintf(pStream, "%s", msg.c_str());
     fflush(pStream);
 }
 
-inline void Output2FILE::Output(const std::string& msg) {
-    FILE* pStream = StreamStdout();
+inline void Output2FILE::Output (const std::string& msg) {
+    FILE *pStream = StreamStdout();
     if (!pStream)
         return;
     fprintf(pStream, "%s", msg.c_str());
@@ -290,12 +298,10 @@ inline void Output2FILE::Output(const std::string& msg) {
 #define FILELOG_DECLSPEC
 #endif // _WIN32
 
-class FILELOG_DECLSPEC CLog : public Log<Output2FILE> {
-};
+class FILELOG_DECLSPEC CLog : public Log<Output2FILE> {};
 //typedef Log<Output2FILE> FILELog;
 
-class FILELOG_DECLSPEC RCLog : public RLog<Output2FILE> {
-};
+class FILELOG_DECLSPEC RCLog : public RLog<Output2FILE> {};
 
 #ifndef CLOG_MAX_LEVEL
 #define CLOG_MAX_LEVEL D4
@@ -326,14 +332,16 @@ extern sedutiloutput outputFormat;
 #include <windows.h>
 #include <cstdlib>
 
-inline std::string NowTime() {
+inline std::string NowTime () {
     const int MAX_LEN = 200;
-    char buffer[MAX_LEN];
+    char buffer [MAX_LEN];
     if (GetTimeFormatA(LOCALE_USER_DEFAULT, 0, 0,
-            "HH':'mm':'ss", buffer, MAX_LEN) == 0)
+        "HH':'mm':'ss", buffer, MAX_LEN) == 0)
+    {
         return "Error in NowTime()";
+    }
 
-    char result[100] = {0};
+    char result [100] = {0};
     static DWORD first = GetTickCount();
     sprintf_s(result, 99, "%s.%03ld", buffer, (long) (GetTickCount() - first) % 1000);
     return result;
@@ -344,15 +352,15 @@ inline std::string NowTime() {
 #include <time.h>
 #include <sys/time.h>
 
-inline std::string NowTime() {
-    char buffer[11];
+inline std::string NowTime () {
+    char buffer [11];
     time_t t;
     time(&t);
     tm r = {0};
-    strftime(buffer, sizeof (buffer), "%X", localtime_r(&t, &r));
+    strftime(buffer, sizeof(buffer), "%X", localtime_r(&t, &r));
     struct timeval tv;
     gettimeofday(&tv, 0);
-    char result[100] = {0};
+    char result [100] = {0};
     snprintf(result, 95, "%s.%03ld", buffer, (long) tv.tv_usec / 1000);
     return result;
 }

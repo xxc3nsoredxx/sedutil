@@ -23,8 +23,8 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 /** Device specific implementation of disk access functions. */
 class DtaDiskType {
 public:
-    DtaDiskType();
-    virtual ~DtaDiskType();
+    DtaDiskType ();
+    virtual ~DtaDiskType ();
     /** device specific initialization.
      * This function should perform the necessary authority and environment checking
      * to allow proper functioning of the program, open the device, perform an 
@@ -33,7 +33,7 @@ public:
      * the disk_info structure
      * @param devref character representation of the device is standard OS lexicon
      */
-    virtual void init(const char * devref);
+    virtual void init (const char *devref);
     /** OS specific method to send an ATA command to the device
      * @param cmd command to be sent to the device
      * @param protocol security protocol to be used in the command
@@ -41,11 +41,11 @@ public:
      * @param buffer input/output buffer
      * @param bufferlen length of the input/output buffer
      */
-    virtual uint8_t    sendCmd(ATACOMMAND cmd, uint8_t protocol, uint16_t comID,
-        void * buffer, uint32_t bufferlen);
+    virtual uint8_t sendCmd (ATACOMMAND cmd, uint8_t protocol, uint16_t comID,
+        void *buffer, uint32_t bufferlen);
 
     /** OS specific routine to send an ATA identify to the device 
      * @param disk_info structure to fill in with drive information
      */
-    virtual void identify(OPAL_DiskInfo& disk_info);
+    virtual void identify (OPAL_DiskInfo &disk_info);
 };

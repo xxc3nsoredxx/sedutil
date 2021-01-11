@@ -235,7 +235,7 @@ union Discovery0Features {
 
 typedef struct _OPALComPacket {
     uint32_t reserved0;
-    uint8_t extendedComID[4];
+    uint8_t extendedComID [4];
     uint32_t outstandingData;
     uint32_t minTransfer;
     uint32_t length;
@@ -254,7 +254,7 @@ typedef struct _OPALPacket {
 
 /** Data sub packet header */
 typedef struct _OPALDataSubPacket {
-    uint8_t reserved0[6];
+    uint8_t reserved0 [6];
     uint16_t kind;
     uint32_t length;
 } OPALDataSubPacket;
@@ -332,11 +332,11 @@ typedef struct _OPAL_DiskInfo {
     uint8_t OPAL20_rangeCrossing;
     // IDENTIFY information
     DTA_DEVICE_TYPE devType;
-    uint8_t serialNum[20];
+    uint8_t serialNum [20];
     uint8_t null0;  // make sn a cstring
-    uint8_t firmwareRev[8];
+    uint8_t firmwareRev [8];
     uint8_t null1;  // make firmware rev a cstring
-    uint8_t modelNum[40];
+    uint8_t modelNum [40];
     uint8_t null2;  // make model number a cstring
 } OPAL_DiskInfo;
 /** Response returned by ATA Identify */
@@ -344,20 +344,16 @@ typedef struct _IDENTIFY_RESPONSE {
     uint8_t reserved0;
     uint8_t reserved1   : 7;
     uint8_t devType     : 1;
-    uint8_t reserved2[18];
-    uint8_t serialNum[20];
-    uint8_t reserved3[6];
-    uint8_t firmwareRev[8];
-    uint8_t modelNum[40];
+    uint8_t reserved2   [18];
+    uint8_t serialNum   [20];
+    uint8_t reserved3   [6];
+    uint8_t firmwareRev [8];
+    uint8_t modelNum    [40];
 } IDENTIFY_RESPONSE;
 
-////////////////////////////////////////////////////////////////////////////////
-class CScsiCmdInquiry
-////////////////////////////////////////////////////////////////////////////////
-{
+class CScsiCmdInquiry {
 public:
-    enum
-    {
+    enum {
         OPCODE  = 0x12,
     };
     uint8_t         m_Opcode;                               //  0
@@ -366,12 +362,9 @@ public:
     uint8_t         m_PageCode;                             //  2
     uint16_t        m_AllocationLength;                     //  3
     uint8_t         m_Control;                              //  5
-} ;                                  //  6
+};                                  //  6
 
-////////////////////////////////////////////////////////////////////////////////
-class CScsiCmdInquiry_StandardData
-////////////////////////////////////////////////////////////////////////////////
-{
+class CScsiCmdInquiry_StandardData {
 public:
     unsigned        m_PeripheralDeviceType      : 5;        //  0
     unsigned        m_PeripheralQualifier       : 3;
@@ -406,18 +399,14 @@ public:
     unsigned        m_WBus16                    : 1;
     unsigned        m_Reserved_7                : 1;
     unsigned        m_Obsolete_4                : 1;
-    uint8_t         m_T10VendorId[8];                       //  8
-    uint8_t         m_ProductId[16];                        // 16
-    uint8_t         m_ProductRevisionLevel[4];              // 32
+    uint8_t         m_T10VendorId [8];                       //  8
+    uint8_t         m_ProductId [16];                        // 16
+    uint8_t         m_ProductRevisionLevel [4];              // 32
 };                                  // 36
 
-////////////////////////////////////////////////////////////////////////////////
-class CScsiCmdSecurityProtocolIn
-////////////////////////////////////////////////////////////////////////////////
-{
+class CScsiCmdSecurityProtocolIn {
 public:
-    enum
-    {
+    enum {
         OPCODE  = 0XA2,
     };
     uint8_t         m_Opcode;                   //  0
@@ -427,17 +416,13 @@ public:
     unsigned        m_INC_512       : 1;
     uint8_t         m_Reserved_2;               //  5
     uint32_t        m_AllocationLength;         //  6
-    uint8_t         m_Reserved_3[1];            // 10
+    uint8_t         m_Reserved_3 [1];           // 10
     uint8_t         m_Control;                  // 11
 };                      // 12
 
-////////////////////////////////////////////////////////////////////////////////
-class CScsiCmdSecurityProtocolOut
-////////////////////////////////////////////////////////////////////////////////
-{
+class CScsiCmdSecurityProtocolOut {
 public:
-    enum
-    {
+    enum {
         OPCODE  = 0XB5,
     };
     uint8_t         m_Opcode;                   //  0
@@ -447,7 +432,7 @@ public:
     unsigned        m_INC_512       : 1;
     uint8_t         m_Reserved_2;               //  5
     uint32_t        m_TransferLength;           //  6
-    uint8_t         m_Reserved_3[1];            // 10
+    uint8_t         m_Reserved_3 [1];           // 10
     uint8_t         m_Control;                  // 11
 };                      // 12
 

@@ -21,17 +21,16 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 #include "os.h"
 #include "DtaDevOpal.h"
 
-using namespace std;
 /** Class representing a disk device, this class is represents a disk that conforms
-* to the OPAL 1.0 SSC
-*
-* testing so far indicates that the functions implemented in this program
+ * to the OPAL 1.0 SSC
+ *
+ * testing so far indicates that the functions implemented in this program
  * operate the same in OPAL 1.0 and Opal 2.0
-*/
+ */
 class DtaDevOpal1 : public DtaDevOpal {
 public:
-    DtaDevOpal1(const char * devref);
-    ~DtaDevOpal1();
+    DtaDevOpal1 (const char *devref);
+    ~DtaDevOpal1 ();
     /** return the communication ID to be used with this device */
-    uint16_t comID();
+    uint16_t comID ();
 };

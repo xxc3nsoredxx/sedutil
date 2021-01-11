@@ -20,17 +20,14 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma pack(push,1)
 
-typedef union
-{
+typedef union {
     // four bytes in big endian (network) byte order
-    uint8_t     all[4];
+    uint8_t     all [4];
 
     // TINY ATOM
-    class CTinyAtom
-    {
+    class CTinyAtom {
     public:
-        enum
-        {
+        enum {
             INDICATOR   = 0,    // 0b
             HEADER_SIZE = 1,
         };
@@ -40,11 +37,9 @@ typedef union
     } TinyAtom;
 
     // TINY ATOM (sign)
-    class CTinyAtom_sign
-    {
+    class CTinyAtom_sign {
     public:
-        enum
-        {
+        enum {
             INDICATOR   = 0,    // 0b
             HEADER_SIZE = 1,
         };
@@ -54,11 +49,9 @@ typedef union
     } TinyAtom_sign;
 
     // SHORT ATOM
-    class CShortAtom
-    {
+    class CShortAtom {
     public:
-        enum
-        {
+        enum {
             INDICATOR   = 2,    // 10b
             HEADER_SIZE = 1,
         };
@@ -69,11 +62,9 @@ typedef union
     } ShortAtom;
 
     // MEDIUM ATOM
-    class CMediumAtom
-    {
+    class CMediumAtom {
     public:
-        enum
-        {
+        enum {
             INDICATOR   = 6,    // 110b
             HEADER_SIZE = 2,
         };
@@ -85,11 +76,9 @@ typedef union
     } MediumAtom;
 
     // LONG ATOM
-    class CLongAtom
-    {
+    class CLongAtom {
     public:
-        enum
-        {
+        enum {
             INDICATOR   = 14,   // 1110b
             HEADER_SIZE = 4,
         };
@@ -97,25 +86,22 @@ typedef union
         unsigned    byte            : 1;
         unsigned    reserved        : 2;
         unsigned    indicator       : 4;
-        uint8_t     length[3];
+        uint8_t     length [3];
     } LongAtom;
 
 } CAtomHeader;
 #pragma pack(pop)
-////////////////////////////////////////////////////////////////////////////////
-class DtaToken
-////////////////////////////////////////////////////////////////////////////////
-{
+
+class DtaToken {
 public:
-    DtaToken(void);
-    ~DtaToken(void);
+    DtaToken (void);
+    ~DtaToken (void);
 
-    void parse(uint8_t * buf, uint32_t buflen);
+    void parse (uint8_t *buf, uint32_t buflen);
 
-    int print(FILE *stream, uint32_t buflen);
+    int print (FILE *stream, uint32_t buflen);
 
-    typedef enum _TokenType
-    {
+    typedef enum _TokenType {
         NONE,
         TINY_ATOM,
         SHORT_ATOM,
@@ -128,18 +114,16 @@ public:
     uint32_t        m_HeaderLength;
     uint32_t        m_DataLength;
     uint32_t        m_TokenLength;
-    uint8_t *       m_token;
-    uint8_t *       m_data;
+    uint8_t        *m_token;
+    uint8_t        *m_data;
     uint64_t        m_value;
     bool            m_sign;
 
 private:
-    void str2int(uint8_t * buf, bool byte);
-    int printTokenType(FILE *stream, uint8_t token);
-    int printAscii(FILE *stream, uint8_t * buf, uint32_t buflen);
-    int printUID(FILE *stream, uint8_t buf[8]);
+    void str2int (uint8_t *buf, bool byte);
+    int printTokenType (FILE *stream, uint8_t token);
+    int printAscii (FILE *stream, uint8_t *buf, uint32_t buflen);
+    int printUID (FILE *stream, uint8_t buf [8]);
 };
 
-////////////////////////////////////////////////////////////////////////////////
-extern uint8_t DtaAnnotatedDump(ATACOMMAND cmd, void * buffer, uint32_t bufferlen);
-////////////////////////////////////////////////////////////////////////////////
+extern uint8_t DtaAnnotatedDump (ATACOMMAND cmd, void *buffer, uint32_t bufferlen);
