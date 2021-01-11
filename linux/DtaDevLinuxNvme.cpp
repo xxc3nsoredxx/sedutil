@@ -54,7 +54,8 @@ bool DtaDevLinuxNvme::init (const char *devref) {
         if (-EPERM == fd) {
             LOG(E) << "You do not have permission to access the raw disk in write mode";
             LOG(E) << "Perhaps you might try sudo to run as root";
-        } }
+        }
+    }
     else {
         isOpen = TRUE;
     }
