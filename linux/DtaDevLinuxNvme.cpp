@@ -37,28 +37,24 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 #define  NVME_SECURITY_RECV 0x82
 #define  NVME_IDENTIFY 0x06
 
-using namespace std;
-
 /** The Device class represents a single disk device.
  *  Linux specific implementation using the NVMe interface
  */
-DtaDevLinuxNvme::DtaDevLinuxNvme() {}
+DtaDevLinuxNvme::DtaDevLinuxNvme () {}
 
-bool DtaDevLinuxNvme::init(const char * devref)
-{
+bool DtaDevLinuxNvme::init (const char *devref) {
     LOG(D1) << "Creating DtaDevLinuxNvme::DtaDev() " << devref;
-    ifstream kopts;
+    std::ifstream kopts;
     bool isOpen = FALSE;
 
     if ((fd = open(devref, O_RDWR)) < 0) {
         isOpen = FALSE;
         // This is a D1 because diskscan looks for open fail to end scan
-        LOG(D1) << "Error opening device " << devref << " " << (int32_t) fd;
+        LOG(D1) << "Error opening device " << devref << " " << (int32_t)fd;
         if (-EPERM == fd) {
             LOG(E) << "You do not have permission to access the raw disk in write mode";
             LOG(E) << "Perhaps you might try sudo to run as root";
-        }
-    }
+        } }
     else {
         isOpen = TRUE;
     }
@@ -66,8 +62,8 @@ bool DtaDevLinuxNvme::init(const char * devref)
 }
 
 /** Send an ioctl to the device using nvme admin commands. */
-uint8_t DtaDevLinuxNvme::sendCmd(ATACOMMAND cmd, uint8_t protocol, uint16_t comID,
-                         void * buffer, uint32_t bufferlen)
+uint8_t DtaDevLinuxNvme::sendCmd (ATACOMMAND cmd, uint8_t protocol,
+    uint16_t comID, void *buffer, uint32_t bufferlen)
 {
     struct nvme_admin_cmd nvme_cmd;
     int err;
@@ -78,30 +74,29 @@ uint8_t DtaDevLinuxNvme::sendCmd(ATACOMMAND cmd, uint8_t protocol, uint16_t comI
 
     if (IF_RECV == cmd) {
         LOG(D3) << "Security Receive Command";
-        nvme_cmd.opcode = NVME_SECURITY_RECV;
-        nvme_cmd.cdw10 = protocol << 24 | comID << 8;
-        nvme_cmd.cdw11 = bufferlen;
-        nvme_cmd.data_len = bufferlen;
-        nvme_cmd.addr = (__u64)buffer;
-    }
-    else {
+        nvme_cmd.opcode     = NVME_SECURITY_RECV;
+        nvme_cmd.cdw10      = protocol << 24 | comID << 8;
+        nvme_cmd.cdw11      = bufferlen;
+        nvme_cmd.data_len   = bufferlen;
+        nvme_cmd.addr       = (__u64)buffer;
+    } else {
         LOG(D3) << "Security Send Command";
-        nvme_cmd.opcode = NVME_SECURITY_SEND;
-        nvme_cmd.cdw10 = protocol << 24 | comID << 8;
-        nvme_cmd.cdw11 = bufferlen;
-        nvme_cmd.data_len = bufferlen;
-        nvme_cmd.addr = (__u64)buffer;
+        nvme_cmd.opcode     = NVME_SECURITY_SEND;
+        nvme_cmd.cdw10      = protocol << 24 | comID << 8;
+        nvme_cmd.cdw11      = bufferlen;
+        nvme_cmd.data_len   = bufferlen;
+        nvme_cmd.addr       = (__u64)buffer;
     }
 
     err = ioctl(fd, NVME_IOCTL_ADMIN_CMD, &nvme_cmd);
-    if (err < 0)
+    if (err < 0) {
         return errno;
-    else if (err != 0) {
+    } else if (err != 0) {
         fprintf(stderr, "NVME Security Command Error:%d\n", err);
         IFLOG(D4) DtaHexDump(&nvme_cmd, sizeof(nvme_cmd));
-    }
-    else
+    } else {
         LOG(D3) << "NVME Security Command Success:" << nvme_cmd.result;
+    }
     //LOG(D4) << "NVMe command:";
     //IFLOG(D4) DtaHexDump(&nvme_cmd, sizeof(nvme_cmd));
     //LOG(D4) << "NVMe buffer @ " << buffer;
@@ -109,20 +104,19 @@ uint8_t DtaDevLinuxNvme::sendCmd(ATACOMMAND cmd, uint8_t protocol, uint16_t comI
     return err;
 }
 
-void DtaDevLinuxNvme::identify(OPAL_DiskInfo& disk_info)
-{
+void DtaDevLinuxNvme::identify (OPAL_DiskInfo& disk_info) {
     LOG(D4) << "Entering DtaDevLinuxNvme::identify()";
 
     struct nvme_admin_cmd cmd;
-    uint8_t ctrl[4096];
+    uint8_t ctrl [4096];
     int err;
 
     memset(&cmd, 0, sizeof(cmd));
-    cmd.opcode = NVME_IDENTIFY;
-    cmd.nsid = 0;
-    cmd.addr = (unsigned long)&ctrl;
-    cmd.data_len = 4096;
-    cmd.cdw10 = 1;
+    cmd.opcode      = NVME_IDENTIFY;
+    cmd.nsid        = 0;
+    cmd.addr        = (unsigned long)&ctrl;
+    cmd.data_len    = 4096;
+    cmd.cdw10       = 1;
     err = ioctl(fd, NVME_IOCTL_ADMIN_CMD, &cmd);
 
     if (err) {
@@ -146,8 +140,7 @@ void DtaDevLinuxNvme::identify(OPAL_DiskInfo& disk_info)
 }
 
 /** Close the device reference so this object can be delete. */
-DtaDevLinuxNvme::~DtaDevLinuxNvme()
-{
+DtaDevLinuxNvme::~DtaDevLinuxNvme () {
     LOG(D1) << "Destroying DtaDevLinuxNvme";
     close(fd);
 }

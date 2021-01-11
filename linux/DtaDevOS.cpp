@@ -39,64 +39,56 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 #include "DtaDevLinuxNvme.h"
 #include "DtaDevGeneric.h"
 
-using namespace std;
-
 /** The Device class represents a Linux generic storage device.
-  * At initialization we determine if we map to the NVMe or SATA derived class
+ * At initialization we determine if we map to the NVMe or SATA derived class
  */
-unsigned long long DtaDevOS::getSize()
-{ return 0;
+unsigned long long DtaDevOS::getSize () {
+    return 0;
 }
-DtaDevOS::DtaDevOS()
-{
+DtaDevOS::DtaDevOS () {
     drive = NULL;
 }
 
 /* Determine which type of drive we're using and instantiate a derived class of that type */
-void DtaDevOS::init(const char * devref)
-{
+void DtaDevOS::init (const char *devref) {
     LOG(D1) << "DtaDevOS::init " << devref;
 
     memset(&disk_info, 0, sizeof(OPAL_DiskInfo));
     dev = devref;
 
-    if (!strncmp(devref, "/dev/nvme", 9))
-    {
+    if (!strncmp(devref, "/dev/nvme", 9)) {
 //        DtaDevLinuxNvme *NvmeDrive = new DtaDevLinuxNvme();
         drive = new DtaDevLinuxNvme();
-    }
-    else if (!strncmp(devref, "/dev/s", 6))
-    {
+    } else if (!strncmp(devref, "/dev/s", 6)) {
 //        DtaDevLinuxSata *SataDrive = new DtaDevLinuxSata();
         drive = new DtaDevLinuxSata();
-    }
-    else 
-    {
+    } else {
         LOG(E) << "DtaDevOS::init ERROR - unknown drive type";
         isOpen = FALSE;
         return;
     }
 
-    if (drive->init(devref))
-    {
+    if (drive->init(devref)) {
         isOpen = TRUE;
         drive->identify(disk_info);
-        if (disk_info.devType != DEVICE_TYPE_OTHER)
+        if (disk_info.devType != DEVICE_TYPE_OTHER) {
             discovery0();
-    }
-    else
+        }
+    } else {
         isOpen = FALSE;
+    }
 
     return;
 }
 
-uint8_t DtaDevOS::sendCmd(ATACOMMAND cmd, uint8_t protocol, uint16_t comID,
-    void * buffer, uint32_t bufferlen)
+uint8_t DtaDevOS::sendCmd (ATACOMMAND cmd, uint8_t protocol, uint16_t comID,
+    void *buffer, uint32_t bufferlen)
 {
-    if (!isOpen) return 0xfe; //disk open failed so this will too
+    if (!isOpen) {
+        return 0xfe; //disk open failed so this will too
+    }
 
-    if (NULL == drive)
-    {
+    if (NULL == drive) {
         LOG(E) << "DtaDevOS::sendCmd ERROR - unknown drive type";
         return 0xff;
     }
@@ -104,11 +96,11 @@ uint8_t DtaDevOS::sendCmd(ATACOMMAND cmd, uint8_t protocol, uint16_t comID,
     return drive->sendCmd(cmd, protocol, comID, buffer, bufferlen);
 }
 
-void DtaDevOS::identify(OPAL_DiskInfo& disk_info)
-{
-    if (!isOpen) return; //disk open failed so this will too
-    if (NULL == drive)
-    {
+void DtaDevOS::identify (OPAL_DiskInfo& disk_info) {
+    if (!isOpen) {
+        return; //disk open failed so this will too
+    }
+    if (NULL == drive) {
         LOG(E) << "DtaDevOS::identify ERROR - unknown disk type";
         return;
     }
@@ -116,48 +108,47 @@ void DtaDevOS::identify(OPAL_DiskInfo& disk_info)
     drive->identify(disk_info);
 }
 
-void DtaDevOS::osmsSleep(uint32_t ms)
-{
+void DtaDevOS::osmsSleep (uint32_t ms) {
     usleep(ms * 1000); //convert to microseconds
     return;
 }
-int  DtaDevOS::diskScan()
-{
-    DIR *dir;
-    struct dirent *dirent;
-    DtaDev * d;
-    char devname[25];
-    vector<string> devices;
-    string tempstring;
+
+int  DtaDevOS::diskScan () {
+    DIR                        *dir;
+    struct dirent              *dirent;
+    DtaDev                     *d;
+    char                        devname [25];
+    std::vector<std::string>    devices;
+    std::string         tempstring;
     
     LOG(D1) << "Entering DtaDevOS:diskScan ";
     dir = opendir("/dev");
-    if(dir!=NULL)
-    {
-        while((dirent=readdir(dir))!=NULL) {
-            if((!fnmatch("sd[a-z]",dirent->d_name,0)) || 
-                    (!fnmatch("nvme[0-9]",dirent->d_name,0)) ||
-                    (!fnmatch("nvme[0-9][0-9]",dirent->d_name,0))
-                    ) {
+    if (dir != NULL) {
+        while ((dirent=readdir(dir)) != NULL) {
+            if ((!fnmatch("sd[a-z]", dirent->d_name, 0))
+                || (!fnmatch("nvme[0-9]", dirent->d_name, 0))
+                || (!fnmatch("nvme[0-9][0-9]", dirent->d_name, 0)))
+            {
                 tempstring = dirent->d_name;
                 devices.push_back(tempstring);
             }
         }
         closedir(dir);
     }
-    std::sort(devices.begin(),devices.end());
+    std::sort(devices.begin(), devices.end());
     printf("Scanning for Opal compliant disks\n");
     for(uint16_t i = 0; i < devices.size(); i++) {
-        snprintf(devname,23,"/dev/%s",devices[i].c_str());
+        snprintf(devname, 23, "/dev/%s", devices[i].c_str());
         printf("%-10s", devname);
         d = new DtaDevGeneric(devname);
-        if (d->isAnySSC())
+        if (d->isAnySSC()) {
             printf(" %s%s%s ", (d->isOpal1() ? "1" : " "),
                 (d->isOpal2() ? "2" : " "), (d->isEprise() ? "E" : " "));
-        else
+        } else {
             printf("%s", " No  ");
+        }
                 
-        printf("%s %s\n",d->getModelNum(),d->getFirmwareRev());
+        printf("%s %s\n", d->getModelNum(), d->getFirmwareRev());
         delete d;
     }
     printf("No more disks present ending scan\n");
@@ -166,9 +157,9 @@ int  DtaDevOS::diskScan()
 }
 
 /** Close the device reference so this object can be delete. */
-DtaDevOS::~DtaDevOS()
-{
+DtaDevOS::~DtaDevOS () {
     LOG(D1) << "Destroying DtaDevOS";
-    if (NULL != drive)
+    if (NULL != drive) {
         delete drive;
+    }
 }
