@@ -26,18 +26,15 @@ This software is Copyright 2014-2017 Bright Plaza Inc. <drivetrust@drivetrust.co
 #include "GetPassPhrase.h"
 #include "UnlockSEDs.h"
 
-using namespace std;
-
 /* Default to output that includes timestamps and goes to stderr*/
 sedutiloutput outputFormat = sedutilNormal;
 
-int main(int argc, char** argv) {
-    
+int main (int argc, char *argv []) {
     CLog::Level() = CLog::FromInt(0);
-    LOG(D4) << "Legacy PBA start" << endl;
+    LOG(D4) << "Legacy PBA start" << std::endl;
 //    system ("tput clear");
     printf("Boot Authorization \n");
-    string p = GetPassPhrase("Password: ");
+    std::string p = GetPassPhrase("Password: ");
     UnlockSEDs((char *)p.c_str());
     if (strcmp(p.c_str(), "debug")) {
         printf("\n Access granted. Starting the system... \n");
@@ -46,4 +43,3 @@ int main(int argc, char** argv) {
     }
     return 0;
 }
-

@@ -27,37 +27,34 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 #include <fnmatch.h>
 #include <algorithm>
 
-using namespace std;
-
-uint8_t UnlockSEDs(char * password) {
-/* Loop through drives */
-    char devref[25];
-    int failed = 0;
-    DtaDev *tempDev;
-    DtaDev *d;
-    DIR *dir;
-    struct dirent *dirent;
-    vector<string> devices;
-     string tempstring;
+uint8_t UnlockSEDs (char *password) {
+    /* Loop through drives */
+    char            devref [25];
+    int             failed = 0;
+    DtaDev         *tempDev;
+    DtaDev         *d;
+    DIR            *dir;
+    struct dirent  *dirent;
+    std::vector<std::string> devices;
+    std::string     tempstring;
     LOG(D4) << "Enter UnlockSEDs";
     dir = opendir("/dev");
-    if(dir!=NULL)
-    {
-        while((dirent=readdir(dir))!=NULL) {
-            if((!fnmatch("sd[a-z]",dirent->d_name,0)) || 
-                    (!fnmatch("nvme[0-9]",dirent->d_name,0)) ||
-                    (!fnmatch("nvme[0-9][0-9]",dirent->d_name,0))
-                    ) {
+    if (dir != NULL) {
+        while ((dirent = readdir(dir)) != NULL) {
+            if((!fnmatch("sd[a-z]", dirent->d_name, 0))
+                || (!fnmatch("nvme[0-9]", dirent->d_name, 0))
+                || (!fnmatch("nvme[0-9][0-9]", dirent->d_name, 0)))
+            {
                 tempstring = dirent->d_name;
                 devices.push_back(tempstring);
             }
         }
         closedir(dir);
     }
-    std::sort(devices.begin(),devices.end());
+    std::sort(devices.begin(), devices.end());
     printf("\nScanning....\n");
     for(uint16_t i = 0; i < devices.size(); i++) {
-                snprintf(devref,23,"/dev/%s",devices[i].c_str());
+        snprintf(devref, 23, "/dev/%s", devices[i].c_str());
         tempDev = new DtaDevGeneric(devref);
         if (!tempDev->isPresent()) {
             break;
@@ -68,10 +65,11 @@ uint8_t UnlockSEDs(char * password) {
             delete tempDev;
             continue;
         }
-        if (tempDev->isOpal2())
+        if (tempDev->isOpal2()) {
             d = new DtaDevOpal2(devref);
-        else
+        } else {
             d = new DtaDevOpal1(devref);
+        }
         delete tempDev;
         d->no_hash_passwords = false;
         failed = 0;
@@ -84,15 +82,16 @@ uint8_t UnlockSEDs(char * password) {
             if (d->setLockingRange(0, OPAL_LOCKINGSTATE::READWRITE, password)) {
                 failed = 1;
             }
-            failed ? printf("Drive %-10s %-40s is OPAL Failed  \n", devref, d->getModelNum()) :
-                    printf("Drive %-10s %-40s is OPAL Unlocked   \n", devref, d->getModelNum());
+            if (failed) {
+                printf("Drive %-10s %-40s is OPAL Failed  \n", devref, d->getModelNum());
+            } else {
+                printf("Drive %-10s %-40s is OPAL Unlocked   \n", devref, d->getModelNum());
+            }
             delete d;
-        }
-        else {
+        } else {
             printf("Drive %-10s %-40s is OPAL NOT LOCKED   \n", devref, d->getModelNum());
             delete d;
         }
-
     }
     return 0x00;
-};
+}
