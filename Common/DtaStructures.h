@@ -21,6 +21,8 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 #pragma pack(push)
 #pragma pack(1)
 
+#include <cstdint>
+
 #define FC_TPER         0x0001
 #define FC_LOCKING      0x0002
 #define FC_GEOMETRY     0x0003

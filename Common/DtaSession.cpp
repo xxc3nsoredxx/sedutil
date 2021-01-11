@@ -17,18 +17,19 @@ You should have received a copy of the GNU General Public License
 along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 
  * C:E********************************************************************** */
-#include "os.h"
-#include <stdio.h>
 #include <vector>
-#include "DtaSession.h"
-#include "DtaOptions.h"
-#include "DtaDev.h"
+
 #include "DtaCommand.h"
-#include "DtaResponse.h"
+#include "DtaDev.h"
 #include "DtaEndianFixup.h"
-#include "DtaHexDump.h"
 #include "DtaHashPwd.h"
+#include "DtaHexDump.h"
+#include "DtaOptions.h"
+#include "DtaResponse.h"
+#include "DtaSession.h"
 #include "DtaStructures.h"
+#include "log.h"
+#include "os.h"
 
 DtaSession::DtaSession (DtaDev *device) {
     LOG(D1) << "Creating DtaSsession()";

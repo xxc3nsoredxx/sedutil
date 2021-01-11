@@ -18,6 +18,8 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 
  * C:E********************************************************************** */
 #pragma once
+
+#include <cstdint>
 /*
  * Define the structures and enums needed to map the
  * Opal SSC Pseudo code to procedures.

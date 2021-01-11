@@ -20,20 +20,22 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 /** Device class for Opal 2.0 SSC
  * also supports the Opal 1.0 SSC
  */
-#include "os.h"
-#include <stdio.h>
-#include <iostream>
+#include <cstdio>
+#include <cstring>
 #include <fstream>
-#include <iomanip>
+#include <iostream>
 #include <vector>
-#include "DtaDevOpal.h"
-#include "DtaHashPwd.h"
-#include "DtaEndianFixup.h"
-#include "DtaStructures.h"
+
 #include "DtaCommand.h"
+#include "DtaDevOpal.h"
+#include "DtaEndianFixup.h"
+#include "DtaHashPwd.h"
+#include "DtaHexDump.h"
 #include "DtaResponse.h"
 #include "DtaSession.h"
-#include "DtaHexDump.h"
+#include "DtaStructures.h"
+#include "log.h"
+#include "os.h"
 
 DtaDevOpal::DtaDevOpal () {}
 DtaDevOpal::~DtaDevOpal () {}

@@ -18,14 +18,7 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 
  * C:E********************************************************************** */
 #pragma once
-#include <stdlib.h>
-#include <stdint.h>
-#include <unistd.h>
-#include <string.h>
-#include <errno.h>
-#include <assert.h>
-#include "DtaConstants.h"
-#include "log.h"
+
 // Why can't I find these??
 #define TRUE 1
 #define FALSE 0

@@ -17,13 +17,15 @@ This software is Copyright 2014-2017 Bright Plaza Inc. <drivetrust@drivetrust.co
     along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 
 * C:E********************************************************************** */
-
+#include <cstring>
+#include <iostream>
 
 #include <unistd.h>
+
 #include <sys/reboot.h>
-#include <iostream>
-#include "log.h"
+
 #include "GetPassPhrase.h"
+#include "log.h"
 #include "UnlockSEDs.h"
 
 /* Default to output that includes timestamps and goes to stderr*/

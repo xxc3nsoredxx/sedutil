@@ -17,9 +17,13 @@ You should have received a copy of the GNU General Public License
 along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 
  * C:E********************************************************************** */
-#include "os.h"
-#include "DtaResponse.h"
+#include <cstring>
+#include <vector>
+
 #include "DtaEndianFixup.h"
+#include "DtaResponse.h"
+#include "log.h"
+#include "os.h"
 
 DtaResponse::DtaResponse () {
     LOG(D1) << "Creating  DtaResponse()";

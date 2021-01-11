@@ -21,8 +21,11 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 /*
  * Manage tDtaLexicon
  */
-#include "DtaLexicon.h"
+
 #include <vector>
+
+#include "DtaLexicon.h"
+
 class DtaCommand;
 class DtaDev;
 class DtaResponse;

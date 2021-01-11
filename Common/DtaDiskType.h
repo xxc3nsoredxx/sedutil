@@ -18,8 +18,10 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 
 * C:E********************************************************************** */
 #pragma once
-#include "os.h"
+
 #include "DtaStructures.h"
+#include "os.h"
+
 /** Device specific implementation of disk access functions. */
 class DtaDiskType {
 public:

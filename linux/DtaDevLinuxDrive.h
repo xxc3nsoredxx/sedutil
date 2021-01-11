@@ -18,6 +18,7 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 
  * C:E********************************************************************** */
 #pragma once
+
 #include "DtaStructures.h"
 
 /** virtual implementation for a disk interface-generic disk drive

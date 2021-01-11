@@ -20,6 +20,10 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma pack(push,1)
 
+#include <cstdint>
+
+#include "DtaStructures.h"
+
 typedef union {
     // four bytes in big endian (network) byte order
     uint8_t     all [4];

@@ -17,12 +17,15 @@ You should have received a copy of the GNU General Public License
 along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 
  * C:E********************************************************************** */
-#include "os.h"
-#include <stdio.h>
+#include <cstdio>
+#include <cstring>
+
 #include "DtaCommand.h"
 #include "DtaEndianFixup.h"
 #include "DtaHexDump.h"
 #include "DtaStructures.h"
+#include "log.h"
+#include "os.h"
 
 DtaCommand::DtaCommand () {
     LOG(D1) << "Creating DtaCommand()";

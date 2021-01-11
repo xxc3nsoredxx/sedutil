@@ -21,12 +21,13 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 class DtaCommand;
 class DtaSession;
 
+#include <vector>
+
 #include "DtaDev.h"
 #include "DtaDevOS.h"
-#include "DtaStructures.h"
 #include "DtaLexicon.h"
 #include "DtaResponse.h"   // wouldn't take class
-#include <vector>
+#include "DtaStructures.h"
 
 /** Common code for OPAL SSCs.
  * most of the code that works for OPAL 2.0 also works for OPAL 1.0

@@ -18,14 +18,17 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 
  * C:E********************************************************************** */
 #pragma once
+
 #include <linux/version.h>
+
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 4, 0)
 #include <linux/nvme_ioctl.h>
 #else
 #include <linux/nvme.h>
 #endif
-#include "DtaStructures.h"
+
 #include "DtaDevLinuxDrive.h"
+#include "DtaStructures.h"
 
 /** Linux specific implementation of DtaDevOS.
  * Uses the NVMe to send commands to the 

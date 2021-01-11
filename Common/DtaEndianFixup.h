@@ -31,12 +31,14 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 //TODO: add a test on the endianess of the system and define
 //  empty macros if the system is big endian
 #pragma once
+
 #ifdef __gnu_linux__
 #include <endian.h>
 #if __BYTE_ORDER != __LITTLE_ENDIAN
 #error This code does not support big endian architectures
 #endif
 #endif
+
 /** change the "endianess" of a 16bit field */
 #define SWAP16(x) ((uint16_t) ((x & 0x00ff) << 8) | ((x & 0xff00) >> 8))
 /** change the "endianess" of a 32bit field */

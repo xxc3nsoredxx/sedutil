@@ -17,15 +17,17 @@ You should have received a copy of the GNU General Public License
 along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 
 * C:E********************************************************************** */
-#include "os.h"
-#include "UnlockSEDs.h"
-#include "DtaDevGeneric.h"
-#include "DtaDevOpal1.h"
-#include "DtaDevOpal2.h"
+#include <algorithm>
 
 #include <dirent.h>
 #include <fnmatch.h>
-#include <algorithm>
+
+#include "DtaDevGeneric.h"
+#include "DtaDevOpal1.h"
+#include "DtaDevOpal2.h"
+#include "log.h"
+#include "os.h"
+#include "UnlockSEDs.h"
 
 uint8_t UnlockSEDs (char *password) {
     /* Loop through drives */

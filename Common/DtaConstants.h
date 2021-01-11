@@ -17,7 +17,9 @@ You should have received a copy of the GNU General Public License
 along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 
  * C:E********************************************************************** */
- /** MAX Length of input the IO buffers used */
+#pragma once
+
+/** MAX Length of input the IO buffers used */
 #define MAX_BUFFER_LENGTH   61440
 /** Length of input the IO buffers used */
 #define MIN_BUFFER_LENGTH   2048

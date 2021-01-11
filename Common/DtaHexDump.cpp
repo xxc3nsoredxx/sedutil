@@ -17,9 +17,12 @@ You should have received a copy of the GNU General Public License
 along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 
 * C:E********************************************************************** */
+#include <cstdio>
+#include <cstdint>
+#include <cstring>
+
+#include "log.h"
 #include "os.h"
-#include <stdio.h>
-#include <ctype.h>
 
 void DtaHexDump (void *address, int length) {
     uint8_t display [17];

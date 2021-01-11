@@ -39,9 +39,10 @@
 #define __LOG_H__
 
 #include <sstream>
-#include <string>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string>
+
 #include "DtaOptions.h"
 
 inline std::string NowTime ();

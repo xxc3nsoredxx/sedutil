@@ -22,14 +22,15 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 class DtaCommand;
 class DtaSession;
 
-#include "os.h"
-#include "DtaOptions.h"
+#include <vector>
+
 #include "DtaDev.h"
 #include "DtaDevOS.h"
-#include "DtaStructures.h"
 #include "DtaLexicon.h"
+#include "DtaOptions.h"
 #include "DtaResponse.h"   // wouldn't take class
-#include <vector>
+#include "DtaStructures.h"
+#include "os.h"
 
 /** Device Class represents a disk device, conforming to the TCG Enterprise standard
 */

@@ -17,23 +17,28 @@ You should have received a copy of the GNU General Public License
 along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 
  * C:E********************************************************************** */
-#include "os.h"
+#include <cerrno>
+#include <cstdio>
+#include <cstring>
+#include <fstream>
+#include <vector>
+
+#include <fcntl.h>
 #include <malloc.h>
+#include <unistd.h>
+
+#include <arpa/inet.h>
+#include <linux/hdreg.h>
+#include <scsi/sg.h>
+#include <sys/ioctl.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <fcntl.h>
-#include <sys/ioctl.h>
-#include <arpa/inet.h>
-#include <scsi/sg.h>
-#include <stdio.h>
-#include <string.h>
-#include <unistd.h>
-#include <linux/hdreg.h>
-#include <errno.h>
-#include <vector>
-#include <fstream>
+
+#include "DtaConstants.h"
 #include "DtaDevLinuxSata.h"
 #include "DtaHexDump.h"
+#include "log.h"
+#include "os.h"
 //
 // taken from <scsi/scsi.h> to avoid SCSI/ATA name collision
 // 

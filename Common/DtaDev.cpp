@@ -22,16 +22,19 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
  * implementing sendcmd, osmsSleep and identify 
  * specific to the IO requirements of that OS
  */
-#include "os.h"
-#include <stdio.h>
+#include <cstdio>
+#include <cstring>
 #include <iostream>
 #include <iomanip>
-#include "DtaOptions.h"
-#include "DtaDev.h"
-#include "DtaStructures.h"
+
 #include "DtaConstants.h"
+#include "DtaDev.h"
 #include "DtaEndianFixup.h"
 #include "DtaHexDump.h"
+#include "DtaOptions.h"
+#include "DtaStructures.h"
+#include "log.h"
+#include "os.h"
 
 /** Device Class (Base) represents a single disk device.
  *  This is the functionality that is common to all OS's and SSC's

@@ -17,27 +17,30 @@ You should have received a copy of the GNU General Public License
 along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 
  * C:E********************************************************************** */
-#include "os.h"
+#include <algorithm>
+#include <cerrno>
+#include <cstdio>
+#include <cstring>
+#include <vector>
+
+#include <dirent.h>
+#include <fcntl.h>
+#include <fnmatch.h>
+#include <unistd.h>
+
+#include <linux/hdreg.h>
+#include <scsi/sg.h>
+#include <sys/ioctl.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <dirent.h>
-#include <fnmatch.h>
-#include <fcntl.h>
-#include <sys/ioctl.h>
-#include <scsi/sg.h>
-#include <stdio.h>
-#include <string.h>
-#include <algorithm>
-#include <unistd.h>
-#include <linux/hdreg.h>
-#include <errno.h>
-#include <vector>
-#include <fstream>
+
 #include "DtaDevOS.h"
 #include "DtaHexDump.h"
 #include "DtaDevLinuxSata.h"
 #include "DtaDevLinuxNvme.h"
 #include "DtaDevGeneric.h"
+#include "log.h"
+#include "os.h"
 
 /** The Device class represents a Linux generic storage device.
  * At initialization we determine if we map to the NVMe or SATA derived class

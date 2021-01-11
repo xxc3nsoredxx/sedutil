@@ -18,8 +18,9 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 
  * C:E********************************************************************** */
 #pragma once
-#include "os.h"
+
 #include "DtaDevOpal.h"
+#include "os.h"
 
 /** Class representing a disk device, this class is represents a disk that conforms
  * to the OPAL 1.0 SSC

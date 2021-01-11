@@ -18,10 +18,14 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 
  * C:E********************************************************************** */
 #pragma once
-#include "DtaStructures.h"
+
+#include "DtaConstants.h"
 #include "DtaLexicon.h"
 #include "DtaOptions.h"
 #include "DtaResponse.h"
+#include "DtaStructures.h"
+#include "os.h"
+
 class DtaCommand;
 class DtaSession;
 

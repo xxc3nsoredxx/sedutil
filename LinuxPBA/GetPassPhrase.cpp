@@ -17,12 +17,14 @@ You should have received a copy of the GNU General Public License
 along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 
 * C:E********************************************************************** */
-
-#include "os.h"
-#include "GetPassPhrase.h"
+#include <cstdio>
 #include <string>
+
 #include <termios.h>
-#include <stdio.h>
+
+#include "GetPassPhrase.h"
+#include <log.h>
+#include "os.h"
 
 static struct termios tiosold;
 static struct termios tiosnew;
