@@ -26,9 +26,9 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 class DtaDevOS : public DtaDev {
 public:
     /** Default constructor */
-    DtaDevOS();
+    DtaDevOS ();
     /** Destructor */
-    ~DtaDevOS();
+    ~DtaDevOS ();
     /** OS specific initialization.
      * This function should perform the necessary authority and environment checking
      * to allow proper functioning of the program, open the device, perform an ATA
@@ -37,7 +37,7 @@ public:
      * the disk_info structure
      * @param devref character representation of the device is standard OS lexicon
      */
-    void init(const char * devref);
+    void init (const char *devref);
     /** OS specific method to send an ATA command to the device
      * @param cmd ATA command to be sent to the device
      * @param protocol security protocol to be used in the command
@@ -45,22 +45,22 @@ public:
      * @param buffer input/output buffer
      * @param bufferlen length of the input/output buffer
      */
-    uint8_t sendCmd(ATACOMMAND cmd, uint8_t protocol, uint16_t comID,
-            void * buffer, uint32_t bufferlen);
+    uint8_t sendCmd (ATACOMMAND cmd, uint8_t protocol, uint16_t comID,
+        void *buffer, uint32_t bufferlen);
     /** A static class to scan for supported drives */
-    static int diskScan();
+    static int diskScan ();
 protected:
     /** OS specific command to Wait for specified number of milliseconds 
      * @param ms  number of milliseconds to wait
      */
-    void osmsSleep(uint32_t ms);
+    void osmsSleep (uint32_t ms);
     /** OS specific routine to send an ATA identify to the device */
-    void identify(OPAL_DiskInfo& disk_info);
+    void identify (OPAL_DiskInfo& disk_info);
     /** return drive size in bytes */
-    unsigned long long getSize();
+    unsigned long long getSize ();
     int fd; /**< Linux handle for the device  */
 private:
     /** OS specific routine to send a SCSI INQUIRY to the device */
-    void identify_SAS();
+    void identify_SAS ();
     DtaDevLinuxDrive *drive;
 };

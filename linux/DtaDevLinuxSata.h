@@ -25,12 +25,12 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
  * Uses the SCSI generic ioctls to send commands to the 
  * device 
  */
-class DtaDevLinuxSata: public DtaDevLinuxDrive {
+class DtaDevLinuxSata : public DtaDevLinuxDrive {
 public:
     /** Default constructor */
-    DtaDevLinuxSata();
+    DtaDevLinuxSata ();
     /** Destructor */
-    ~DtaDevLinuxSata();
+    ~DtaDevLinuxSata ();
     /** Sata Linux specific initialization.
      * This function should perform the necessary authority and environment checking
      * to allow proper functioning of the program, open the device, perform an ATA
@@ -39,7 +39,7 @@ public:
      * the disk_info structure
      * @param devref character representation of the device is standard OS lexicon
      */
-    bool init(const char * devref);
+    bool init (const char *devref);
     /** Sata Linux specific method to send an ATA command to the device
      * @param cmd ATA command to be sent to the device
      * @param protocol security protocol to be used in the command
@@ -47,14 +47,14 @@ public:
      * @param buffer input/output buffer
      * @param bufferlen length of the input/output buffer
      */
-    uint8_t sendCmd(ATACOMMAND cmd, uint8_t protocol, uint16_t comID,
-            void * buffer, uint32_t bufferlen);
+    uint8_t sendCmd (ATACOMMAND cmd, uint8_t protocol, uint16_t comID,
+        void *buffer, uint32_t bufferlen);
     /** Linux specific routine to send an ATA identify to the device */
-    void identify(OPAL_DiskInfo& disk_info);
-    uint8_t sendCmd_SAS(ATACOMMAND cmd, uint8_t protocol, uint16_t comID,
-            void * buffer, uint32_t bufferlen);
+    void identify (OPAL_DiskInfo& disk_info);
+    uint8_t sendCmd_SAS (ATACOMMAND cmd, uint8_t protocol, uint16_t comID,
+        void *buffer, uint32_t bufferlen);
     /** Linux specific routine to send an ATA identify to the device */
-    void identify_SAS(OPAL_DiskInfo *disk_info);
+    void identify_SAS (OPAL_DiskInfo *disk_info);
     int fd; /**< Linux handle for the device  */
     int isSAS; /* The device is sas */
 };
