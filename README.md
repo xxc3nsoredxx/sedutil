@@ -121,6 +121,10 @@ Unique to this repo are the following modifications:
 ## Build Process
 
 **NOTE:**
+Doxygen formatting has been ignored.
+Assume it's broken and doesn't work to generate docs.
+
+**NOTE:**
 This has so far only been tested to boot the RESCUE64 image, `sedutil-cli --scan` showing my drive as having Opal 2 support, and nothing immediately glaring in `dmesg`.
 My machine is a ThinkPad T14 with Ryzen 7 PRO 4750U, 32 GiB of RAM, and a Samsung 970 EVO Plus 1 TiB NVMe M.2.
 

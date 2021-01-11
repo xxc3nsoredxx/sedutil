@@ -77,6 +77,7 @@ pushd scratch &> /dev/null
 
             echo 'Adding sedutil to Buildroot tree ...'
             mkdir -p images/scratch/buildroot/dl/
+            rm -rf images/scratch/buildroot/dl/sedutil*
             cp sedutil-*.tar.gz images/scratch/buildroot/dl/
             make distclean
 
