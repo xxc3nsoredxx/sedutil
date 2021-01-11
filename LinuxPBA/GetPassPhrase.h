@@ -18,6 +18,7 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 
 * C:E********************************************************************** */
 #pragma once
+
 #include <string>
 
 std::string GetPassPhrase (const char *prompt, bool show_asterisk = true);

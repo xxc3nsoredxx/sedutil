@@ -18,12 +18,11 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 
 * C:E********************************************************************** */
 #include <cstdio>
-#include <string>
 
 #include <termios.h>
 
 #include "GetPassPhrase.h"
-#include <log.h>
+#include "log.h"
 #include "os.h"
 
 static struct termios tiosold;
