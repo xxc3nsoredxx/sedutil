@@ -116,7 +116,7 @@ Unique to this repo are the following modifications:
     * Display `/etc/issue` when not prompting for login
     * `-r` flag to automatically log in as `root`
   * libbb/login.c
-    * No initial newline when displaying `/etc/issue`
+    * `\C` to clear the screen when parsing `/etc/issue`
 
 ## Build Process
 
