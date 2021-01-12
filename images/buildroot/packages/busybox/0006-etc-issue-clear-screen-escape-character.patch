@@ -1,4 +1,4 @@
-From 621ef3f380a14e866e108bf32a444bad97a32028 Mon Sep 17 00:00:00 2001
+From e8450b642399b6ad53973a53bdd663c8f07b4fd0 Mon Sep 17 00:00:00 2001
 From: xxc3nsoredxx <xxc3ncoredxx@gmail.com>
 Date: Mon, 11 Jan 2021 21:15:47 -0600
 Subject: [PATCH] /etc/issue clear screen escape character
@@ -8,7 +8,7 @@ Subject: [PATCH] /etc/issue clear screen escape character
  1 file changed, 11 insertions(+)
 
 diff --git a/libbb/login.c b/libbb/login.c
-index 7f593d80d..0e7526530 100644
+index 7f593d80d..46feca27c 100644
 --- a/libbb/login.c
 +++ b/libbb/login.c
 @@ -14,6 +14,10 @@
@@ -26,7 +26,7 @@ index 7f593d80d..0e7526530 100644
  	FILE *fp;
  	int c;
  	char buf[256+1];
-+    const char *clear = CSI "H" CSI "J";
++	const char *clear = CSI "H" CSI "J";
  	const char *outbuf;
  	time_t t;
  	struct utsname uts;
@@ -43,10 +43,10 @@ index 7f593d80d..0e7526530 100644
  			case 'l':
  				outbuf = tty;
  				break;
-+            case 'C':
-+                // Return cursor to home, then clear to end of display
-+                outbuf = clear;
-+                break;
++			case 'C':
++				// Return cursor to home, then clear to end of display
++				outbuf = clear;
++				break;
  			default:
  				buf[0] = c;
  			}
