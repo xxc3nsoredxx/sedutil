@@ -52,7 +52,7 @@ pushd scratch &> /dev/null
 
         # Add out-of-tree build directories and files
         echo 'Creating out-of-tree structure ...'
-        cp -r ../../buildroot/64bit ./
+        cp -rv ../../buildroot/64bit ./
 
         # Add the buildroot packages
         echo 'Patching Buildroot config for sedutil ...'
@@ -63,8 +63,7 @@ pushd scratch &> /dev/null
 
         # Add the busybox patchs
         echo 'Adding busybox patches ...'
-        ls -w 1 ../../buildroot/packages/busybox/*.patch
-        cp -r ../../buildroot/packages/busybox/ package/
+        cp -rv ../../buildroot/packages/busybox/ package/
 
         # Build sedutil tarball and add it
         pushd ../../.. &> /dev/null
