@@ -39,7 +39,7 @@ pushd scratch/rescuefs &> /dev/null
     # Create /etc/issue
     echo 'Creating /etc/issue ...'
     cat > etc/issue << 'EOF'
-xxc3nsoredxx's Sedutil Rescue Image
+\Cxxc3nsoredxx's Sedutil Rescue Image
 ===================================
 
 \s \m \r

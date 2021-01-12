@@ -1,0 +1,55 @@
+From 621ef3f380a14e866e108bf32a444bad97a32028 Mon Sep 17 00:00:00 2001
+From: xxc3nsoredxx <xxc3ncoredxx@gmail.com>
+Date: Mon, 11 Jan 2021 21:15:47 -0600
+Subject: [PATCH] /etc/issue clear screen escape character
+
+---
+ libbb/login.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/libbb/login.c b/libbb/login.c
+index 7f593d80d..0e7526530 100644
+--- a/libbb/login.c
++++ b/libbb/login.c
+@@ -14,6 +14,10 @@
+ 
+ #define LOGIN " login: "
+ 
++// Terminal control sequence introducer
++// Esc-[
++#define CSI "\x1b["
++
+ static const char fmtstr_d[] ALIGN1 = "%A, %d %B %Y";
+ 
+ void FAST_FUNC print_login_issue(const char *issue_file, const char *tty)
+@@ -21,6 +25,7 @@ void FAST_FUNC print_login_issue(const char *issue_file, const char *tty)
+ 	FILE *fp;
+ 	int c;
+ 	char buf[256+1];
++    const char *clear = CSI "H" CSI "J";
+ 	const char *outbuf;
+ 	time_t t;
+ 	struct utsname uts;
+@@ -79,6 +84,8 @@ void FAST_FUNC print_login_issue(const char *issue_file, const char *tty)
+ //We also implement:
+ //*D -- same as \O "DNS domainname"
+ //*h -- same as \n "nodename"
++//Added by xxc3nsoredxx:
++//*C -- Clear the screen (pointless unless the first char)
+ 
+ 			case 'S':
+ 				/* minimal implementation, not reading /etc/os-release */
+@@ -116,6 +123,10 @@ void FAST_FUNC print_login_issue(const char *issue_file, const char *tty)
+ 			case 'l':
+ 				outbuf = tty;
+ 				break;
++            case 'C':
++                // Return cursor to home, then clear to end of display
++                outbuf = clear;
++                break;
+ 			default:
+ 				buf[0] = c;
+ 			}
+-- 
+2.26.2
+

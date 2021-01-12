@@ -60,9 +60,6 @@ pushd scratch/rootfs &> /dev/null
     # Remove setting hostname
     sed -i '/hostname/d' etc/inittab && \
     echo 'Patching out hostname from /etc/inittab (no /bin/hostname) ...'
-    # Quiet service start/stop
-    sed -i 's/rc[SK]/& >\/dev\/null 2>\&1/g' etc/inittab && \
-    echo 'Patching quiet service start/stop in /etc/inittab ...'
 
     # Repack initramfs
     echo 'Repacking rootfs.cpio.xz ...'
