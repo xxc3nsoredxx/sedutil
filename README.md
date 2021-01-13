@@ -123,20 +123,25 @@ To compile your own version of `sedutil` you will need the standard development 
 Although not mandatory, at least 12 GiB of space is recommended to safely accommodate the maximum `ccache` size of 5 GiB.
 `du -d 1 -a -c -h` in the root of the repo says 6.7 GiB for me.
 
-## IGNORE ANYTHING BELOW THIS LINE
+### Build
 
 `$` denotes user privs
 
 `#` denotes root privs
-
-Build:
-```bash
-cd images
-./prepare.sh
-./build_pbaroot.sh
-./build_UEFI64.sh
-./build_rescue.sh
 ```
+$ cd images
+$ ./prepare.sh
+$ ./create_buildroot_config.sh  (optional, to tweak the buildroot .config)
+$ ./create_busybox_config.sh    (optional, to tweak the busybox .config)
+$ ./create_kernel_config.sh     (optional, to tweak the kernel .config)
+$ ./create_uclibc_config.sh     (optional, to tweak the uclibc .config)
+$ ./build_pbaroot.sh
+# ./build_UEFI64.sh             (requires root for losetup(8))
+# ./build_rescue.sh             (requires root for losetup(8))
+# ./flash_rescue.sh             (requires root for writing to a block device)
+```
+
+## IGNORE ANYTHING BELOW THIS LINE
 
 Prerequisites:  
 
