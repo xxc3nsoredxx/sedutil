@@ -1,3 +1,4 @@
 label: gpt
+first-lba: 2048
 
 type=U

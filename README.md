@@ -65,6 +65,13 @@ Unique to this repo are the following modifications:
 * uClibc instead of glibc
   * Cut the size of the initramfs in half
 * New build scripts
+* Minimally sized images
+  * UEFI image
+    * Original DTA size: 32 MiB (uncompressed)
+    * My size: 4 MiB (uncompressed)
+  * RESCUE image
+    * Original DTA size: 75 MiB (uncompressed)
+    * My size: 6.5 MiB (uncompressed)
 * No BIOS support
 * Updated PBA: newer, stripped down kernel
   * Linux 5.4.80
