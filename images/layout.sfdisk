@@ -1,4 +1,4 @@
 label: gpt
-first-lba: 2048
+first-lba: 34
 
-type=U
+start=34,type=U

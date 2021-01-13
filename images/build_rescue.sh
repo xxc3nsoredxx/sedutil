@@ -79,16 +79,23 @@ pushd $BUILDTYPE &> /dev/null
     cp -v ../buildroot/syslinux.cfg system/EFI/boot/
 
     # Calculate the total file size in 512B blocks
-    SIZE=$(du -d 0 -B 512 system | cut -f 1)
+    IMGSIZE=$(du -d 0 -B 512 system | cut -f 1)
     # Add space for the FAT structures
-    SIZE=$((SIZE + 100))
+    IMGSIZE=$((IMGSIZE + 125))
 
     # Create image file and loopback device
     echo 'Creating boot image ...'
-    # +2048 to create the 1MiB padding
-    dd if=/dev/zero of=$BUILDIMG count=$((SIZE + 2048))
+    dd if=/dev/zero of=$BUILDIMG count=$IMGSIZE
     sfdisk $BUILDIMG < ../layout.sfdisk
-    LOOPDEV=$(losetup --show -f -o 1048576 $BUILDIMG)
+    # Get the start of the partition (in bytes)
+    OFFSET=$(sfdisk -d $BUILDIMG | awk -e '/start/ {print $4;}')
+    OFFSET=${OFFSET//,}
+    OFFSET=$((OFFSET * 512))
+    # Get the size of the partition (in bytes)
+    SIZE=$(sfdisk -d $BUILDIMG | awk -e '/size/ {print $6;}')
+    SIZE=${SIZE//,}
+    SIZE=$((SIZE * 512))
+    LOOPDEV=$(losetup --show -f -o $OFFSET --sizelimit $SIZE $BUILDIMG)
     mkfs.vfat $LOOPDEV -n $BUILDTYPE
 
     # Mount the image
