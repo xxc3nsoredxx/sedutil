@@ -6,5 +6,5 @@
 /.br_ccache
 
 # Output dirs
-/RESCUE64
-/UEFI64
+/RESCUE*
+/UEFI*
