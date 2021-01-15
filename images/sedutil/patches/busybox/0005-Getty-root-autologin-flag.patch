@@ -1,0 +1,62 @@
+From 01874ac28f7af1edabfbad0950de938a5cecffd8 Mon Sep 17 00:00:00 2001
+From: xxc3nsoredxx <xxc3ncoredxx@gmail.com>
+Date: Thu, 7 Jan 2021 15:11:49 -0600
+Subject: [PATCH] Getty root autologin flag
+
+---
+ loginutils/getty.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/loginutils/getty.c b/loginutils/getty.c
+index 7393a3d1c..dc73a8ff6 100644
+--- a/loginutils/getty.c
++++ b/loginutils/getty.c
+@@ -123,6 +123,7 @@ struct globals {
+ //usage:     "\n	-n		Don't prompt for login name"
+ //usage:     "\n	-w		Wait for CR or LF before sending /etc/issue"
+ //usage:     "\n	-i		Don't display /etc/issue"
++//usage:     "\n	-r		Automatically log in as root (implies -n)"
+ //usage:     "\n	-f ISSUE_FILE	Display ISSUE_FILE instead of /etc/issue"
+ //usage:     "\n	-l LOGIN	Invoke LOGIN instead of /bin/login"
+ //usage:     "\n	-t SEC		Terminate after SEC if no login name is read"
+@@ -131,7 +132,7 @@ struct globals {
+ //usage:     "\n"
+ //usage:     "\nBAUD_RATE of 0 leaves it unchanged"
+ 
+-#define OPT_STR "I:LH:f:hil:mt:+wn"
++#define OPT_STR "I:LH:f:hil:mt:+wnr"
+ #define F_INITSTRING    (1 << 0)   /* -I */
+ #define F_LOCAL         (1 << 1)   /* -L */
+ #define F_FAKEHOST      (1 << 2)   /* -H */
+@@ -143,6 +144,7 @@ struct globals {
+ #define F_TIMEOUT       (1 << 8)   /* -t */
+ #define F_WAITCRLF      (1 << 9)   /* -w */
+ #define F_NOPROMPT      (1 << 10)  /* -n */
++#define F_AUTOROOT      (1 << 11)  /* -r */
+ 
+ 
+ /* convert speed string to speed code; return <= 0 on failure */
+@@ -705,7 +707,7 @@ int getty_main(int argc UNUSED_PARAM, char **argv)
+ 	}
+ 
+ 	logname = NULL;
+-	if (!(option_mask32 & F_NOPROMPT)) {
++	if (!(option_mask32 & F_NOPROMPT) && !(option_mask32 & F_AUTOROOT)) {
+ 		/* NB: init_tty_attrs already set line speed
+ 		 * to G.speeds[0] */
+ 		int baud_index = 0;
+@@ -723,6 +725,11 @@ int getty_main(int argc UNUSED_PARAM, char **argv)
+ 		}
+ 	}
+ 
++    /* Check if -r flag is given and log in as root directly */
++    if (option_mask32 & F_AUTOROOT) {
++        logname = xstrdup("root");
++    }
++
+ 	/* Disable timer */
+ 	alarm(0);
+ 
+-- 
+2.26.2
+

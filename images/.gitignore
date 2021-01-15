@@ -1,5 +1,9 @@
 # Working directory
-/scratch
+/scratch*
 
 # Buildroot ccache
 /buildroot/.br_ccache
+
+# Output dirs
+/RESCUE64
+/UEFI64

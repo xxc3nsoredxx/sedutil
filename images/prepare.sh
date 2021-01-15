@@ -42,57 +42,43 @@ pushd scratch &> /dev/null
         mv $BUILDROOT_VER buildroot
     fi
 
+    # Build sedutil tarball and add it to buildroot tree
+    pushd ../.. &> /dev/null
+        echo 'Reconfiguring sedutil ...'
+        autoreconf -i
+        ./configure
+
+        echo 'Building sedutil package ...'
+        make dist-xz
+
+        echo 'Adding sedutil to Buildroot tree ...'
+        rm -rf images/sedutil/package/sedutil-xxc/src
+        mkdir images/sedutil/package/sedutil-xxc/src
+        cp -v sedutil-*.tar.xz images/sedutil/package/sedutil-xxc/src
+
+        # Create the hash file
+        echo 'Creating SHA512 hash of tarball ...'
+        echo "sha512  $(sha512sum sedutil-*.tar.xz)" > images/sedutil/package/sedutil-xxc/sedutil-xxc.hash
+
+        make distclean
+    popd &> /dev/null
+
     # Prepare buildroot tree
     pushd buildroot &> /dev/null
         # Clean any existing files
-        if [ -d 64bit ]; then
+        if [ -d output ]; then
             echo 'Cleaning existing tree ...'
-            rm -rf 64bit
+            rm -rf output
         fi
+        mkdir output
 
-        # Add out-of-tree build directories and files
-        echo 'Creating out-of-tree structure ...'
-        cp -rv ../../buildroot/64bit ./
-
-        # Add the buildroot packages
-        echo 'Patching Buildroot config for sedutil ...'
-        sed -i '/sedutil/d' package/Config.in
-        sed -i '/menu "System tools"/a \\tsource "package/sedutil/Config.in"' package/Config.in
-        rm -rf package/sedutil
-        cp -r ../../buildroot/packages/sedutil/ package/
-
-        # Add the busybox patchs
-        echo 'Adding busybox patches ...'
-        cp -rv ../../buildroot/packages/busybox/ package/
-
-        # Build sedutil tarball and add it
-        pushd ../../.. &> /dev/null
-            echo 'Reconfiguring sedutil ...'
-            autoreconf -i
-            ./configure
-
-            echo 'Building sedutil package ...'
-            make dist
-
-            echo 'Adding sedutil to Buildroot tree ...'
-            mkdir -p images/scratch/buildroot/dl/
-            rm -rf images/scratch/buildroot/dl/sedutil*
-            cp sedutil-*.tar.gz images/scratch/buildroot/dl/
-            make distclean
-
-            # Expand the distribution tarball so we can use it as the Buildroot override.
-            # Override location is specified in the 'local.mk' file in buildroot/64bit
-            # directory.
-            # See also section 8.12.6 "Using Buildroot during development" in the
-            # Buildroot user manual.
-            cd images/scratch/buildroot/dl
-            tar xf sedutil-*.tar.gz
-        popd &> /dev/null
-
+        # Apply the buildroot config
+        echo 'Using the sedutil defconfig file ...'
+        make sedutil_defconfig |& tee output/init_config.txt
         # Have buildroot download the required sources
         echo 'Fetching required sources with Buildroot ...'
         while ! [ -e .buildroot_sources_dl_done ]; do
-            make O=64bit source |& tee -a 64bit/dl_output.txt && touch .buildroot_sources_dl_done
+            make source |& tee -a output/dl_output.txt && touch .buildroot_sources_dl_done
         done
     popd &> /dev/null
 popd &> /dev/null

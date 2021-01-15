@@ -187,7 +187,7 @@ sedutil-cli
 *.tgz
 Doxygen/
 **/private/private.xml
-/images/*/*
+# /images/*/*
 !/images/buildroot/
 !/images/buildroot/*
 /LinuxPBA/dist/
