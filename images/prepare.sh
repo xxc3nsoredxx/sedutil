@@ -49,7 +49,7 @@ pushd scratch &> /dev/null
         ./configure
 
         echo 'Building sedutil package ...'
-        make dist-xz
+        make dist
 
         echo 'Cleaning old source tarballs ...'
         rm -rfv images/scratch/buildroot/dl/sedutil-xxc

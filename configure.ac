@@ -27,7 +27,7 @@ AC_TYPE_UINT8_T
 AC_CHECK_FUNCS([memset])
 
 # use automake
-AM_INIT_AUTOMAKE([-Wall])
+AM_INIT_AUTOMAKE([dist-xz no-dist-gzip -Wall])
 AC_CONFIG_FILES([Makefile])
 
 AC_OUTPUT
