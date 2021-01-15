@@ -51,14 +51,18 @@ pushd scratch &> /dev/null
         echo 'Building sedutil package ...'
         make dist-xz
 
+        echo 'Cleaning old source tarballs ...'
+        rm -rfv images/scratch/buildroot/dl/sedutil-xxc
+        rm -rfv images/sedutil/package/sedutil-xxc/src
+        rm -fv images/sedutil/package/sedutil-xxc/sedutil-xxc.hash
         echo 'Adding sedutil to Buildroot tree ...'
-        rm -rf images/sedutil/package/sedutil-xxc/src
         mkdir images/sedutil/package/sedutil-xxc/src
         cp -v sedutil-*.tar.xz images/sedutil/package/sedutil-xxc/src
 
         # Create the hash file
         echo 'Creating SHA512 hash of tarball ...'
         echo "sha512  $(sha512sum sedutil-*.tar.xz)" > images/sedutil/package/sedutil-xxc/sedutil-xxc.hash
+        cat images/sedutil/package/sedutil-xxc/sedutil-xxc.hash
 
         make distclean
     popd &> /dev/null
@@ -77,6 +81,7 @@ pushd scratch &> /dev/null
         make sedutil_defconfig |& tee output/init_config.txt
         # Have buildroot download the required sources
         echo 'Fetching required sources with Buildroot ...'
+        rm -f .buildroot_sources_dl_done
         while ! [ -e .buildroot_sources_dl_done ]; do
             make source |& tee -a output/dl_output.txt && touch .buildroot_sources_dl_done
         done

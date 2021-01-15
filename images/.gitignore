@@ -3,6 +3,7 @@
 
 # Buildroot ccache
 /buildroot/.br_ccache
+/.br_ccache
 
 # Output dirs
 /RESCUE64
