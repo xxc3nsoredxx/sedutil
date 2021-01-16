@@ -65,6 +65,7 @@ Unique to this repo are the following modifications:
 * uClibc instead of glibc
   * Cut the size of the initramfs in half
 * New build scripts
+* Proper Buildroot external tree
 * Minimally sized images
   * UEFI image
     * Original DTA size: 32 MiB (uncompressed)
@@ -123,6 +124,8 @@ To compile your own version of `sedutil` you will need the standard development 
 Although not mandatory, at least 12 GiB of space is recommended to safely accommodate the maximum `ccache` size of 5 GiB.
 `du -d 1 -a -c -h` in the root of the repo says 6.7 GiB for me.
 
+## IGNORE ANYTHING BELOW THIS LINE
+
 ### Build
 
 `$` denotes user privs
@@ -140,8 +143,6 @@ $ ./build_pbaroot.sh
 # ./build_rescue.sh             (requires root for losetup(8))
 # ./flash_rescue.sh             (requires root for writing to a block device)
 ```
-
-## IGNORE ANYTHING BELOW THIS LINE
 
 Prerequisites:  
 
