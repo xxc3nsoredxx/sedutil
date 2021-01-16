@@ -1,1 +1,2 @@
 source "$BR2_EXTERNAL_SEDUTIL_PATH/package/sedutil-xxc/Config.in"
+source "$BR2_EXTERNAL_SEDUTIL_PATH/package/skeleton-sedutil/Config.in"

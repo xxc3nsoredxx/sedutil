@@ -16,12 +16,12 @@ SEDUTIL_XXC_CONF_OPTS = --sbindir=/sbin
 # SEDUTIL_XXC_DEPENDENCIES = libstdc++
 # Dont regen version header use the tarball version
 define SEDUTIL_XXC_POST_EXTRACT_ACTIONS
-sed -i '/^CLEANFILES/d' $(BUILD_DIR)/sedutil-xxc-$(SEDUTIL_XXC_VERSION)/Makefile.am
-sed -i '/^BUILT_SOURCES/d' $(BUILD_DIR)/sedutil-xxc-$(SEDUTIL_XXC_VERSION)/Makefile.am
-sed -i '/^linux\/Version/,3 d' $(BUILD_DIR)/sedutil-xxc-$(SEDUTIL_XXC_VERSION)/Makefile.am
-sed -i '/^BUILT_SOURCES/d' $(BUILD_DIR)/sedutil-xxc-$(SEDUTIL_XXC_VERSION)/Makefile.in
-sed -i '/^CLEANFILES/d' $(BUILD_DIR)/sedutil-xxc-$(SEDUTIL_XXC_VERSION)/Makefile.in
-sed -i '/^linux\/Version/,3 d' $(BUILD_DIR)/sedutil-xxc-$(SEDUTIL_XXC_VERSION)/Makefile.in
+	sed -i '/^CLEANFILES/d' $(BUILD_DIR)/sedutil-xxc-$(SEDUTIL_XXC_VERSION)/Makefile.am
+	sed -i '/^BUILT_SOURCES/d' $(BUILD_DIR)/sedutil-xxc-$(SEDUTIL_XXC_VERSION)/Makefile.am
+	sed -i '/^linux\/Version/,3 d' $(BUILD_DIR)/sedutil-xxc-$(SEDUTIL_XXC_VERSION)/Makefile.am
+	sed -i '/^BUILT_SOURCES/d' $(BUILD_DIR)/sedutil-xxc-$(SEDUTIL_XXC_VERSION)/Makefile.in
+	sed -i '/^CLEANFILES/d' $(BUILD_DIR)/sedutil-xxc-$(SEDUTIL_XXC_VERSION)/Makefile.in
+	sed -i '/^linux\/Version/,3 d' $(BUILD_DIR)/sedutil-xxc-$(SEDUTIL_XXC_VERSION)/Makefile.in
 endef
 SEDUTIL_XXC_POST_EXTRACT_HOOKS += SEDUTIL_XXC_POST_EXTRACT_ACTIONS
 $(eval $(autotools-package))
