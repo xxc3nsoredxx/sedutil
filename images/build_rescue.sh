@@ -19,10 +19,10 @@ fi
 
 [ -f scratch/$SYSLINUX_VER/efi64/efi/syslinux.efi ]                     || die
 [ -f scratch/$SYSLINUX_VER/efi64/com32/elflink/ldlinux/ldlinux.e64 ]    || die
-[ -f scratch/buildroot/64bit/images/bzImage ]                           || die
-[ -f scratch/buildroot/64bit/images/rootfs.cpio.xz ]                    || die
-[ -x scratch/buildroot/64bit/target/sbin/linuxpba ]                     || die
-[ -x scratch/buildroot/64bit/target/sbin/sedutil-cli ]                  || die
+[ -f scratch/buildroot/output/images/bzImage ]                          || die
+[ -f scratch/buildroot/output/images/rootfs.cpio.xz ]                   || die
+[ -x scratch/buildroot/output/target/sbin/linuxpba ]                    || die
+[ -x scratch/buildroot/output/target/sbin/sedutil-cli ]                 || die
 [ -f buildroot/syslinux.cfg ]                                           || die
 [ -f UEFI64/UEFI64-*.img.xz ]                                           || die
 echo "Building $BUILDTYPE image"
@@ -34,7 +34,7 @@ mkdir scratch/rescuefs
 pushd scratch/rescuefs &> /dev/null
     # Unpack initramfs
     echo 'Unpacking rootfs.cpio.xz ...'
-    xz -dc ../buildroot/64bit/images/rootfs.cpio.xz | cpio -i -H newc -d
+    xz -dc ../buildroot/output/images/rootfs.cpio.xz | cpio -i -H newc -d
     
     # Create /etc/issue
     echo 'Creating /etc/issue ...'
@@ -60,7 +60,7 @@ EOF
 
     # Repack initramfs
     echo 'Repacking as rescuefs.cpio.xz ...'
-    find . | cpio -o -H newc | xz -9e -C crc32 -c > ../buildroot/64bit/images/rescuefs.cpio.xz
+    find . | cpio -o -H newc | xz -9e -C crc32 -c > ../buildroot/output/images/rescuefs.cpio.xz
 popd &> /dev/null
 rm -rf scratch/rescuefs
 echo 'Remastering done!'
@@ -74,8 +74,8 @@ pushd $BUILDTYPE &> /dev/null
     mkdir -p system/EFI/boot
     cp -v ../scratch/$SYSLINUX_VER/efi64/efi/syslinux.efi system/EFI/boot/bootx64.efi
     cp -v ../scratch/$SYSLINUX_VER/efi64/com32/elflink/ldlinux/ldlinux.e64 system/EFI/boot/
-    cp -v ../scratch/buildroot/64bit/images/bzImage system/EFI/boot/
-    cp -v ../scratch/buildroot/64bit/images/rescuefs.cpio.xz system/EFI/boot/rootfs.cpio.xz
+    cp -v ../scratch/buildroot/output/images/bzImage system/EFI/boot/
+    cp -v ../scratch/buildroot/output/images/rescuefs.cpio.xz system/EFI/boot/rootfs.cpio.xz
     cp -v ../buildroot/syslinux.cfg system/EFI/boot/
 
     # Calculate the total file size in 512B blocks
