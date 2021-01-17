@@ -1,84 +1,61 @@
 #! /bin/bash
-. conf
+
+# Arg 1: images directory
+# Arg 2: syslinux.cfg path  (set in buildroot config file)
+# Arg 3: disk layout        (set in buildroot config file)
 
 # Build a custom UEFI linux based PBA image
 VERSIONINFO="$(git describe --dirty)" || VERSIONINFO='tarball'
-BUILDTYPE='UEFI64'
+BUILDTYPE='UEFI'
 BUILDIMG="$BUILDTYPE-$VERSIONINFO.img"
 
-function die {
-    echo 'Prereqs not available'
-    exit 1
-}
-
-# Check if running as root
-# Reuired by losetup(8)
-if [ $(id -u) -ne 0 ]; then
-    echo 'Must be run as root!'
-    exit 1
-fi
-
-# Check prereqs
-[ -f scratch/$SYSLINUX_VER/efi64/efi/syslinux.efi ]                     || die
-[ -f scratch/$SYSLINUX_VER/efi64/com32/elflink/ldlinux/ldlinux.e64 ]    || die
-[ -f scratch/buildroot/64bit/images/bzImage ]                           || die
-[ -f scratch/buildroot/64bit/images/rootfs.cpio.xz ]                    || die
-[ -f scratch/buildroot/64bit/target/sbin/linuxpba ]                     || die
-[ -f scratch/buildroot/64bit/target/sbin/sedutil-cli ]                  || die
-[ -f buildroot/syslinux.cfg ]                                           || die
 echo "Building $BUILDTYPE image"
 
 # Clean slate
-rm -rf $BUILDTYPE
-mkdir $BUILDTYPE
-pushd $BUILDTYPE &> /dev/null
+rm -rfv $BINARIES_DIR/$BUILDTYPE
+mkdir -v $BINARIES_DIR/$BUILDTYPE
+pushd $BINARIES_DIR/$BUILDTYPE &> /dev/null
     # Create system directory structure
     echo 'Creating system directory structure ...'
-    mkdir -p system/EFI/boot
-    cp -v ../scratch/$SYSLINUX_VER/efi64/efi/syslinux.efi system/EFI/boot/bootx64.efi
-    cp -v ../scratch/$SYSLINUX_VER/efi64/com32/elflink/ldlinux/ldlinux.e64 system/EFI/boot/
-    cp -v ../scratch/buildroot/64bit/images/bzImage system/EFI/boot/
-    cp -v ../scratch/buildroot/64bit/images/rootfs.cpio.xz system/EFI/boot/
-    cp -v ../buildroot/syslinux.cfg system/EFI/boot/
+    mkdir -pv EFI/boot
+    cp -v $BINARIES_DIR/syslinux/syslinux.efi EFI/boot/bootx64.efi
+    cp -v $HOST_DIR/usr/share/syslinux/efi64/ldlinux.e64 EFI/boot/
+    cp -v $BINARIES_DIR/bzImage EFI/boot/
+    cp -v $BINARIES_DIR/rootfs.cpio.xz EFI/boot/
+    cp -v $2 EFI/boot/
 
     # Calculate the total file size in 512B blocks
-    IMGSIZE=$(du -d 0 -B 512 system | cut -f 1)
-    # Add space for the FAT structures
+    IMGSIZE=$(du -d 0 -B 512 EFI | cut -f 1)
+    # Add space for the disk structures
     IMGSIZE=$((IMGSIZE + 125))
 
-    # Create image file and loopback device
-    echo 'Creating boot image ...'
+    # Create disk image
+    echo 'Creating disk image ...'
     dd if=/dev/zero of=$BUILDIMG count=$IMGSIZE
-    sfdisk $BUILDIMG < ../layout.sfdisk
-    # Get the start of the partition (in bytes)
+    sfdisk $BUILDIMG < $3
+
+    # Get the start of the partition (in blocks)
     OFFSET=$(sfdisk -d $BUILDIMG | awk -e '/start/ {print $4;}')
     OFFSET=${OFFSET//,}
-    OFFSET=$((OFFSET * 512))
-    # Get the size of the partition (in bytes)
+    # Get the size of the partition (in blocks)
     SIZE=$(sfdisk -d $BUILDIMG | awk -e '/size/ {print $6;}')
     SIZE=${SIZE//,}
-    SIZE=$((SIZE * 512))
-    LOOPDEV=$(losetup --show -f -o $OFFSET --sizelimit $SIZE $BUILDIMG)
-    mkfs.vfat $LOOPDEV -n $BUILDTYPE
 
-    # Mount the image
-    mkdir image
-    mount $LOOPDEV image
-    chmod 644 image
+    # Create a separate filesystem image
+    echo 'Creating temporary filesystem image ...'
+    mkfs.vfat -C fs.temp.img $SIZE
 
-    # Transfer the system onto the image
-    echo 'Transfering system to boot image ...'
-    mv -v system/EFI image
+    # Transfer the system onto the filesystem image
+    echo 'Transfering system to temprary filesystem ...'
+    $HOST_DIR/bin/mcopy -v -s -i fs.temp.img EFI ::EFI
+
+    # Write filesystem to disk image
+    echo 'Writing filesystem to disk image ...'
+    dd if=fs.temp.img of=$BUILDIMG seek=$OFFSET conv=notrunc
 
     # Clean up
-    umount image
-    rmdir image
-    losetup -d $LOOPDEV
-    rmdir system
+    rm -rfv EFI fs.temp.img
 
     echo 'Compressing boot image ...'
-    xz -9e $BUILDIMG
+    xz -9v $BUILDIMG
 popd &> /dev/null
-
-# Make not owned by root
-chown -R --reference=. $BUILDTYPE
