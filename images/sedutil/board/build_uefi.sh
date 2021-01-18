@@ -4,12 +4,12 @@
 # Arg 2: syslinux.cfg path  (set in buildroot config file)
 # Arg 3: disk layout        (set in buildroot config file)
 
-# Build a custom UEFI linux based PBA image
+# Build the UEFI image
 VERSIONINFO="$(git describe --dirty)" || VERSIONINFO='tarball'
 BUILDTYPE='UEFI'
 BUILDIMG="$BUILDTYPE-$VERSIONINFO.img"
 
-echo "Building $BUILDTYPE image"
+echo "Building $BUILDTYPE image ..."
 
 # Clean slate
 rm -rfv $BINARIES_DIR/$BUILDTYPE
@@ -43,7 +43,8 @@ pushd $BINARIES_DIR/$BUILDTYPE &> /dev/null
 
     # Create a separate filesystem image
     echo 'Creating temporary filesystem image ...'
-    mkfs.vfat -C fs.temp.img $SIZE
+    dd if=/dev/zero of=fs.temp.img count=$SIZE
+    mkfs.vfat -v fs.temp.img
 
     # Transfer the system onto the filesystem image
     echo 'Transfering system to temprary filesystem ...'

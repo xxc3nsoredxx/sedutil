@@ -11,7 +11,7 @@ popd &> /dev/null
 
 # Clean old images
 echo 'Cleaning old images ...'
-rm -rfv UEFI
+rm -rfv UEFI EFI
 
 # Copy the images
-cp -rv scratch/buildroot/output/images/UEFI ./
+cp -rv scratch/buildroot/output/images/{UEFI,RESCUE} ./

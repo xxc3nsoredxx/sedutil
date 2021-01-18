@@ -5,7 +5,7 @@ function die {
     exit 1
 }
 
-RESCUE=$(ls RESCUE64/RESCUE64*.xz 2>/dev/null) || die 'No rescue image found!'
+RESCUE=$(ls RESCUE/RESCUE*.xz 2>/dev/null) || die 'No rescue image found!'
 RESCUE_BASE=$(basename $RESCUE)
 RESCUE_IMG=$(basename -s '.xz' $RESCUE_BASE)
 
@@ -36,4 +36,9 @@ done
 # Flash image
 echo -n "Flashing $RESCUE_IMG to $REPLY ..."
 dd if=$RESCUE_IMG iflag=direct of=$REPLY oflag=direct bs=5M status=none && sync && \
+echo ' DONE'
+
+# Clean up
+echo -n 'Cleaning up temporary image ...'
+rm $RESCUE_IMG && \
 echo ' DONE'
