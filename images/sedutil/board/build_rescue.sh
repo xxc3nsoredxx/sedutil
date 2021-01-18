@@ -77,7 +77,7 @@ pushd $BINARIES_DIR/$BUILDTYPE &> /dev/null
 
     # Create disk image
     echo 'Creating disk image ...'
-    dd if=/dev/zero of=$BUILDIMG count=$IMGSIZE
+    dd if=/dev/zero of="$BUILDIMG" count="$IMGSIZE"
     sfdisk $BUILDIMG < $3
 
     # Get the start of the partition (in blocks)
@@ -89,7 +89,7 @@ pushd $BINARIES_DIR/$BUILDTYPE &> /dev/null
 
     # Create a separate filesystem image
     echo 'Creating temporary filesystem image ...'
-    dd if=/dev/zero of=fs.temp.img count=$SIZE
+    dd if=/dev/zero of=fs.temp.img count="$SIZE"
     mkfs.vfat -v fs.temp.img
 
     # Transfer the system onto the filesystem image
@@ -98,7 +98,7 @@ pushd $BINARIES_DIR/$BUILDTYPE &> /dev/null
 
     # Write filesystem to disk image
     echo 'Writing filesystem to disk image ...'
-    dd if=fs.temp.img of=$BUILDIMG seek=$OFFSET conv=notrunc
+    dd if=fs.temp.img of="$BUILDIMG" seek="$OFFSET" conv=notrunc
 
     # Clean up
     rm -rfv EFI fs.temp.img
