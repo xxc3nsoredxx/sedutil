@@ -8,24 +8,7 @@ if ! [ -d scratch ]; then
     mkdir scratch
 fi
 
-# Download SYSLINUX
-pushd scratch &> /dev/null
-    # Test if SYSLINUX tarball exists
-    if ! [ -e .syslinux_dl_done ]; then
-        while ! [ -e .syslinux_dl_done ]; do
-            echo 'Fetching SYSLINUX tarball ...'
-            curl -L -O $SYSLINUX_URL/$SYSLINUX_VER.tar.xz && touch .syslinux_dl_done
-        done
-    fi
-
-    # Test if SYSLINUX is extracted
-    if ! [ -d $SYSLINUX_VER ]; then
-        echo 'Extracting SYSLINUX tarball ...'
-        tar xf $SYSLINUX_VER.tar.xz
-    fi
-popd &> /dev/null
-
-# Prepare buildroot sources
+# Prepare sources
 pushd scratch &> /dev/null
     # Test if buildroot tarball exists
     if ! [ -e .buildroot_dl_done ]; then
