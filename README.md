@@ -89,7 +89,7 @@ Unique to this repo are the following modifications:
     * No SD/MMC/SDIO card support
     * No multi-user support
 * Stripped down BusyBox
-  * Original BusyBox size: 714 KiB (as measured from 64bit/target/bin/busybox)
+  * Original BusyBox size: 714 KiB (as measured from output/target/bin/busybox)
   * My BusyBox size: 228 KiB
   * Cut features
     * Incompatible features (such as no kernel support)
