@@ -1,0 +1,16 @@
+config BR2_PACKAGE_SYSLINUX_SEDUTIL
+	bool "SYSLINUX bootloader"
+	depends on !BR2_TARGET_SYSLINUX
+	help
+	  The SYSLINUX bootloader for 64 bit UEFI systems.
+	  
+	  https://www.syslinux.org
+
+config BR2_PACKAGE_SYSLINUX_SEDUTIL_CONFIG
+	string "syslinux.cfg path"
+	depends on BR2_PACKAGE_SYSLINUX_SEDUTIL
+	help
+	  The path to the SYSLINUX config file
+
+comment "Cannot use included SYSLINUX if using Buildroot SYSLINUX"
+	depends on BR2_TARGET_SYSLINUX

@@ -1,8 +1,7 @@
 #! /bin/bash
 
 # Arg 1: images directory
-# Arg 2: syslinux.cfg path  (set in buildroot config file)
-# Arg 3: disk layout        (set in buildroot config file)
+# Arg 2: disk layout        (set in buildroot config file)
 
 # Build the UEFI image
 VERSIONINFO="$(git describe --dirty)" || VERSIONINFO='tarball'
@@ -18,11 +17,11 @@ pushd $BINARIES_DIR/$BUILDTYPE &> /dev/null
     # Create system directory structure
     echo 'Creating system directory structure ...'
     mkdir -pv EFI/boot
-    cp -v $BINARIES_DIR/syslinux/syslinux.efi EFI/boot/bootx64.efi
-    cp -v $HOST_DIR/usr/share/syslinux/efi64/ldlinux.e64 EFI/boot/
+    cp -v $BINARIES_DIR/syslinux/bootx64.efi EFI/boot/
+    cp -v $BINARIES_DIR/syslinux/ldlinux.e64 EFI/boot/
     cp -v $BINARIES_DIR/bzImage EFI/boot/
     cp -v $BINARIES_DIR/rootfs.cpio.xz EFI/boot/
-    cp -v $2 EFI/boot/
+    cp -v $BINARIES_DIR/syslinux/syslinux.cfg EFI/boot/
 
     # Calculate the total file size in 512B blocks
     IMGSIZE=$(du -d 0 -B 512 EFI | cut -f 1)
@@ -32,13 +31,13 @@ pushd $BINARIES_DIR/$BUILDTYPE &> /dev/null
     # Create disk image
     echo 'Creating disk image ...'
     dd if=/dev/zero of="$BUILDIMG" count="$IMGSIZE"
-    sfdisk $BUILDIMG < $3
+    sfdisk $BUILDIMG < $2
 
     # Get the start of the partition (in blocks)
-    OFFSET=$(sfdisk -d $BUILDIMG | awk -e '/start/ {print $4;}')
+    OFFSET=$(sfdisk -d $BUILDIMG | awk -e '/start=/ {print $4;}')
     OFFSET=${OFFSET//,}
     # Get the size of the partition (in blocks)
-    SIZE=$(sfdisk -d $BUILDIMG | awk -e '/size/ {print $6;}')
+    SIZE=$(sfdisk -d $BUILDIMG | awk -e '/size=/ {print $6;}')
     SIZE=${SIZE//,}
 
     # Create a separate filesystem image
