@@ -8,3 +8,6 @@
 # Output dirs
 /RESCUE*
 /UEFI*
+
+# Testing dirs
+/test*
