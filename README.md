@@ -2,8 +2,6 @@
 
 AMD Ryzen: This SEDutil fork includes support for AMD Ryzen systems with SHA-512 password authentication.
 
-Updated buildroot: This fork uses an updated buildroot config instead of the Linux 4.14.146 one.
-
 Note: This version of SEDutil is not compatible with SHA-1 versions of SEDutil.
 
 This software is Copyright 2014-2017 Bright Plaza Inc. <drivetrust@drivetrust.com>
@@ -38,7 +36,7 @@ or changing the contents of /sys/module/libata/parameters/allow_tpm from a "0" t
 
 Orginal source code is available on GitHub at https://github.com/Drive-Trust-Alliance/sedutil 
 
-Linux and Windows executables and Linux PBA bootloader images for this version of SEDutil are available at https://github.com/ChubbyAnt/sedutil/releases
+Linux and Windows executables and Linux PBA bootloader images for this version of SEDutil are available at ***TODO: INSERT RELEASE BUILDS HERE***
 
 # About SEDutil for AMD Ryzen
 DTA sedutil: For AMD Ryzen Systems
@@ -49,23 +47,22 @@ This pre-boot authorization image allows the user enter their password and unloc
 **Using this tool can make data on the drive inaccessible!**
 
 ## Setup
-To configure a drive, load a compatible [RECOVERY](https://github.com/ChubbyAnt/sedutil/releases) image onto a USB drive and follow the instructions here:  
+To configure a drive, load a compatible ***TODO: INSERT RECOVERY RELEASE HERE*** image onto a USB drive and follow the instructions here:  
 
 https://github.com/Drive-Trust-Alliance/sedutil/wiki/Encrypting-your-drive
 
 ## Origin
 This version is based on the sedutil fork by [@ChubbyAnt](https://github.com/ChubbyAnt/sedutil) which is itself based on the original [@dta](https://github.com/Drive-Trust-Alliance/sedutil/) implementation and incorporates changes by [@ladar](https://github.com/ladar/sedutil), [@ckamm](https://github.com/ckamm/sedutil/) and [@CyrilVanErsche](https://github.com/CyrilVanErsche/sedutil/).
-In addition to adding support for the PBA bootloader on AMD Ryzen and AMD Ryzen mobile systems, this fork uses an updated buildroot image.
+In addition to adding support for the PBA bootloader on AMD Ryzen and AMD Ryzen mobile systems, this fork uses a revamped build system.
 
 ## Notable Differences
 Unique to this repo are the following modifications:
 
 * SHA512 password hashing vs SHA1 on original SEDutil
 * Compatibile with AMD Ryzen and AMD Ryzen mobile systems
-* uClibc instead of glibc
-  * Cut the size of the initramfs in half
-* New build scripts
-* Proper Buildroot external tree
+* New build system
+  * Uses a proper Buildroot external tree for improved maintainability
+* No BIOS support
 * Minimally sized images
   * UEFI image
     * Original DTA size: 32 MiB (uncompressed)
@@ -73,8 +70,7 @@ Unique to this repo are the following modifications:
   * RESCUE image
     * Original DTA size: 75 MiB (uncompressed)
     * My size: 5.5 MiB (uncompressed)
-* No BIOS support
-* Updated PBA: newer, stripped down kernel
+* Newer, stripped down kernel
   * Linux 5.4.80
   * Original DTA bzImage size: 6.3 MiB
   * My bzImage size: 1.9 MiB
@@ -92,15 +88,17 @@ Unique to this repo are the following modifications:
     * No USB support
     * No SD/MMC/SDIO card support
     * No multi-user support
-* Stripped down Busybox
-  * Original Busybox size: 714 KiB (as measured from 64bit/target/bin/busybox)
-  * My Busybox size: 228 KiB
+* Stripped down BusyBox
+  * Original BusyBox size: 714 KiB (as measured from 64bit/target/bin/busybox)
+  * My BusyBox size: 228 KiB
   * Cut features
     * Incompatible features (such as no kernel support)
     * Non-essential features (bells and whistles not needed to manage Opal 2 drives)
     * For the list, see the commits starting here:
 [c954e8f7](https://github.com/xxc3nsoredxx/sedutil/commit/c954e8f74a253c60e026d6e70051ebd0446a227d)
-* Busybox patches
+* uClibc instead of glibc
+  * Cut the size of the initramfs in half
+* BusyBox patches
   * loginutils/getty.c
     * Display `/etc/issue` when not prompting for login
     * `-r` flag to automatically log in as `root`
@@ -124,8 +122,6 @@ To compile your own version of `sedutil` you will need the standard development 
 Although not mandatory, at least 12 GiB of space is recommended to safely accommodate the maximum `ccache` size of 5 GiB.
 `du -d 1 -a -c -h` in the root of the repo says 6.7 GiB for me.
 
-## IGNORE ANYTHING BELOW THIS LINE
-
 ### Build
 
 `$` denotes user privs
@@ -134,15 +130,11 @@ Although not mandatory, at least 12 GiB of space is recommended to safely accomm
 ```
 $ cd images
 $ ./prepare.sh
-$ ./create_buildroot_config.sh  (optional, to tweak the buildroot .config)
-$ ./create_busybox_config.sh    (optional, to tweak the busybox .config)
-$ ./create_kernel_config.sh     (optional, to tweak the kernel .config)
-$ ./create_uclibc_config.sh     (optional, to tweak the uclibc .config)
-$ ./build_pbaroot.sh
-# ./build_UEFI64.sh             (requires root for losetup(8))
-# ./build_rescue.sh             (requires root for losetup(8))
-# ./flash_rescue.sh             (requires root for writing to a block device)
+$ ./build.sh
+# ./flash_rescue.sh     (writing to a block device requires root)
 ```
+
+## IGNORE ANYTHING BELOW THIS LINE
 
 Prerequisites:  
 
