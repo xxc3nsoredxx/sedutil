@@ -1,9 +1,0 @@
-#! /bin/bash
-# Setup versions for image components
-# This script should be sourced by the other scripts
-SYSLINUX_URL='https://www.kernel.org/pub/linux/utils/boot/syslinux'
-SYSLINUX_VER='syslinux-6.03'
-BUILDROOT_URL='https://git.buildroot.net/buildroot/snapshot/'
-BUILDROOT_VER='buildroot-2020.11.1'
-
-export BR2_CCACHE_DIR="$PWD/buildroot/.br_ccache/"

@@ -2,7 +2,6 @@
 /scratch*
 
 # Buildroot ccache
-/buildroot/.br_ccache
 /.br_ccache
 
 # Output dirs
