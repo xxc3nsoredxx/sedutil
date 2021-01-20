@@ -31,7 +31,7 @@ pushd $BINARIES_DIR/$BUILDTYPE &> /dev/null
     # Create disk image
     echo 'Creating disk image ...'
     dd if=/dev/zero of="$BUILDIMG" count="$IMGSIZE"
-    sfdisk $BUILDIMG < $2
+    $HOST_DIR/sbin/sfdisk $BUILDIMG < $2
 
     # Get the start of the partition (in blocks)
     OFFSET=$(sfdisk -d $BUILDIMG | awk -e '/start=/ {print $4;}')
@@ -43,7 +43,7 @@ pushd $BINARIES_DIR/$BUILDTYPE &> /dev/null
     # Create a separate filesystem image
     echo 'Creating temporary filesystem image ...'
     dd if=/dev/zero of=fs.temp.img count="$SIZE"
-    mkfs.vfat -v fs.temp.img
+    $HOST_DIR/sbin/mkfs.vfat -v fs.temp.img
 
     # Transfer the system onto the filesystem image
     echo 'Transfering system to temprary filesystem ...'
@@ -57,5 +57,5 @@ pushd $BINARIES_DIR/$BUILDTYPE &> /dev/null
     rm -rfv EFI fs.temp.img
 
     echo 'Compressing boot image ...'
-    xz -9v $BUILDIMG
+    $HOST_DIR/bin/xz -9v $BUILDIMG
 popd &> /dev/null
