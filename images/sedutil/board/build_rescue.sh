@@ -23,7 +23,7 @@ else
     pushd $BINARIES_DIR/rescuefs &> /dev/null
         # Unpack initramfs
         echo 'Unpacking rootfs.cpio.xz ...'
-        xz -dcv $BINARIES_DIR/rootfs.cpio.xz | cpio -i -H newc -d
+        $HOST_DIR/bin/unxz -cv $BINARIES_DIR/rootfs.cpio.xz | cpio -i -H newc -d
         
         # Create /etc/issue
         echo 'Creating /etc/issue ...'
@@ -49,7 +49,7 @@ EOF
 
         # Repack initramfs
         echo 'Repacking as rescuefs.cpio.xz ...'
-        find . | cpio -o -H newc | xz -9 -C crc32 -c -v > $BINARIES_DIR/rescuefs.cpio.xz
+        find . | cpio -o -H newc | $HOST_DIR/bin/xz -9 -C crc32 -c -v > $BINARIES_DIR/rescuefs.cpio.xz
     popd &> /dev/null
     rm -rf $BINARIES_DIR/rescuefs
     echo 'Remastering done!'
@@ -103,5 +103,5 @@ pushd $BINARIES_DIR/$BUILDTYPE &> /dev/null
     rm -rfv EFI fs.temp.img
 
     echo 'Compressing boot image ...'
-    xz -9v $BUILDIMG
+    $HOST_DIR/bin/xz -9v $BUILDIMG
 popd &> /dev/null
