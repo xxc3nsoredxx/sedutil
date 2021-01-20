@@ -38,7 +38,24 @@ echo -n "Flashing $RESCUE_IMG to $REPLY ..."
 dd if=$RESCUE_IMG iflag=direct of=$REPLY oflag=direct bs=5M status=none && sync && \
 echo ' DONE'
 
+# Verify the flash
+IMG_SIZE=$(du --apparent-size -B 512 $RESCUE_IMG | cut -f 1)
+
+echo -n 'Verifying the flashed image ...'
+IMG_HASH=$(sha512sum $RESCUE_IMG | cut -d ' ' -f 1)
+FLASH_HASH=$(dd if=$REPLY iflag=direct count=$IMG_SIZE status=none | sha512sum | cut -d ' ' -f 1)
+echo -n ' DONE'
+
+if [ "$IMG_HASH" == "$FLASH_HASH" ]; then
+    echo ' [GOOD]'
+else
+    echo ' [FAIL]'
+    STATUS=1
+fi
+
 # Clean up
 echo -n 'Cleaning up temporary image ...'
 rm $RESCUE_IMG && \
 echo ' DONE'
+
+exit $STATUS
