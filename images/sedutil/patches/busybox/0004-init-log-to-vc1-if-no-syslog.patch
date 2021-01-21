@@ -1,0 +1,35 @@
+From 3b398fd0f6e02f4c9bfd0387f8d0457c523a6eab Mon Sep 17 00:00:00 2001
+From: xxc3nsoredxx <xxc3ncoredxx@gmail.com>
+Date: Thu, 21 Jan 2021 16:13:28 -0600
+Subject: [PATCH] init log to vc1 if no syslog
+
+Signed-off-by: Oskari Pirhonen <xxc3ncoredxx@gmail.com>
+---
+ init/init.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/init/init.c b/init/init.c
+index 28775a6..d0a5a55 100644
+--- a/init/init.c
++++ b/init/init.c
+@@ -74,7 +74,7 @@
+ //config:	depends on INIT || LINUXRC
+ //config:	help
+ //config:	If selected, some init messages are sent to syslog.
+-//config:	Otherwise, they are sent to VT #5 if linux virtual tty is detected
++//config:	Otherwise, they are sent to VT #1 if linux virtual tty is detected
+ //config:	(if not, no separate logging is done).
+ //config:
+ //config:config FEATURE_INIT_QUIET
+@@ -216,7 +216,7 @@ struct globals {
+ #define G (*(struct globals*)bb_common_bufsiz1)
+ #define INIT_G() do { \
+ 	setup_common_bufsiz(); \
+-	IF_NOT_FEATURE_INIT_SYSLOG(G.log_console = VC_5;) \
++	IF_NOT_FEATURE_INIT_SYSLOG(G.log_console = VC_1;) \
+ } while (0)
+ 
+ enum {
+-- 
+2.26.2
+

@@ -1,0 +1,26 @@
+From ef16e65ebbca3edd9070eb731c15eece0434ccec Mon Sep 17 00:00:00 2001
+From: xxc3nsoredxx <xxc3ncoredxx@gmail.com>
+Date: Thu, 21 Jan 2021 12:08:46 -0600
+Subject: [PATCH] Change max number of consoles to 1
+
+Signed-off-by: Oskari Pirhonen <xxc3ncoredxx@gmail.com>
+---
+ include/uapi/linux/vt.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/uapi/linux/vt.h b/include/uapi/linux/vt.h
+index e9d39c485..8e22dc70b 100644
+--- a/include/uapi/linux/vt.h
++++ b/include/uapi/linux/vt.h
+@@ -8,7 +8,7 @@
+  * resizing).
+  */
+ #define MIN_NR_CONSOLES 1       /* must be at least 1 */
+-#define MAX_NR_CONSOLES	63	/* serial lines start at 64 */
++#define MAX_NR_CONSOLES	1	/* serial lines start at 2 */
+ 		/* Note: the ioctl VT_GETSTATE does not work for
+ 		   consoles 16 and higher (since it returns a short) */
+ 
+-- 
+2.26.2
+
