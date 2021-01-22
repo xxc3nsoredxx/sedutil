@@ -12,4 +12,5 @@ echo 'Cleaning old images ...'
 rm -rfv UEFI RESCUE
 
 # Copy the images
+echo 'Copying new images ...'
 cp -rv scratch/buildroot/output/images/{UEFI,RESCUE} ./
