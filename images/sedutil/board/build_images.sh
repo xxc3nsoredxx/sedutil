@@ -6,6 +6,11 @@
 # Global info
 VERSIONINFO="$(git describe --dirty)" || VERSIONINFO='tarball'
 LAYOUT="$2"
+SECTOR_SIZE=512
+# Sectors per cluster
+CLUSTER_SIZE=4
+ROOT_ENTRIES=16
+RESERVED_SECTORS=1
 
 # Arg 1: image type (UEFI/RESCUE)
 function build_img {
@@ -32,27 +37,45 @@ function build_img {
         fi
         cp -v $BINARIES_DIR/syslinux/syslinux.cfg EFI/boot/
 
-        # Calculate the total file size in 512B blocks
-        IMGSIZE=$(du -d 0 -B 512 EFI | cut -f 1)
-        # Add space for the disk structures
-        IMGSIZE=$((IMGSIZE + 150))
+        # Calculate the total size in FAT clusters
+        CLUSTERS=("$(du -a --apparent-size -B $((CLUSTER_SIZE * SECTOR_SIZE)) EFI/boot/* | cut -f 1)")
+        CLUSTER_TOTAL=0
+        for c in $CLUSTERS; do
+            CLUSTER_TOTAL=$((CLUSTER_TOTAL + c))
+        done
+        # Add clusters to store the special entries (clusters 0 and 1)
+        CLUSTER_TOTAL=$((CLUSTER_TOTAL + 2))
+
+        # Calculate the size of disk image (in sectors)
+        # +34 for GPT
+        # +1 for FAT reserved sector (boot sector)
+        # +5 for FAT1 (UEFI) / +9 for FAT1 (RESCUE)
+        # +5 for FAT2 (UEFI) / +9 for FAT2 (RESCUE)
+        # +1 for FAT root (16 entries * 32 bytes per entry)
+        # Data region
+        # +34 for backup GPT
+        if [ "$BUILDTYPE" == "UEFI" ]; then
+            IMAGE_SIZE=$((34 + 1 + 5 + 5 + 1 + (CLUSTER_TOTAL * CLUSTER_SIZE) + 34))
+        else
+            IMAGE_SIZE=$((34 + 1 + 9 + 9 + 1 + (CLUSTER_TOTAL * CLUSTER_SIZE) + 34))
+        fi
 
         # Create disk image
         echo 'Creating disk image ...'
-        dd if=/dev/zero of="$BUILDIMG" count="$IMGSIZE"
+        dd if=/dev/zero of="$BUILDIMG" count="$IMAGE_SIZE"
         $HOST_DIR/sbin/sfdisk $BUILDIMG < $LAYOUT
 
-        # Get the start of the partition (in blocks)
-        OFFSET=$(sfdisk -d $BUILDIMG | awk -e '/start=/ {print $4;}')
+        # Get the start of the partition (in sectors)
+        OFFSET=$($HOST_DIR/sbin/sfdisk -d $BUILDIMG | awk -e '/start=/ {print $4;}')
         OFFSET=${OFFSET//,}
-        # Get the size of the partition (in blocks)
-        SIZE=$(sfdisk -d $BUILDIMG | awk -e '/size=/ {print $6;}')
+        # Get the size of the partition (in sectors)
+        SIZE=$($HOST_DIR/sbin/sfdisk -d $BUILDIMG | awk -e '/size=/ {print $6;}')
         SIZE=${SIZE//,}
 
         # Create a separate filesystem image
         echo 'Creating temporary filesystem image ...'
         dd if=/dev/zero of=fs.temp.img count="$SIZE"
-        $HOST_DIR/sbin/mkfs.vfat -v fs.temp.img
+        $HOST_DIR/sbin/mkfs.vfat -a -r $ROOT_ENTRIES -R $RESERVED_SECTORS -s $CLUSTER_SIZE -v fs.temp.img
 
         # Transfer the system onto the filesystem image
         echo 'Transfering system to temprary filesystem ...'
