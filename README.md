@@ -51,6 +51,9 @@ To configure a drive, load a compatible ***TODO: INSERT RECOVERY RELEASE HERE***
 
 https://github.com/Drive-Trust-Alliance/sedutil/wiki/Encrypting-your-drive
 
+This has so far only been tested and confirmed to work on my ThinkPad T14 with Ryzen 7 PRO 4750U, 32 GiB of RAM, and a Samsung 970 EVO Plus 1 TiB NVMe M.2.
+If anyone uses this to set up OPAL 2 on different hardware, please submit a pull request updating the list with whether it works or not.
+
 ## Origin
 This version is based on the sedutil fork by [@ChubbyAnt](https://github.com/ChubbyAnt/sedutil) which is itself based on the original [@dta](https://github.com/Drive-Trust-Alliance/sedutil/) implementation and incorporates changes by [@ladar](https://github.com/ladar/sedutil), [@ckamm](https://github.com/ckamm/sedutil/) and [@CyrilVanErsche](https://github.com/CyrilVanErsche/sedutil/).
 In addition to adding support for the PBA bootloader on AMD Ryzen and AMD Ryzen mobile systems, this fork uses a revamped build system.
@@ -62,6 +65,8 @@ Unique to this repo are the following modifications:
 * Compatibile with AMD Ryzen and AMD Ryzen mobile systems
 * New build system
   * Uses a proper Buildroot external tree for improved maintainability
+* Only NVMe drive support
+  * Well, AFAIK. I don't have any other types of drives to test with.
 * No BIOS support
 * Minimally sized images
   * UEFI image
@@ -111,10 +116,6 @@ Unique to this repo are the following modifications:
 Doxygen formatting has been ignored.
 Assume it's broken and doesn't work to generate docs.
 
-**NOTE:**
-This has so far only been tested to boot the RESCUE64 image, `sedutil-cli --scan` showing my drive as having Opal 2 support, and nothing immediately glaring in `dmesg`.
-My machine is a ThinkPad T14 with Ryzen 7 PRO 4750U, 32 GiB of RAM, and a Samsung 970 EVO Plus 1 TiB NVMe M.2.
-
 Building is supported on Gentoo amd64.
 Other distros should work as long as the necessary tooling is available.
 
@@ -133,6 +134,159 @@ $ ./prepare.sh
 $ ./build.sh
 # ./flash_rescue.sh     (writing to a block device requires root)
 ```
+
+# Encrypting Your Drive
+**IMPORTANT:**
+This process _should_ leave the data on the drive intact, but ***ABSLUTELY NO GUARANTEES ARE MADE.***
+Before continuing, ensure you have a working backup of any data you wish to keep.
+
+This page is based on the information found on the DTA repo's wiki.
+Reading their guides can give a bit more information, but it may or may not be fully compatible with this version of the software:
+https://github.com/Drive-Trust-Alliance/sedutil/wiki/Encrypting-your-drive  
+
+**NOTE:**
+Both the PBA and the rescue system uses the us_english keyboard layout.
+This can cause issues when setting the password on your normal operating system if you use another keyboard layout.
+To make sure the PBA recognizes your password, and to protect your existing OS, you should set up you drive from the rescue system as described on this page.
+
+## Prepare a bootable rescue system
+These instructions are for a UEFI system that is running Linux (either installed on the hardware or through a live boot).
+Secure boot must also be disabled.
+BIOS systems are unsupported.
+
+1. Download the rescue image
+2. Insert a USB drive
+   * Almost any will do, the image is 5.5 MiB in size
+3. Decompress the image
+   * `unxz RESCUE-*.img.xz`
+4. Flash the image onto the USB (requires root)
+   * `dd if=RESCUE-*.img of=/dev/sdX`
+   * Replace `sdX` with the correct block device corresponding to the USB drive
+
+**NOTE:**
+If building from source, running the `flash_rescue.sh` script during the build process handles the above for you.
+
+Reboot the machine from the USB drive.
+Once it has loaded it will drop directly into a root shell.
+Run `sedutil-cli --scan` to check for supported drives.
+
+Example output:
+```
+#sedutil-cli --scan
+Scanning for Opal compliant disks
+/dev/nvme0  2  Samsung SSD 970 EVO Plus 1TB             2B2QEXM7
+No more disks present ending scan
+```
+
+Verify that the second column contains a 2 which indicates that the drive has OPAL 2 support.
+If it does not, abort now.
+The software cannot detect OPAL 2 support on the drive, and continuing may erase all the data on your drive.
+
+## Test the PBA
+Run `linuxpba` and enter `debug` as the password when prompted.
+Using a different password will reboot the system.
+
+Example output:
+```
+#linuxpba 
+... SNIP DEBUG OUTPUT ...
+Drive /dev/nvme0 Samsung SSD 970 EVO Plus 1TB             is OPAL NOT LOCKED
+... SNIP DEBUG OUTPUT ...
+```
+
+Verify that your drive is listed and is reported as `is OPAL`.
+If it is not, abort now.
+The next sections enable OPAL locking on the drive, and it is imperative that the drive is detected correctly.
+If any problems are encountered, follow the instructions in the [Recovery Information](https://github.com/Drive-Trust-Alliance/sedutil/wiki/Encrypting-your-drive#recovery-information) section to disable or remove OPAL locking.
+
+The next sections assume the target drive is on `/dev/nvme0`.
+Replace with the appropriate block device if needed.
+
+## Enable Locking and Install the PBA
+Run the following commands:
+```
+xz -d /usr/sedutil/UEFI-*.img.xz
+sedutil-cli --initialsetup debug /dev/nvme0
+sedutil-cli --enablelockingrange 0 debug /dev/nvme0
+sedutil-cli --setlockingrange 0 lk debug /dev/nvme0
+sedutil-cli --setmbrdone off debug /dev/nvme0
+sedutil-cli --loadpbaimage debug /usr/sedutil/UEFI-*.img /dev/nvme0
+```
+Unlike on standard systems, `unxz` will not work in the rescue image &mdash; `xz -d` is required.
+The name of the PBA image may (and should) be tab-completed to ensure it is correct.
+The initial password of `debug` will be changed in a later step.
+The third `sedutil-cli` command's third argument is "ell-kay".
+
+Example output:
+```
+#xz -d /usr/sedutil/UEFI-*.img.xz
+#sedutil-cli --initialsetup debug /dev/nvme0
+takeOwnership complete
+Locking SP Activate Complete
+LockingRange0 disabled
+LockingRange0 set to RW
+MBRDone set on
+MBRDone set on
+MBREnable set on
+Initial setup of TPer complete on /dev/nvme0
+#sedutil-cli --enablelockingrange 0 debug /dev/nvme0
+LockingRange0 enabled ReadLocking,WriteLocking
+#sedutil-cli --setlockingrange 0 lk debug /dev/nvme0
+LockingRange0 set to LK
+#sedutil-cli --setmbrdone off debug /dev/nvme0
+MBRDone set off
+#sedutil-cli --loadpbaimage debug /usr/sedutil/UEFI-*.img /dev/nvme0
+Writing PBA to /dev/nvme0
+3059712 of 3059712 100% blk=54346
+```
+
+## Test the PBA (again)
+Run `linuxpba` and enter `debug` as the password when prompted.
+
+Example output:
+```
+#linuxpba 
+... SNIP DEBUG OUTPUT ...
+Drive /dev/nvme0 Samsung SSD 970 EVO Plus 1TB             is OPAL Unlocked
+... SNIP DEBUG OUTPUT ...
+```
+
+Verify that your drive is listed and is reported as `Unlocked`.
+If it is not, abort now and follow the instructions to disable or remove OPAL locking.
+
+## Set the Password
+Run the following commands to set the SID and Admin1 passwords.
+They don't have to match, but it makes future administartion easier.
+```
+sedutil-cli --setsidpassword debug <password> /dev/nvme0
+sedutil-cli --setadmin1pwd debug <password> /dev/nvme0
+```
+
+Example output:
+```
+#sedutil-cli --setsidpassword debug <password> /dev/nvme0
+#sedutil-cli --setadmin1pwd debug <password> /dev/nvme0
+Admin1 password changed
+```
+
+## Finalize
+Run the following command to finalize setting up the drive.
+It also serves as a way to check if your password works.
+```
+sedutil-cli --setmbrdone on <password> /dev/nvme0
+```
+
+Example output:
+```
+#sedutil-cli --setmbrdone on <password> /dev/nvme0
+MBRDone set on
+```
+
+The drive is now set to use OPAL 2!
+_Completely power off the system_ so that the drive will lock.
+On the next boot, the drive will present the shadow MBR to the system and the PBA will boot.
+After entering your password, the machine will reboot.
+If the password was entered correctly, the drive will be unlocked, the actual contents of the drive will be visible, and the boot will continue as normal.
 
 ## IGNORE ANYTHING BELOW THIS LINE
 
@@ -176,165 +330,7 @@ The various recovery and boot images will be located in the `images` directory.
 
 This version has only been verified to boot on a HP x360 Envy AMD 3700u with a Samsung EVO 970 Plus 2TB NVMe drive. Testing has also focused only on the 64 bit UEFI images. While the other variants might work, you should exercise caution, and if possible, test the release on a computer with data that is expendable.
 
-## Encrypting Your Drive
-
-For the most comprehensive information, review this first:  
-
-https://github.com/Drive-Trust-Alliance/sedutil/wiki/Encrypting-your-drive  
-
-Both the PBA and rescue systems use the us_english keyboard. This can cause issues when setting the password on your normal operating system if you use another keyboard mapping. To make sure the PBA recognizes your password you are encouraged to set up you drive from the rescue system as described on this page.
-
-# Prepare a bootable rescue system
-
-These are the instructions for modern UEFI NVME equipped systems using SEDutil OPAL locking and unlocking utility as a windows pre-boot bootloader:
-
-Download the rescue system for 64bit UEFI  
- 
-* UEFI support currently requires that Secure Boot be turned off
-
-Transfer the Rescue image to the USB stick with a program like [Balena Etcher](https://www.balena.io/etcher/).
-
-Restart your computer, enter the BIOS, and disable secure boot.  
-Note: Earlier versions of SEDutil also required BIOS enable of "legacy boot" or "CSM" or "Compatility Mode" - this is no longer required with this version of SEDutil. 
-
-Boot the USB thumb drive with the rescue system on it. You will see the Login prompt, enter "root" there is no password so you will get a root shell prompt.
-
-enter the command ```sedutil-cli --scan```
-Expected Output:
-
-```
-#sedutil-cli --scan
-Scanning for Opal compliant disks
-/dev/nvme0  2  Samsung SSD 960 EVO 250GB                2B7QCXE7
-/dev/sda    2  Crucial_CT250MX200SSD1                   MU04    
-/dev/sdb   12  Samsung SSD 850 EVO 500GB                EMT01B6Q
-/dev/sdc    2  ST500LT025-1DH142                        0001SDM7
-/dev/sdd   12  Samsung SSD 850 EVO 250GB                EMT01B6Q
-No more disks present ending scan
-```
-
-Verify that your drive has a 2 in the second column indicating OPAL 2 support. If it doesn't do not proceed, there is something that is preventing sedutil from supporting your drive. If you continue you may erase all of your data.
-
-# Test the PBA
-
-Enter the command ```linuxpba``` and use a pass-phrase of ```debug```. If you don't use debug as the pass-phrase your system will reboot!
-Expected Output:
-
-```
-#linuxpba 
-
-DTA LINUX Pre Boot Authorization 
-
-
-Please enter pass-phrase to unlock OPAL drives: *****
-Scanning....
-Drive /dev/nvme0 Samsung SSD 960 EVO 250GB                is OPAL NOT LOCKED   
-Drive /dev/sda   Crucial_CT250MX200SSD1                   is OPAL NOT LOCKED   
-Drive /dev/sdb   Samsung SSD 850 EVO 500GB                is OPAL NOT LOCKED   
-Drive /dev/sdc   ST500LT025-1DH142                        is OPAL NOT LOCKED   
-Drive /dev/sdd   Samsung SSD 850 EVO 250GB                is OPAL NOT LOCKED   
-```
-
-Verify that Your drive is listed and the that the PBA reports it as "is OPAL"
-
-Issuing the commands in the steps that follow will enable OPAL locking. If you have a problem you will need to follow the steps at the end of this page [Recovery Information](https://github.com/Drive-Trust-Alliance/sedutil/wiki/Encrypting-your-drive#recovery-information) to either disable or remove OPAL locking.
-
-The following steps use /dev/nvme0 as the device and UEFI64-1.15.img.gz for the PBA image, substitute the proper /dev/nvme? for your drive and the proper PBA name for your system
-
-#Enable Locking and the PBA  
-
-Enter the commands below: (Use the password of debug for this test, it will be changed later)  
-```
-gunzip /usr/sedutil/UEFI64-*img.gz 
-sedutil-cli --initialsetup debug /dev/nvme0
-sedutil-cli --enablelockingrange 0 debug /dev/nvme0
-sedutil-cli --setlockingrange 0 lk debug /dev/nvme0
-sedutil-cli --setmbrdone off debug /dev/nvme0
-sedutil-cli --loadpbaimage debug /usr/sedutil/UEFI64-*.img /dev/nvme0 
-```
-Expected Output:  
-
-```
-#sedutil-cli --initialsetup debug /dev/nvme0
-- 14:06:39.709 INFO: takeOwnership complete
-- 14:06:41.703 INFO: Locking SP Activate Complete
-- 14:06:42.317 INFO: LockingRange0 disabled 
-- 14:06:42.694 INFO: LockingRange0 set to RW
-- 14:06:43.171 INFO: MBRDone set on 
-- 14:06:43.515 INFO: MBRDone set on 
-- 14:06:43.904 INFO: MBREnable set on 
-- 14:06:43.904 INFO: Initial setup of TPer complete on /dev/nvme0
-#sedutil-cli --enablelockingrange 0 debug /dev/nvme0
-- 14:07:24.914 INFO: LockingRange0 enabled ReadLocking,WriteLocking
-#sedutil-cli --setlockingrange 0 lk debug /dev/nvme0
-- 14:07:46.728 INFO: LockingRange0 set to LK
-#sedutil-cli --setmbrdone off debug /dev/nvme0
-- 14:08:21.999 INFO: MBRDone set off 
-#gunzip /usr/sedutil/UEFI64-1.15.img.gz 
-#sedutil-cli --loadpbaimage debug /usr/sedutil/UEFI64-1.15.img /dev/nvme0
-- 14:10:55.328 INFO: Writing PBA to /dev/nvme0
-33554432 of 33554432 100% blk=1500 
-- 14:14:04.499 INFO: PBA image  /usr/sedutil/UEFI64.img written to /dev/nvme0
-#
-```
-
-# Test the PBA (yes again)  
-
-Enter the command ```linuxpba``` and use a pass-phrase of debug  
-
-This second test will verify that your drive really does get unlocked.  
-Expected Output:  
-
-```
-#linuxpba 
-
-DTA LINUX Pre Boot Authorization 
-
-
-Please enter pass-phrase to unlock OPAL drives: *****
-Scanning....
-Drive /dev/nvme0 Samsung SSD 960 EVO 250GB                is OPAL Unlocked   <---  IMPORTANT!!  
-Drive /dev/sda   Crucial_CT250MX200SSD1                   is OPAL NOT LOCKED   
-Drive /dev/sdb   Samsung SSD 850 EVO 500GB                is OPAL NOT LOCKED   
-Drive /dev/sdc   ST500LT025-1DH142                        is OPAL NOT LOCKED   
-Drive /dev/sdd   Samsung SSD 850 EVO 250GB                is OPAL NOT LOCKED   
-```
-
-Verify that the PBA unlocks your drive, it should say "is OPAL Unlocked" If it doesn't then you will need to follow the steps at the end of this page to either remove OPAL or disable locking.  
-
-#Set a real password  
-
-The SID and Admin1 passwords do not have to match but it makes things easier.  
-```
-edutil-cli --setsidpassword debug yourrealpassword /dev/nvme0
-sedutil-cli --setadmin1pwd debug yourrealpassword /dev/nvme0
-```
-
-Expected Output:  
-
-```
-#sedutil-cli --setsidpassword debug yourrealpassword /dev/nvme0
-#sedutil-cli --setadmin1pwd  debug yourrealpassword /dev/nvme0
-- 14:20:53.352 INFO: Admin1 password changed
-```
-
-Make sure you didn't mistype your password by testing it.  
-
-```sedutil-cli --setmbrdone on yourrealpassword /dev/nvme0```
-
-Expected Output:  
-
-```
-#sedutil-cli --setmbrdone on yourrealpassword /dev/nvme0
-- 14:22:21.590 INFO: MBRDone set on 
-```
-
-#Your drive in now using OPAL locking.  
-
-You now need to COMPLETELY POWER DOWN YOUR SYSTEM  
-This will lock the drive so that when you restart your system it will boot the PBA.
-
-#Recovery information:  
+# Recovery information:  
 
 If there is an issue after enabling locking you can either disable locking or remove OPAL to continue using your drive without locking.  
 
