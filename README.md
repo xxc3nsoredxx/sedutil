@@ -117,7 +117,7 @@ Doxygen formatting has been ignored.
 Assume it's broken and doesn't work to generate docs.
 
 Building is supported on Gentoo amd64.
-Other distros should work as long as the necessary tooling is available.
+Any distro should work as long as the necessary tooling is available.
 
 To compile your own version of `sedutil` you will need the standard development tools, an internet connection, and at least 7 GiB of disk space. 
 Although not mandatory, at least 12 GiB of space is recommended to safely accommodate the maximum `ccache` size of 5 GiB.
@@ -125,15 +125,18 @@ Although not mandatory, at least 12 GiB of space is recommended to safely accomm
 
 ### Build
 
-`$` denotes user privs
+`$` denotes user commands
 
-`#` denotes root privs
+`#` denotes root commands
 ```
 $ cd images
 $ ./prepare.sh
 $ ./build.sh
+[Insert the USB where the rescue image will be written to]
 # ./flash_rescue.sh     (writing to a block device requires root)
 ```
+If the flash drive does not show up in the list when running `flash_rescue.sh`, cancel by hitting `Ctrl-C` and try again.
+It can take a little bit for the device to be recognized by the kernel and be available for use.
 
 # Encrypting Your Drive
 **IMPORTANT:**

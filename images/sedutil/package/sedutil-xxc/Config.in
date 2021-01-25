@@ -1,6 +1,9 @@
 config BR2_PACKAGE_SEDUTIL_XXC
 	bool "sedutil (xxc3nsoredxx's fork)"
 	depends on BR2_INSTALL_LIBSTDCPP && !BR2_PACKAGE_SEDUTIL
+	select BR2_PACKAGE_HOST_DOSFSTOOLS
+	select BR2_PACKAGE_HOST_MTOOLS
+	select BR2_PACKAGE_HOST_UTIL_LINUX
 	help
 	  This package provides support for Self Encrypting Drives
 	  (SEDs) implementing the Opal 2 standard. This is
