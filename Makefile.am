@@ -1,6 +1,6 @@
 AUTOMAKE_OPTIONS = foreign subdir-objects
-AM_CFLAGS = -Wall -Werror -std=c11
-AM_CXXFLAGS = -Wall -Werror -std=c++11 -I./Common -I./Common/pbkdf2 -I./linux -I./LinuxPBA
+AM_CFLAGS = -Wall -std=c11
+AM_CXXFLAGS = -Wall -std=c++11 -I./Common -I./Common/pbkdf2 -I./linux -I./LinuxPBA
 SEDUTIL_COMMON_CODE = \
 	Common/DtaAnnotatedDump.cpp Common/DtaAnnotatedDump.h \
 	Common/DtaCommand.cpp Common/DtaCommand.h \
@@ -44,4 +44,3 @@ man_MANS = docs/sedutil-cli.8
 linux/Version.h:
 	./linux/GitVersion.sh > linux/Version.h
 .INTERMEDIATE: linux/Version.h
-
