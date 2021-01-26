@@ -123,6 +123,19 @@ To compile your own version of `sedutil` you will need the standard development 
 Although not mandatory, at least 12 GiB of space is recommended to safely accommodate the maximum `ccache` size of 5 GiB.
 `du -d 1 -a -c -h` in the root of the repo says 6.7 GiB for me.
 
+### Dependencies
+* prepare.sh
+  * Source downloads
+    * `curl`, `tar`, `gzip`
+  * sedutil tarball creation
+    * `autoconf`, `sed`, `make`, `tar`, `xz-utils`
+* Buildroot
+  * `which`, `sed`, `make`, `binutils`, `build-essential` (Debian), `gcc`, `g++`, `bash`,
+    `patch`, `gzip`, `bzip2`, `perl`, `tar`, `cpio`, `unzip`, `rsync`, `file`, `bc`, `wget`
+
+Run `images/check_deps.sh` to test for missing dependencies.
+Doesn't test for `bash`, `which`, or Debian's `build-essential`.
+
 ### Build
 
 `$` denotes user commands
