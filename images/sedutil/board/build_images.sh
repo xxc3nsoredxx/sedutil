@@ -66,10 +66,10 @@ function build_img {
         $HOST_DIR/sbin/sfdisk $BUILDIMG < $LAYOUT
 
         # Get the start of the partition (in sectors)
-        OFFSET=$($HOST_DIR/sbin/sfdisk -d $BUILDIMG | awk -e '/start=/ {print $4;}')
+        OFFSET=$($HOST_DIR/sbin/sfdisk -d $BUILDIMG | $HOST_DIR/bin/gawk -e '/start=/ {print $4;}')
         OFFSET=${OFFSET//,}
         # Get the size of the partition (in sectors)
-        SIZE=$($HOST_DIR/sbin/sfdisk -d $BUILDIMG | awk -e '/size=/ {print $6;}')
+        SIZE=$($HOST_DIR/sbin/sfdisk -d $BUILDIMG | $HOST_DIR/bin/gawk -e '/size=/ {print $6;}')
         SIZE=${SIZE//,}
 
         # Create a separate filesystem image
