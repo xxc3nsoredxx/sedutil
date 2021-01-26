@@ -109,7 +109,7 @@ else
     pushd $BINARIES_DIR/rescuefs &> /dev/null
         # Unpack initramfs
         echo 'Unpacking rootfs.cpio.xz ...'
-        unxz -cv $BINARIES_DIR/rootfs.cpio.xz | $HOST_DIR/bin/cpio -i -H newc -d
+        unxz -cv $BINARIES_DIR/rootfs.cpio.xz | cpio -i -H newc -d
         
         # Create /etc/issue
         echo 'Creating /etc/issue ...'
@@ -135,7 +135,7 @@ EOF
 
         # Repack initramfs
         echo 'Repacking as rescuefs.cpio.xz ...'
-        find . | $HOST_DIR/bin/cpio -o -H newc | xz -9 -C crc32 -c -v > $BINARIES_DIR/rescuefs.cpio.xz
+        find . | cpio -o -H newc | xz -9 -C crc32 -c -v > $BINARIES_DIR/rescuefs.cpio.xz
     popd &> /dev/null
     rm -rf $BINARIES_DIR/rescuefs
     echo 'Remastering done!'
