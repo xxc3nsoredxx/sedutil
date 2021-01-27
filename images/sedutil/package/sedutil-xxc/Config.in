@@ -12,6 +12,39 @@ config BR2_PACKAGE_SEDUTIL_XXC
 	  https://DriveTrust.com/
 	  https://github.com/xxc3nsoredxx/sedutil
 
+choice
+	prompt "sedutil debug level"
+	depends on BR2_PACKAGE_SEDUTIL_XXC
+	default BR2_PACKAGE_SEDUTIL_XXC_DEBUG_INFO
+	help
+	  Debug output level. Default is INFO.
+
+config BR2_PACKAGE_SEDUTIL_XXC_DEBUG_ERROR
+	bool "ERROR"
+
+config BR2_PACKAGE_SEDUTIL_XXC_DEBUG_WARN
+	bool "WARN"
+
+config BR2_PACKAGE_SEDUTIL_XXC_DEBUG_INFO
+	bool "INFO"
+
+config BR2_PACKAGE_SEDUTIL_XXC_DEBUG_DEBUG
+	bool "DEBUG"
+
+config BR2_PACKAGE_SEDUTIL_XXC_DEBUG_DEBUG1
+	bool "DEBUG1"
+
+config BR2_PACKAGE_SEDUTIL_XXC_DEBUG_DEBUG2
+	bool "DEBUG2"
+
+config BR2_PACKAGE_SEDUTIL_XXC_DEBUG_DEBUG3
+	bool "DEBUG3"
+
+config BR2_PACKAGE_SEDUTIL_XXC_DEBUG_DEBUG4
+	bool "DEBUG4"
+
+endchoice
+
 comment "sedutil (xxc3nsoredxx's fork) needs a toolchain w/ C++"
 	depends on !BR2_INSTALL_LIBSTDCPP
 

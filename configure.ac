@@ -6,6 +6,22 @@ AC_INIT([sedutil-xxc], [1.15.1], [https://github.com/xxc3nsoredxx/sedutil/issues
 AC_CONFIG_SRCDIR([Common/sedutil.cpp])
 AC_CONFIG_HEADERS([config.h])
 
+# Configure args
+AC_ARG_ENABLE([debug],
+    [AS_HELP_STRING([--enable-debug=[LEVEL]],
+                    [debug level: ERROR, WARN, INFO, DEBUG, DEBUG1, DEBUG2, DEBUG3, DEBUG4 (default is INFO)])],
+    [debug_level=$enableval],
+    [debug_level="INFO"])
+AS_IF([test "x$debug_level" = "xERROR"],  [AC_DEFINE([DEBUG_LEVEL_INT], [0], [Debug level: 0-7 (default 2)])],
+      [test "x$debug_level" = "xWARN"],   [AC_DEFINE([DEBUG_LEVEL_INT], [1], [Debug level: 0-7 (default 2)])],
+      [test "x$debug_level" = "xINFO"],   [AC_DEFINE([DEBUG_LEVEL_INT], [2], [Debug level: 0-7 (default 2)])],
+      [test "x$debug_level" = "xDEBUG"],  [AC_DEFINE([DEBUG_LEVEL_INT], [3], [Debug level: 0-7 (default 2)])],
+      [test "x$debug_level" = "xDEBUG1"], [AC_DEFINE([DEBUG_LEVEL_INT], [4], [Debug level: 0-7 (default 2)])],
+      [test "x$debug_level" = "xDEBUG2"], [AC_DEFINE([DEBUG_LEVEL_INT], [5], [Debug level: 0-7 (default 2)])],
+      [test "x$debug_level" = "xDEBUG3"], [AC_DEFINE([DEBUG_LEVEL_INT], [6], [Debug level: 0-7 (default 2)])],
+      [test "x$debug_level" = "xDEBUG4"], [AC_DEFINE([DEBUG_LEVEL_INT], [7], [Debug level: 0-7 (default 2)])],
+                                          [AC_DEFINE([DEBUG_LEVEL_INT], [2], [Debug level: 0-7 (default 2)])])
+
 # Checks for programs.
 AC_PROG_CXX
 AC_PROG_CC

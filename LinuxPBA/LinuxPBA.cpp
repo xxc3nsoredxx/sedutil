@@ -17,6 +17,8 @@ This software is Copyright 2014-2017 Bright Plaza Inc. <drivetrust@drivetrust.co
     along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 
 * C:E********************************************************************** */
+#include "config.h"
+
 #include <cstring>
 #include <iostream>
 
@@ -32,9 +34,9 @@ This software is Copyright 2014-2017 Bright Plaza Inc. <drivetrust@drivetrust.co
 sedutiloutput outputFormat = sedutilNormal;
 
 int main (int argc, char *argv []) {
-    CLog::Level() = CLog::FromInt(0);
+    // DEBUG_LEVEL_INT is from config.h, set by --enable-debug[=LEVEL]
+    CLog::Level() = CLog::FromInt(DEBUG_LEVEL_INT);
     LOG(D4) << "Legacy PBA start" << std::endl;
-//    system ("tput clear");
     printf("Boot Authorization \n");
     std::string p = GetPassPhrase("Password: ");
     UnlockSEDs((char *)p.c_str());

@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 
  * C:E********************************************************************** */
+#include "config.h"
+
 #include <cstdio>
 #include <cstring>
 
@@ -113,7 +115,8 @@ void usage( ) {
 
 uint8_t DtaOptions (int argc, char *argv [], DTA_OPTIONS *opts) {
     memset(opts, 0, sizeof(DTA_OPTIONS));
-    uint16_t loggingLevel = 2;
+    // DEBUG_LEVEL_INT is from config.h, set by --enable-debug[=LEVEL]
+    uint16_t loggingLevel = DEBUG_LEVEL_INT;
     uint8_t baseOptions = 2; // program and option
     CLog::Level() = CLog::FromInt(loggingLevel);
     RCLog::Level() = RCLog::FromInt(loggingLevel);
@@ -127,13 +130,12 @@ uint8_t DtaOptions (int argc, char *argv [], DTA_OPTIONS *opts) {
             return DTAERROR_INVALID_COMMAND;
         } else if ('v' == argv[i][1]) {
             baseOptions += 1;
-            loggingLevel += (uint16_t)(strlen(argv[i]) - 1);
-            if (loggingLevel > 7) {
-                loggingLevel = 7;
+            if (loggingLevel < 7) {
+                loggingLevel += (uint16_t)(strlen(argv[i]) - 1);
+                CLog::Level() = CLog::FromInt(loggingLevel);
+                LOG(D) << "Log level set to " << CLog::ToString(CLog::FromInt(loggingLevel));
+                LOG(D) << "sedutil version : " << GIT_VERSION;
             }
-            CLog::Level() = CLog::FromInt(loggingLevel);
-            LOG(D) << "Log level set to " << CLog::ToString(CLog::FromInt(loggingLevel));
-            LOG(D) << "sedutil version : " << GIT_VERSION;
         } else if (!(strcmp("-n", argv[i]))) {
             baseOptions += 1;
             opts->no_hash_passwords = true;

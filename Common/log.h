@@ -47,7 +47,7 @@
 inline std::string NowTime ();
 
 enum TLogLevel {
-    E, W, I, D, D1, D2, D3, D4
+    E = 0, W, I, D, D1, D2, D3, D4
 };
 
 template <typename T>
