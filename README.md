@@ -63,6 +63,9 @@ Unique to this repo are the following modifications:
 
 * SHA512 password hashing vs SHA1 on original SEDutil
 * Compatibile with AMD Ryzen and AMD Ryzen mobile systems
+* Cleaner `linuxpba` runtime
+  * New "boot authorization" prompt
+  * No excessive debug output
 * New build system
   * Uses a proper Buildroot external tree for improved maintainability
 * Only NVMe drive support
@@ -150,6 +153,22 @@ $ ./build.sh
 ```
 If the flash drive does not show up in the list when running `flash_rescue.sh`, cancel by hitting `Ctrl-C` and try again.
 It can take a little bit for the device to be recognized by the kernel and be available for use.
+
+To control the level of debug output, run the following commands after running `./prepare.sh` but before `./build.sh`:
+```
+$ cd scratch/buildroot
+$ make menuconfig
+```
+Change the value using the following `Kconfig` option.
+The default is `INFO`.
+```
+External options  --->
+      *** xxc3nsoredxx sedutil fork (in /local/path/to/external/tree) ***
+  [*] sedutil (xxc3nsoredxx's fork)
+        sedutil debug level (INFO)  --->
+```
+Save the config.
+Run `cd ../..` and continue the build as normal.
 
 # Encrypting Your Drive
 **IMPORTANT:**
@@ -286,7 +305,7 @@ Admin1 password changed
 ```
 
 ## Finalize
-Run the following command to finalize setting up the drive.
+Run the following commands to finalize setting up the drive.
 It also serves as a way to check if your password works.
 ```
 sedutil-cli --setmbrdone on <password> /dev/nvme0
