@@ -62,9 +62,8 @@ std::string GetPassPhrase (const char *prompt, bool show_asterisk) {
     std::string password;
     unsigned char ch = 0;
     LOG(D4) << "Enter GetPassPhrase" << std::endl;
-    printf("\n\n%s", prompt);
+    printf("%s", prompt);
     while ((ch = getch_()) != RETURN) {
-//        LOG(I) << "key value" << (uint16_t) ch << endl;
         if (ch == BACKSPACE) {
             if (password.length() != 0) {
                 if (show_asterisk) {
@@ -79,6 +78,7 @@ std::string GetPassPhrase (const char *prompt, bool show_asterisk) {
             }
         }
     }
+    printf("\n");
 
     return password;
 }

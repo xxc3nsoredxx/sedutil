@@ -33,15 +33,15 @@ This software is Copyright 2014-2017 Bright Plaza Inc. <drivetrust@drivetrust.co
 /* Default to output that includes timestamps and goes to stderr*/
 sedutiloutput outputFormat = sedutilNormal;
 
+// Pass in "boot" as arg 1 when running through init
 int main (int argc, char *argv []) {
     // DEBUG_LEVEL_INT is from config.h, set by --enable-debug[=LEVEL]
     CLog::Level() = CLog::FromInt(DEBUG_LEVEL_INT);
     LOG(D4) << "Legacy PBA start" << std::endl;
-    printf("Boot Authorization \n");
-    std::string p = GetPassPhrase("Password: ");
+    std::string p = GetPassPhrase("Boot Authorization Key: ");
     UnlockSEDs((char *)p.c_str());
-    if (strcmp(p.c_str(), "debug")) {
-        printf("\n Access granted. Starting the system... \n");
+    if (!strcmp(argv[1], "boot")) {
+        printf("Access granted. Starting the system...\n");
         sync();
         reboot(RB_AUTOBOOT);
     }

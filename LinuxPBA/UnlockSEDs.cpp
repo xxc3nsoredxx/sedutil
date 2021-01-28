@@ -54,7 +54,7 @@ uint8_t UnlockSEDs (char *password) {
         closedir(dir);
     }
     std::sort(devices.begin(), devices.end());
-    printf("\nScanning....\n");
+    printf("Scanning....\n");
     for (uint16_t i = 0; i < devices.size(); i++) {
         snprintf(devref, 23, "/dev/%s", devices[i].c_str());
         tempDev = new DtaDevGeneric(devref);
@@ -62,7 +62,7 @@ uint8_t UnlockSEDs (char *password) {
             break;
         }
         if ((!tempDev->isOpal1()) && (!tempDev->isOpal2())) {
-            printf("Drive %-10s %-40s not OPAL  \n", devref, tempDev->getModelNum());
+            printf("Drive %-10s %-40s not OPAL\n", devref, tempDev->getModelNum());
 
             delete tempDev;
             continue;
@@ -85,15 +85,15 @@ uint8_t UnlockSEDs (char *password) {
                 failed = 1;
             }
             if (failed) {
-                printf("Drive %-10s %-40s is OPAL Failed  \n", devref, d->getModelNum());
+                printf("Drive %-10s %-40s is OPAL Failed\n", devref, d->getModelNum());
             } else {
-                printf("Drive %-10s %-40s is OPAL Unlocked   \n", devref, d->getModelNum());
+                printf("Drive %-10s %-40s is OPAL Unlocked\n", devref, d->getModelNum());
             }
             delete d;
         } else {
-            printf("Drive %-10s %-40s is OPAL NOT LOCKED   \n", devref, d->getModelNum());
+            printf("Drive %-10s %-40s is OPAL NOT LOCKED\n", devref, d->getModelNum());
             delete d;
         }
     }
-    return 0x00;
+    return 0;
 }

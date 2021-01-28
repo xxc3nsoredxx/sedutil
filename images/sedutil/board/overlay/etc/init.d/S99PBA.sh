@@ -1,3 +1,3 @@
 #!/bin/sh
 clear
-/sbin/linuxpba 2>/tmp/pbaerror.log
+/sbin/linuxpba boot 2>/tmp/pbaerror.log
