@@ -40,7 +40,7 @@ int main (int argc, char *argv []) {
     LOG(D4) << "Legacy PBA start" << std::endl;
     std::string p = GetPassPhrase("Boot Authorization Key: ");
     UnlockSEDs((char *)p.c_str());
-    if (!strcmp(argv[1], "boot")) {
+    if (argc > 1 && !strcmp(argv[1], "boot")) {
         printf("Access granted. Starting the system...\n");
         sync();
         reboot(RB_AUTOBOOT);
