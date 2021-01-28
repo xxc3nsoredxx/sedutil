@@ -290,16 +290,19 @@ Run the following command to finalize setting up the drive.
 It also serves as a way to check if your password works.
 ```
 sedutil-cli --setmbrdone on <password> /dev/nvme0
+poweroff
 ```
 
 Example output:
 ```
 #sedutil-cli --setmbrdone on <password> /dev/nvme0
 MBRDone set on
+#poweroff
+[machine powers off]
 ```
 
 The drive is now set to use OPAL 2!
-_Completely power off the system_ so that the drive will lock.
+This will _completely power off the system_ so that the drive will lock.
 On the next boot, the drive will present the shadow MBR to the system and the PBA will boot.
 After entering your password, the machine will reboot.
 If the password was entered correctly, the drive will be unlocked, the actual contents of the drive will be visible, and the boot will continue as normal.
@@ -362,18 +365,21 @@ Writing PBA to /dev/nvme0
 ```
 
 ## Finalize
-To finalize the drive, switch out of the shadow MBR by running the following command:
+To finalize the drive, switch out of the shadow MBR and power off by running the following commands:
 ```
 sedutil-cli --setmbrdone on <password> /dev/nvme0
+poweroff
 ```
 
 Example output:
 ```
 #sedutil-cli --setmbrdone on <password> /dev/nvme0
 MBRDone set on
+#poweroff
+[machine powers off]
 ```
 
-_Completely power off the system_ so that the drive will lock.
+This will _completely power off the system_ so that the drive will lock.
 On the next boot, the drive will present the shadow MBR to the system and the updated PBA will boot.
 After entering your password, the machine will reboot.
 If the password was entered correctly, the drive will be unlocked, the actual contents of the drive will be visible, and the boot will continue as normal.
