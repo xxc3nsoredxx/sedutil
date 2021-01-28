@@ -37,6 +37,7 @@ sedutiloutput outputFormat = sedutilNormal;
 int main (int argc, char *argv []) {
     // DEBUG_LEVEL_INT is from config.h, set by --enable-debug[=LEVEL]
     CLog::Level() = CLog::FromInt(DEBUG_LEVEL_INT);
+    RCLog::Level() = RCLog::FromInt(DEBUG_LEVEL_INT);
     LOG(D4) << "Legacy PBA start" << std::endl;
     std::string p = GetPassPhrase("Boot Authorization Key: ");
     UnlockSEDs((char *)p.c_str());
