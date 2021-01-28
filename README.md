@@ -165,7 +165,7 @@ Both the PBA and the rescue system uses the us_english keyboard layout.
 This can cause issues when setting the password on your normal operating system if you use another keyboard layout.
 To make sure the PBA recognizes your password, and to protect your existing OS, you should set up you drive from the rescue system as described on this page.
 
-## Prepare a bootable rescue system
+## Prepare a Bootable Rescue System
 These instructions are for a UEFI system that is running Linux (either installed on the hardware or through a live boot).
 Secure boot must also be disabled.
 BIOS systems are unsupported.
@@ -304,7 +304,81 @@ On the next boot, the drive will present the shadow MBR to the system and the PB
 After entering your password, the machine will reboot.
 If the password was entered correctly, the drive will be unlocked, the actual contents of the drive will be visible, and the boot will continue as normal.
 
-## IGNORE ANYTHING BELOW THIS LINE
+# Updating the PBA Image
+**IMPORTANT:**
+This assumes your disk is already using Opal 2 locking.
+If your disk is not using Opal 2, follow the instructions above to enable.
+This process _should_ leave the data on the drive intact, but ***ABSLUTELY NO GUARANTEES ARE MADE.***
+Before continuing, ensure you have a working backup of any data you wish to keep.
+
+These next sections assume the target drive is on `/dev/nvme0`.
+Replace with the appropriate block device if needed.
+
+## Prepare a Bootable Rescue System
+Follow the instructions above to create a rescue system on a USB drive.
+Once done, power off the machine completely to lock the drive.
+Then boot the machine from the USB drive.
+Once booted, run `sedutil-cli --scan` as a sanity check.
+
+Example output:
+```
+#sedutil-cli --scan
+Scanning for Opal compliant disks
+/dev/nvme0  2  Samsung SSD 970 EVO Plus 1TB             2B2QEXM7
+No more disks present ending scan
+```
+
+## Unlock the Drive
+To unlock the drive, run `linuxpba` and enter your current password when prompted.
+
+Example output:
+```
+#linuxpba
+Boot Authorization Key: *****
+Scanning....
+- 18:02:25.627 INFO: MBRDone set on
+- 18:02:26.267 INFO: LockingRange0 set to RW
+Drive /dev/nvme0 Samsung SSD 970 EVO Plus 1TB             is OPAL Unlocked
+```
+
+## Flash the New PBA Image
+To flash the updated image, run the following commands to decompress the image, switch to the shadow MBR, and flash the image:
+```
+xd -d /usr/sedutil/UEFI-*.img.xz
+sedutil-cli --setmbrdone off <password> /dev/nvme0
+sedutil-cli --loadpbaimage <password> /usr/sedutil/UEFI-*.img /dev/nvme0
+```
+Unlike on standard systems, `unxz` will not work in the rescue image &mdash; `xz -d` is required.
+The name of the PBA image may (and should) be tab-completed to ensure it is correct.
+
+Example output:
+```
+#xz -d /usr/sedutil/UEFI-*.img.xz
+#sedutil-cli --setmbrdone off debug /dev/nvme0
+MBRDone set off
+#sedutil-cli --loadpbaimage debug /usr/sedutil/UEFI-*.img /dev/nvme0
+Writing PBA to /dev/nvme0
+3059712 of 3059712 100% blk=54346
+```
+
+## Finalize
+To finalize the drive, switch out of the shadow MBR by running the following command:
+```
+sedutil-cli --setmbrdone on <password> /dev/nvme0
+```
+
+Example output:
+```
+#sedutil-cli --setmbrdone on <password> /dev/nvme0
+MBRDone set on
+```
+
+_Completely power off the system_ so that the drive will lock.
+On the next boot, the drive will present the shadow MBR to the system and the updated PBA will boot.
+After entering your password, the machine will reboot.
+If the password was entered correctly, the drive will be unlocked, the actual contents of the drive will be visible, and the boot will continue as normal.
+
+# IGNORE ANYTHING BELOW THIS LINE
 
 Prerequisites:  
 
