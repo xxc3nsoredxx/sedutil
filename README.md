@@ -72,10 +72,6 @@ This version has the following modifications:
 If anyone uses this to set up Opal 2 on different hardware, please submit a pull request updating the list with whether it works or not.
 
 # Building from Source
-**NOTE:**
-Doxygen formatting has been ignored.
-Assume it's broken and doesn't work to generate docs.
-
 Release builds are made on Gentoo amd64.
 Any Linux distribution should work as long as the dependencies are available.
 
