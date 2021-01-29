@@ -1,67 +1,27 @@
-![alt tag](https://avatars0.githubusercontent.com/u/13870012?v=3&s=200)
+![alt tag](dta.png)
 
-AMD Ryzen: This SEDutil fork includes support for AMD Ryzen systems with SHA-512 password authentication.
-
-Note: This version of SEDutil is not compatible with SHA-1 versions of SEDutil.
-
-This software is Copyright 2014-2017 Bright Plaza Inc. <drivetrust@drivetrust.com>
-
-This file is part of sedutil.
-
-sedutil is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-sedutil is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
-
-sedutil - The Drive Trust Alliance Self Encrypting Drive Utility
-
-This program and it's accompanying Pre-Boot Authorization image allow
-you to enable the locking in SED's that comply with the TCG OPAL 2.00
-standard on bios machines.   
-
-You must be administrator/root to run the host managment program
-
-In Linux libata.allow_tpm must be set to 1. Either via adding libata.allow_tpm=1 to the kernel flags at boot time 
-or changing the contents of /sys/module/libata/parameters/allow_tpm from a "0" to a "1" on a running system.
-
-***sleep (S3) is not supported.***
-
-Orginal source code is available on GitHub at https://github.com/Drive-Trust-Alliance/sedutil 
-
-Linux and Windows executables and Linux PBA bootloader images for this version of SEDutil are available at ***TODO: INSERT RELEASE BUILDS HERE***
-
-# About SEDutil for AMD Ryzen
+# sedutil for AMD Ryzen
 DTA sedutil: For AMD Ryzen Systems
 
-The sedutil project provides a CLI tool (`sedutil-cli`) capable of setting up and managing self encrypting drives (SEDs) that comply with the TCG OPAL 2.00 standard.
-This project also provides a pre-boot authentication image (`linuxpba`) which can be loaded onto an encrypted disk's shadow MBR.
-This pre-boot authorization image allows the user enter their password and unlock SED drives during the boot process.
-**Using this tool can make data on the drive inaccessible!**
+The sedutil project provides a commandline tool (`sedutil-cli`) for setting up and managing self encrypting drives (SEDs) that comply with the TCG OPAL 2.0 standard.
+This project also provides a pre-boot authorization image (`linuxpba`) which can be loaded onto an encrypted disk's shadow MBR.
+This pre-boot authorization image allows the user to enter their password to unlock SEDs during the boot process.
 
-## Setup
-To configure a drive, load a compatible ***TODO: INSERT RECOVERY RELEASE HERE*** image onto a USB drive and follow the instructions here:  
+To configure a drive, [build the images from source](#build-process) or download a prebuilt image from here ***TODO: INSERT RECOVERY RELEASE HERE*** and follow the instructions [further down the page](#encrypting-your-drive).  
 
-https://github.com/Drive-Trust-Alliance/sedutil/wiki/Encrypting-your-drive
+S3 sleep is not supported.
 
-This has so far only been tested and confirmed to work on my ThinkPad T14 with Ryzen 7 PRO 4750U, 32 GiB of RAM, and a Samsung 970 EVO Plus 1 TiB NVMe M.2.
-If anyone uses this to set up OPAL 2 on different hardware, please submit a pull request updating the list with whether it works or not.
+**IMPORTANT:**
+This version of sedutil is not compatible with SHA-1 versions of sedutil.
 
 ## Origin
-This version is based on the sedutil fork by [@ChubbyAnt](https://github.com/ChubbyAnt/sedutil) which is itself based on the original [@dta](https://github.com/Drive-Trust-Alliance/sedutil/) implementation and incorporates changes by [@ladar](https://github.com/ladar/sedutil), [@ckamm](https://github.com/ckamm/sedutil/) and [@CyrilVanErsche](https://github.com/CyrilVanErsche/sedutil/).
-In addition to adding support for the PBA bootloader on AMD Ryzen and AMD Ryzen mobile systems, this fork uses a revamped build system.
+This version is based on the sedutil fork by [@ChubbyAnt](https://github.com/ChubbyAnt/sedutil) which is itself based on the original [@dta](https://github.com/Drive-Trust-Alliance/sedutil/) implementation and forks by [@ladar](https://github.com/ladar/sedutil), [@ckamm](https://github.com/ckamm/sedutil/) and [@CyrilVanErsche](https://github.com/CyrilVanErsche/sedutil/).
+
+The orginal DTA source code is available on GitHub at https://github.com/Drive-Trust-Alliance/sedutil 
 
 ## Notable Differences
-Unique to this repo are the following modifications:
-
-* SHA512 password hashing vs SHA1 on original SEDutil
+This version of sedutil has the following modifications:
+* SHA512 password hashing vs SHA1 on original sedutil
 * Compatibile with AMD Ryzen and AMD Ryzen mobile systems
 * Cleaner `linuxpba` runtime
   * New "boot authorization" prompt
@@ -113,34 +73,41 @@ Unique to this repo are the following modifications:
   * libbb/login.c
     * `\C` to clear the screen when parsing `/etc/issue`
 
-## Build Process
+## Tested hardware
+* Thinkpad T14, Ryzen 7 PRO 4750U, Samsung 970 EVO Plus 1 TB NVMe M.2
 
+If anyone uses this to set up OPAL 2 on different hardware, please submit a pull request updating the list with whether it works or not.
+
+# Building from Source
 **NOTE:**
 Doxygen formatting has been ignored.
 Assume it's broken and doesn't work to generate docs.
 
-Building is supported on Gentoo amd64.
-Any distro should work as long as the necessary tooling is available.
+Release builds are made on Gentoo amd64.
+Any Linux distribution should work as long as the dependencies are available.
 
-To compile your own version of `sedutil` you will need the standard development tools, an internet connection, and at least 7 GiB of disk space. 
-Although not mandatory, at least 12 GiB of space is recommended to safely accommodate the maximum `ccache` size of 5 GiB.
-`du -d 1 -a -c -h` in the root of the repo says 6.7 GiB for me.
-
-### Dependencies
+## Dependencies and Requirements
 * prepare.sh
   * Source downloads
     * `curl`, `tar`, `gzip`
+    * Working Internet connection (uses Buildroot's `make source` to fetch all the necessary tarballs before the build is started)
   * sedutil tarball creation
     * `autoconf`, `sed`, `make`, `tar`, `xz-utils`
 * Buildroot
   * `which`, `sed`, `make`, `binutils`, `build-essential` (Debian), `gcc`, `g++`, `bash`,
     `patch`, `gzip`, `bzip2`, `perl`, `tar`, `cpio`, `unzip`, `rsync`, `file`, `bc`, `wget`
+* flash_rescue.sh
+  * root permissions to be able to write to a block device
+* Minimum 7 GiB of free space on disk
+  * 12 GiB to safely accommodate the maximum `ccache` size of 5 GiB
+* Boot images
+  * The `libata.allow_tpm` kernel option set to `1` (handled by the SYSLINUX config file)
 
 Run `images/check_deps.sh` to test for missing dependencies.
-Doesn't test for `bash`, `which`, or Debian's `build-essential`.
+Doesn't test for `bash`, `which`, Debian's `build-essential`, or availability of root permissions.
+If you're not customizing the images further yourself, the `libata.allow_tpm` requirement is handled by the SYSLINUX config file.
 
-### Build
-
+## Build
 `$` denotes user commands
 
 `#` denotes root commands
@@ -149,26 +116,36 @@ $ cd images
 $ ./prepare.sh
 $ ./build.sh
 [Insert the USB where the rescue image will be written to]
-# ./flash_rescue.sh     (writing to a block device requires root)
+# ./flash_rescue.sh
 ```
 If the flash drive does not show up in the list when running `flash_rescue.sh`, cancel by hitting `Ctrl-C` and try again.
 It can take a little bit for the device to be recognized by the kernel and be available for use.
 
-To control the level of debug output, run the following commands after running `./prepare.sh` but before `./build.sh`:
+## Modifying the Included Configuration
+To modify any of the configs, run the following after running the `prepare.sh` script:
 ```
 $ cd scratch/buildroot
-$ make menuconfig
+$ make [target]
 ```
-Change the value using the following `Kconfig` option.
-The default is `INFO`.
+
+The following `make` targets are of interest:
+* `menuconfig`
+  * Buildroot configurator
+* `linux-menuconfig`
+  * Linux kernel configurator
+* `busybox-menuconfig`
+  * BusyBox configurator
+* `uclibc-menuconfig`
+  * uClibc configurator
+
+To control the level of debug output for `sedutil-cli` and `linuxpba`, change the following `Kconfig` option using the Buildroot configurator:
 ```
 External options  --->
       *** xxc3nsoredxx sedutil fork (in /local/path/to/external/tree) ***
   [*] sedutil (xxc3nsoredxx's fork)
         sedutil debug level (INFO)  --->
 ```
-Save the config.
-Run `cd ../..` and continue the build as normal.
+The default level is `INFO`.
 
 # Encrypting Your Drive
 **IMPORTANT:**
@@ -199,7 +176,7 @@ BIOS systems are unsupported.
    * Replace `sdX` with the correct block device corresponding to the USB drive
 
 **NOTE:**
-If building from source, running the `flash_rescue.sh` script during the build process handles the above for you.
+If building from source, running the `flash_rescue.sh` script during the build process handles the above.
 
 Reboot the machine from the USB drive.
 Once it has loaded it will drop directly into a root shell.
@@ -402,6 +379,25 @@ This will _completely power off the system_ so that the drive will lock.
 On the next boot, the drive will present the shadow MBR to the system and the updated PBA will boot.
 After entering your password, the machine will reboot.
 If the password was entered correctly, the drive will be unlocked, the actual contents of the drive will be visible, and the boot will continue as normal.
+
+# Copyright
+This software is Copyright 2014-2017 Bright Plaza Inc. <drivetrust@drivetrust.com>
+Copyright 2020-2021 xxc3nsoredxx
+
+This file is part of sedutil.
+
+sedutil is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+sedutil is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 
 # IGNORE ANYTHING BELOW THIS LINE
 
