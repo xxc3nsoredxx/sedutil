@@ -30,7 +30,6 @@ sedutil_cli_SOURCES = linux/Version.h Common/sedutil.cpp Common/DtaOptions.cpp C
 	$(SEDUTIL_COMMON_CODE)
 CLEANFILES = linux/Version.h
 BUILT_SOURCES = linux/Version.h
-#
 linuxpba_SOURCES = LinuxPBA/LinuxPBA.cpp LinuxPBA/GetPassPhrase.cpp LinuxPBA/UnlockSEDs.cpp \
 	 LinuxPBA/GetPassPhrase.h LinuxPBA/UnlockSEDs.h \
 	\
@@ -40,7 +39,7 @@ linuxpba_SOURCES = LinuxPBA/LinuxPBA.cpp LinuxPBA/GetPassPhrase.cpp LinuxPBA/Unl
 	linux/DtaDevLinuxDrive.h linux/os.h \
 	\
 	$(SEDUTIL_COMMON_CODE)
-EXTRA_DIST = linux/GitVersion.sh linux/PSIDRevert_LINUX.txt linux/TestSuite.sh README.md docs/sedutil-cli.8 LICENSE
+EXTRA_DIST = Common/pbkdf2/COPYING docs/sedutil-cli.8 linux/GitVersion.sh LICENSE README.md
 man_MANS = docs/sedutil-cli.8
 linux/Version.h:
 	./linux/GitVersion.sh > linux/Version.h
