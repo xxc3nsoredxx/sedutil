@@ -45,7 +45,7 @@ These cuts shrunk the kernel image down to under 1/3 the original size:
   * This adds unnecessary bloat to the image
 
 Anything not listed, but cut, was mainly to remove unnecessary bloat from the image.
-See [the kernel defconfig](images/sedutil/board/kernel.config) for a detailed list if interested.
+See [the kernel defconfig][kernel defconfig] for a detailed list if interested.
 
 ## uClibc
 The original version linked against glibc.
@@ -142,3 +142,7 @@ Plus, it's also useful to know what _is_ available:
   * Embedded scripts
 * Logging utilities
   * `klogd`
+
+
+<!-- Link refs -->
+[kernel defconfig]:images/sedutil/board/kernel.config

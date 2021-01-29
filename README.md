@@ -3,11 +3,11 @@ The sedutil project provides a commandline tool (`sedutil-cli`) for setting up a
 This project also provides a pre-boot authorization (PBA) image (`linuxpba`) which can be loaded onto an encrypted disk's shadow MBR.
 The PBA allows the user to enter their password to unlock the SED during the boot process.
 
-To configure a drive, [build the images from source](#building-from-source) or download a prebuilt image from here ***TODO: INSERT RECOVERY RELEASE HERE*** and follow the instructions [further down the page](#encrypting-your-drive).  
+To configure a drive, [build the images from source][build source] or download a prebuilt image from here ***TODO: INSERT RECOVERY RELEASE HERE*** and follow the instructions [further down the page][encrypt].  
 
 S3 sleep is not supported.
 
-This version is based on the sedutil fork by [@ChubbyAnt](https://github.com/ChubbyAnt/sedutil) which is itself based on the original [@DTA](https://github.com/Drive-Trust-Alliance/sedutil/) implementation and forks by [@ladar](https://github.com/ladar/sedutil), [@ckamm](https://github.com/ckamm/sedutil/) and [@CyrilVanErsche](https://github.com/CyrilVanErsche/sedutil/).
+This version is based on the sedutil fork by [@ChubbyAnt][chubbyant] which is itself based on the original [@DTA][dta] implementation and forks by [@ladar][ladar] [@ckamm][ckamm] and [@CyrilVanErsche][cve].
 
 ## Notable Differences
 **IMPORTANT:**
@@ -35,14 +35,14 @@ This version has the following modifications:
   * Linux 5.4.80
   * Original DTA bzImage size: 6.3 MiB
   * My bzImage size: 1.9 MiB
-  * [Cut features](FEATURES.md#linux-kernel)
+  * [Cut features][feat kernel]
 * uClibc instead of glibc
   * Shrunk the the initramfs to half the original size
-  * [Feature list](FEATURES.md#uclibc)
+  * [Feature list][feat libc]
 * Stripped down BusyBox
   * Original BusyBox size: 714 KiB (as measured from `output/target/bin/busybox`)
   * My BusyBox size: 228 KiB
-  * [Feature list](FEATURES.md#busybox)
+  * [Feature list][feat bb]
 * BusyBox patches
   * loginutils/getty.c
     * Display `/etc/issue` when not prompting for login
@@ -125,7 +125,7 @@ The default level is `INFO`.
 This process _should_ leave the data on the drive intact, but ***ABSLUTELY NO GUARANTEES ARE MADE.***
 Before continuing, ensure you have a working backup of any data you wish to keep.
 
-This page is based on the information found on the DTA repo's [wiki](https://github.com/Drive-Trust-Alliance/sedutil/wiki/Encrypting-your-drive).
+This page is based on the information found on the DTA repo's [wiki][dta wiki encrypt].
 Reading their guides can give a bit more information, but it may or may not be fully compatible with this version of the software:
 
 **NOTE:**
@@ -181,7 +181,7 @@ Drive /dev/nvme0 Samsung SSD 970 EVO Plus 1TB             is OPAL NOT LOCKED
 Verify that your drive is listed and is reported as `is OPAL`.
 If it is not, abort now.
 The next sections enable Opal locking on the drive, and it is imperative that the drive is detected correctly.
-If any problems are encountered, follow the instructions in the [Recovery Information](https://github.com/Drive-Trust-Alliance/sedutil/wiki/Encrypting-your-drive#recovery-information) section (on the DTA wiki) to disable or remove Opal locking.
+If any problems are encountered, follow the instructions in the [Recovery Information][dta wiki recover] section (on the DTA wiki) to disable or remove Opal locking.
 
 The next sections assume the target drive is on `/dev/nvme0`.
 Replace with the appropriate block device if needed.
@@ -371,3 +371,18 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
+
+
+<!-- Link refs -->
+[build source]:#building-from-source
+[encrypt]:#encrypting-your-drive
+[chubbyant]:https://github.com/ChubbyAnt/sedutil
+[dta]:https://github.com/Drive-Trust-Alliance/sedutil
+[ladar]:https://github.com/ladar/sedutil
+[ckamm]:https://github.com/ckamm/sedutil
+[cve]:https://github.com/CyrilVanErsche/sedutil/
+[feat kernel]:FEATURES.md#linux-kernel
+[feat libc]:FEATURES.md#uclibc
+[feat bb]:FEATURES.md#busybox
+[dta wiki encrypt]:https://github.com/Drive-Trust-Alliance/sedutil/wiki/Encrypting-your-drive
+[dta wiki recover]:https://github.com/Drive-Trust-Alliance/sedutil/wiki/Encrypting-your-drive#recovery-information
