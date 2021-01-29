@@ -46,4 +46,10 @@ AC_CHECK_FUNCS([memset])
 AM_INIT_AUTOMAKE([dist-xz no-dist-gzip -Wall])
 AC_CONFIG_FILES([Makefile])
 
+# Output info
+AS_CASE(["x$debug_level"],
+        ['xERROR'|'xWARN'|'xINFO'|'xDEBUG'|'xDEBUG1'|'xDEBUG2'|'xDEBUG3'|'xDEBUG4'], [AS_ECHO(["using debug level: $debug_level"])],
+        [AC_MSG_WARN([invalid debug level given: $debug_level])
+         AS_ECHO(['using debug level: INFO'])])
+
 AC_OUTPUT
