@@ -1,28 +1,23 @@
 ![alt tag](dta.png)
 
 # sedutil for AMD Ryzen
-DTA sedutil: For AMD Ryzen Systems
+The sedutil project provides a commandline tool (`sedutil-cli`) for setting up and managing self encrypting drives (SEDs) that comply with the TCG Opal 2.0 standard.
+This project also provides a pre-boot authorization (PBA) image (`linuxpba`) which can be loaded onto an encrypted disk's shadow MBR.
+The PBA allows the user to enter their password to unlock the SED during the boot process.
 
-The sedutil project provides a commandline tool (`sedutil-cli`) for setting up and managing self encrypting drives (SEDs) that comply with the TCG OPAL 2.0 standard.
-This project also provides a pre-boot authorization image (`linuxpba`) which can be loaded onto an encrypted disk's shadow MBR.
-This pre-boot authorization image allows the user to enter their password to unlock SEDs during the boot process.
-
-To configure a drive, [build the images from source](#build-process) or download a prebuilt image from here ***TODO: INSERT RECOVERY RELEASE HERE*** and follow the instructions [further down the page](#encrypting-your-drive).  
+To configure a drive, [build the images from source](#building-from-source) or download a prebuilt image from here ***TODO: INSERT RECOVERY RELEASE HERE*** and follow the instructions [further down the page](#encrypting-your-drive).  
 
 S3 sleep is not supported.
 
+This version is based on the sedutil fork by [@ChubbyAnt](https://github.com/ChubbyAnt/sedutil) which is itself based on the original [@DTA](https://github.com/Drive-Trust-Alliance/sedutil/) implementation and forks by [@ladar](https://github.com/ladar/sedutil), [@ckamm](https://github.com/ckamm/sedutil/) and [@CyrilVanErsche](https://github.com/CyrilVanErsche/sedutil/).
+
+## Notable Differences
 **IMPORTANT:**
 This version of sedutil is not compatible with SHA-1 versions of sedutil.
 
-## Origin
-This version is based on the sedutil fork by [@ChubbyAnt](https://github.com/ChubbyAnt/sedutil) which is itself based on the original [@dta](https://github.com/Drive-Trust-Alliance/sedutil/) implementation and forks by [@ladar](https://github.com/ladar/sedutil), [@ckamm](https://github.com/ckamm/sedutil/) and [@CyrilVanErsche](https://github.com/CyrilVanErsche/sedutil/).
-
-The orginal DTA source code is available on GitHub at https://github.com/Drive-Trust-Alliance/sedutil 
-
-## Notable Differences
-This version of sedutil has the following modifications:
-* SHA512 password hashing vs SHA1 on original sedutil
-* Compatibile with AMD Ryzen and AMD Ryzen mobile systems
+This version has the following modifications:
+* SHA512 password hashing vs SHA1 in the original sedutil
+* Compatibile with AMD Ryzen systems
 * Cleaner `linuxpba` runtime
   * New "boot authorization" prompt
   * No excessive debug output
@@ -32,13 +27,13 @@ This version of sedutil has the following modifications:
   * Well, AFAIK. I don't have any other types of drives to test with.
 * No BIOS support
 * Minimally sized images
-  * UEFI image
+  * UEFI image (the PBA itself)
     * Original DTA size: 32 MiB (uncompressed)
     * My size: 3 MiB (uncompressed)
   * RESCUE image
     * Original DTA size: 75 MiB (uncompressed)
     * My size: 5.5 MiB (uncompressed)
-* Newer, stripped down kernel
+* Newer, stripped down kernel for a decreased attack surface
   * Linux 5.4.80
   * Original DTA bzImage size: 6.3 MiB
   * My bzImage size: 1.9 MiB
@@ -57,7 +52,7 @@ This version of sedutil has the following modifications:
     * No SD/MMC/SDIO card support
     * No multi-user support
 * Stripped down BusyBox
-  * Original BusyBox size: 714 KiB (as measured from output/target/bin/busybox)
+  * Original BusyBox size: 714 KiB (as measured from `output/target/bin/busybox`)
   * My BusyBox size: 228 KiB
   * Cut features
     * Incompatible features (such as no kernel support)
@@ -76,7 +71,7 @@ This version of sedutil has the following modifications:
 ## Tested hardware
 * Thinkpad T14, Ryzen 7 PRO 4750U, Samsung 970 EVO Plus 1 TB NVMe M.2
 
-If anyone uses this to set up OPAL 2 on different hardware, please submit a pull request updating the list with whether it works or not.
+If anyone uses this to set up Opal 2 on different hardware, please submit a pull request updating the list with whether it works or not.
 
 # Building from Source
 **NOTE:**
@@ -101,10 +96,10 @@ Any Linux distribution should work as long as the dependencies are available.
 * Minimum 7 GiB of free space on disk
   * 12 GiB to safely accommodate the maximum `ccache` size of 5 GiB
 * Boot images
-  * The `libata.allow_tpm` kernel option set to `1` (handled by the SYSLINUX config file)
+  * The `libata.allow_tpm` kernel option set to `1`
 
 Run `images/check_deps.sh` to test for missing dependencies.
-Doesn't test for `bash`, `which`, Debian's `build-essential`, or availability of root permissions.
+Doesn't test for `bash`, `which`, Debian's `build-essential`, Internet connection, or availability of root permissions.
 If you're not customizing the images further yourself, the `libata.allow_tpm` requirement is handled by the SYSLINUX config file.
 
 ## Build
@@ -152,14 +147,13 @@ The default level is `INFO`.
 This process _should_ leave the data on the drive intact, but ***ABSLUTELY NO GUARANTEES ARE MADE.***
 Before continuing, ensure you have a working backup of any data you wish to keep.
 
-This page is based on the information found on the DTA repo's wiki.
+This page is based on the information found on the DTA repo's [wiki](https://github.com/Drive-Trust-Alliance/sedutil/wiki/Encrypting-your-drive).
 Reading their guides can give a bit more information, but it may or may not be fully compatible with this version of the software:
-https://github.com/Drive-Trust-Alliance/sedutil/wiki/Encrypting-your-drive  
 
 **NOTE:**
 Both the PBA and the rescue system uses the us_english keyboard layout.
 This can cause issues when setting the password on your normal operating system if you use another keyboard layout.
-To make sure the PBA recognizes your password, and to protect your existing OS, you should set up you drive from the rescue system as described on this page.
+To make sure the PBA recognizes your password, and to protect your existing OS, you should set up your drive from the rescue system as described on this page.
 
 ## Prepare a Bootable Rescue System
 These instructions are for a UEFI system that is running Linux (either installed on the hardware or through a live boot).
@@ -190,9 +184,9 @@ Scanning for Opal compliant disks
 No more disks present ending scan
 ```
 
-Verify that the second column contains a 2 which indicates that the drive has OPAL 2 support.
+Verify that the second column contains a '2' which indicates that the drive has Opal 2 support.
 If it does not, abort now.
-The software cannot detect OPAL 2 support on the drive, and continuing may erase all the data on your drive.
+The software cannot detect Opal 2 support on the drive, and continuing may erase all the data on your drive.
 
 ## Test the PBA
 Run `linuxpba` and enter `debug` as the password when prompted.
@@ -201,15 +195,15 @@ Using a different password will reboot the system.
 Example output:
 ```
 #linuxpba 
-... SNIP DEBUG OUTPUT ...
+Boot Authorization Key: *****
+Scanning....
 Drive /dev/nvme0 Samsung SSD 970 EVO Plus 1TB             is OPAL NOT LOCKED
-... SNIP DEBUG OUTPUT ...
 ```
 
 Verify that your drive is listed and is reported as `is OPAL`.
 If it is not, abort now.
-The next sections enable OPAL locking on the drive, and it is imperative that the drive is detected correctly.
-If any problems are encountered, follow the instructions in the [Recovery Information](https://github.com/Drive-Trust-Alliance/sedutil/wiki/Encrypting-your-drive#recovery-information) section to disable or remove OPAL locking.
+The next sections enable Opal locking on the drive, and it is imperative that the drive is detected correctly.
+If any problems are encountered, follow the instructions in the [Recovery Information](https://github.com/Drive-Trust-Alliance/sedutil/wiki/Encrypting-your-drive#recovery-information) section (on the DTA wiki) to disable or remove Opal locking.
 
 The next sections assume the target drive is on `/dev/nvme0`.
 Replace with the appropriate block device if needed.
@@ -258,16 +252,16 @@ Run `linuxpba` and enter `debug` as the password when prompted.
 Example output:
 ```
 #linuxpba 
-... SNIP DEBUG OUTPUT ...
+Boot Authorization Key: *****
+Scanning....
 Drive /dev/nvme0 Samsung SSD 970 EVO Plus 1TB             is OPAL Unlocked
-... SNIP DEBUG OUTPUT ...
 ```
 
 Verify that your drive is listed and is reported as `Unlocked`.
-If it is not, abort now and follow the instructions to disable or remove OPAL locking.
+If it is not, abort now and follow the instructions linked above to disable or remove Opal locking.
 
 ## Set the Password
-Run the following commands to set the SID and Admin1 passwords.
+Run the following commands to set the `SID` and `Admin1` passwords.
 They don't have to match, but it makes future administartion easier.
 ```
 sedutil-cli --setsidpassword debug <password> /dev/nvme0
@@ -297,7 +291,7 @@ MBRDone set on
 [machine powers off]
 ```
 
-The drive is now set to use OPAL 2!
+The drive is now set to use Opal 2!
 This will _completely power off the system_ so that the drive will lock.
 On the next boot, the drive will present the shadow MBR to the system and the PBA will boot.
 After entering your password, the machine will reboot.
@@ -343,7 +337,7 @@ Drive /dev/nvme0 Samsung SSD 970 EVO Plus 1TB             is OPAL Unlocked
 ## Flash the New PBA Image
 To flash the updated image, run the following commands to decompress the image, switch to the shadow MBR, and flash the image:
 ```
-xd -d /usr/sedutil/UEFI-*.img.xz
+xz -d /usr/sedutil/UEFI-*.img.xz
 sedutil-cli --setmbrdone off <password> /dev/nvme0
 sedutil-cli --loadpbaimage <password> /usr/sedutil/UEFI-*.img /dev/nvme0
 ```
@@ -361,7 +355,7 @@ Writing PBA to /dev/nvme0
 ```
 
 ## Finalize
-To finalize the drive, switch out of the shadow MBR and power off by running the following commands:
+To finalize the drive, switch out of the shadow MBR and power off the machine by running the following commands:
 ```
 sedutil-cli --setmbrdone on <password> /dev/nvme0
 poweroff
@@ -382,6 +376,7 @@ If the password was entered correctly, the drive will be unlocked, the actual co
 
 # Copyright
 This software is Copyright 2014-2017 Bright Plaza Inc. <drivetrust@drivetrust.com>
+
 Copyright 2020-2021 xxc3nsoredxx
 
 This file is part of sedutil.
