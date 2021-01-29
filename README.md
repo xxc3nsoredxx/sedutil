@@ -35,30 +35,14 @@ This version has the following modifications:
   * Linux 5.4.80
   * Original DTA bzImage size: 6.3 MiB
   * My bzImage size: 1.9 MiB
-  * Cut features
-    * No virtualization support
-    * No kernel module support
-    * No networking support
-    * No filesystem support
-      * Excluding proc, devtmpfs, and ramfs
-    * No graphics support
-      * Excluding EFI framebuffer
-    * No SMP support
-    * No multilib support
-    * No pseudoterminal support
-    * No USB support
-    * No SD/MMC/SDIO card support
-    * No multi-user support
+  * [Cut features](FEATURES.md#linux-kernel)
+* uClibc instead of glibc
+  * Shrunk the the initramfs to half the original size
+  * [Feature list](FEATURES.md#uclibc)
 * Stripped down BusyBox
   * Original BusyBox size: 714 KiB (as measured from `output/target/bin/busybox`)
   * My BusyBox size: 228 KiB
-  * Cut features
-    * Incompatible features (such as no kernel support)
-    * Non-essential features (bells and whistles not needed to manage Opal 2 drives)
-    * For the list, see the commits starting here:
-[c954e8f7](https://github.com/xxc3nsoredxx/sedutil/commit/c954e8f74a253c60e026d6e70051ebd0446a227d)
-* uClibc instead of glibc
-  * Cut the size of the initramfs in half
+  * [Feature list](FEATURES.md#busybox)
 * BusyBox patches
   * loginutils/getty.c
     * Display `/etc/issue` when not prompting for login
