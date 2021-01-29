@@ -89,7 +89,7 @@ Plus, it's also useful to know what _is_ available:
 BusyBox contains several utilites which are generally considered useful.
 Some of them are incompatible with the stripped down versions of the kernel and uClibc.
 Most of them are useless for managing Opal 2 drives in the rescue image.
-These cuts shrunk the BusyBox binary down to under 1/3 the original size.
+These cuts shrunk the BusyBox binary down to about 1/3 the original size.
 
 Listing cut features would make this list unbearably long.
 Plus, it's also useful to know what _is_ available:

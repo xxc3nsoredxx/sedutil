@@ -3,11 +3,11 @@ The sedutil project provides a commandline tool (`sedutil-cli`) for setting up a
 This project also provides a pre-boot authorization (PBA) image (`linuxpba`) which can be loaded onto an encrypted disk's shadow MBR.
 The PBA allows the user to enter their password to unlock the SED during the boot process.
 
-To configure a drive, [build the images from source][build source] or download a prebuilt image from here ***TODO: INSERT RECOVERY RELEASE HERE*** and follow the instructions [further down the page][encrypt].  
+To configure a drive, [build the images from source][build source] or download a prebuilt image from here ***TODO: INSERT RECOVERY RELEASE HERE*** and follow the instructions on [encrypting][encrypt].  
 
 S3 sleep is not supported.
 
-This version is based on the sedutil fork by [@ChubbyAnt][chubbyant] which is itself based on the original [@DTA][dta] implementation and forks by [@ladar][ladar] [@ckamm][ckamm] and [@CyrilVanErsche][cve].
+This version is based on the sedutil fork by [@ChubbyAnt][chubbyant] which is itself based on the original [@DTA][dta] implementation and forks by [@ladar][ladar], [@ckamm][ckamm], and [@CyrilVanErsche][cve].
 
 ## Notable Differences
 **IMPORTANT:**
@@ -24,6 +24,7 @@ This version has the following modifications:
 * Only NVMe drive support
   * Well, AFAIK. I don't have any other types of drives to test with.
 * No BIOS support
+* No 32bit support
 * Minimally sized images
   * UEFI image (the PBA itself)
     * Original DTA size: 32 MiB (uncompressed)
@@ -43,6 +44,9 @@ This version has the following modifications:
   * Original BusyBox size: 714 KiB (as measured from `output/target/bin/busybox`)
   * My BusyBox size: 228 KiB
   * [Feature list][feat bb]
+* Kernel patches
+  * include/uapi/linux/vt.h
+    * Set the maximum number of consoles to 1
 * BusyBox patches
   * loginutils/getty.c
     * Display `/etc/issue` when not prompting for login
@@ -53,11 +57,12 @@ This version has the following modifications:
 ## Tested hardware
 * Thinkpad T14, Ryzen 7 PRO 4750U, Samsung 970 EVO Plus 1 TB NVMe M.2
 
-If anyone uses this to set up Opal 2 on different hardware, please submit a pull request updating the list with whether it works or not.
+If anyone uses this to set up Opal 2 on different hardware, please submit a pull request updating the list with whether or not it works.
 
 # Building from Source
 Release builds are made on Gentoo amd64.
-Any Linux distribution should work as long as the dependencies are available.
+The images should build on any Linux distribution as long as the dependencies are available.
+Other \*nix-es may require some tweaking on the user's end to work.
 
 ## Dependencies and Requirements
 * prepare.sh
@@ -67,7 +72,7 @@ Any Linux distribution should work as long as the dependencies are available.
   * sedutil tarball creation
     * `autoconf`, `sed`, `make`, `tar`, `xz-utils`
 * Buildroot
-  * `which`, `sed`, `make`, `binutils`, `build-essential` (Debian), `gcc`, `g++`, `bash`,
+  * `which`, `sed`, `make`, `binutils`, `build-essential` (Debian family), `gcc`, `g++`, `bash`,
     `patch`, `gzip`, `bzip2`, `perl`, `tar`, `cpio`, `unzip`, `rsync`, `file`, `bc`, `wget`
 * flash_rescue.sh
   * root permissions to be able to write to a block device
@@ -91,7 +96,7 @@ $ ./build.sh
 [Insert the USB where the rescue image will be written to]
 # ./flash_rescue.sh
 ```
-If the flash drive does not show up in the list when running `flash_rescue.sh`, cancel by hitting `Ctrl-C` and try again.
+If the flash drive does not show up in the list when running `flash_rescue.sh`, cancel by hitting `Ctrl-C`  or giving empty input, and try again.
 It can take a little bit for the device to be recognized by the kernel and be available for use.
 
 ## Modifying the Included Configuration
@@ -120,16 +125,19 @@ External options  --->
 ```
 The default level is `INFO`.
 
+**NOTE:**
+Any issues opened that were caused by a modified config may be closed as "won't fix" at my discretion.
+
 # Encrypting Your Drive
 **IMPORTANT:**
 This process _should_ leave the data on the drive intact, but ***ABSLUTELY NO GUARANTEES ARE MADE.***
 Before continuing, ensure you have a working backup of any data you wish to keep.
 
 This page is based on the information found on the DTA repo's [wiki][dta wiki encrypt].
-Reading their guides can give a bit more information, but it may or may not be fully compatible with this version of the software:
+Reading their guides can give a bit more information, but compatiblity with this version of the software is not guaranteed.
 
 **NOTE:**
-Both the PBA and the rescue system uses the us_english keyboard layout.
+Both the PBA and the rescue system use the us_english keyboard layout.
 This can cause issues when setting the password on your normal operating system if you use another keyboard layout.
 To make sure the PBA recognizes your password, and to protect your existing OS, you should set up your drive from the rescue system as described on this page.
 
@@ -164,7 +172,7 @@ No more disks present ending scan
 
 Verify that the second column contains a '2' which indicates that the drive has Opal 2 support.
 If it does not, abort now.
-The software cannot detect Opal 2 support on the drive, and continuing may erase all the data on your drive.
+The software cannot detect Opal 2 support on the drive, and continuing may erase all your data.
 
 ## Test the PBA
 Run `linuxpba` and enter `debug` as the password when prompted.
@@ -181,7 +189,7 @@ Drive /dev/nvme0 Samsung SSD 970 EVO Plus 1TB             is OPAL NOT LOCKED
 Verify that your drive is listed and is reported as `is OPAL`.
 If it is not, abort now.
 The next sections enable Opal locking on the drive, and it is imperative that the drive is detected correctly.
-If any problems are encountered, follow the instructions in the [Recovery Information][dta wiki recover] section (on the DTA wiki) to disable or remove Opal locking.
+If any problems are encountered, follow the instructions in the [Recovery information section][dta wiki recover] (on the DTA wiki) to disable or remove Opal locking.
 
 The next sections assume the target drive is on `/dev/nvme0`.
 Replace with the appropriate block device if needed.
@@ -197,7 +205,7 @@ sedutil-cli --setmbrdone off debug /dev/nvme0
 sedutil-cli --loadpbaimage debug /usr/sedutil/UEFI-*.img /dev/nvme0
 ```
 Unlike on standard systems, `unxz` will not work in the rescue image &mdash; `xz -d` is required.
-The name of the PBA image may (and should) be tab-completed to ensure it is correct.
+The name of the PBA image can (and should) be tab-completed to ensure it is correct.
 The initial password of `debug` will be changed in a later step.
 The third `sedutil-cli` command's third argument is "ell-kay".
 
@@ -240,7 +248,7 @@ If it is not, abort now and follow the instructions linked above to disable or r
 
 ## Set the Password
 Run the following commands to set the `SID` and `Admin1` passwords.
-They don't have to match, but it makes future administartion easier.
+They don't have to match, but it makes future administration easier.
 ```
 sedutil-cli --setsidpassword debug <password> /dev/nvme0
 sedutil-cli --setadmin1pwd debug <password> /dev/nvme0
@@ -320,7 +328,7 @@ sedutil-cli --setmbrdone off <password> /dev/nvme0
 sedutil-cli --loadpbaimage <password> /usr/sedutil/UEFI-*.img /dev/nvme0
 ```
 Unlike on standard systems, `unxz` will not work in the rescue image &mdash; `xz -d` is required.
-The name of the PBA image may (and should) be tab-completed to ensure it is correct.
+The name of the PBA image can (and should) be tab-completed to ensure it is correct.
 
 Example output:
 ```
