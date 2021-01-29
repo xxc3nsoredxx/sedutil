@@ -39,7 +39,7 @@ linuxpba_SOURCES = LinuxPBA/LinuxPBA.cpp LinuxPBA/GetPassPhrase.cpp LinuxPBA/Unl
 	linux/DtaDevLinuxDrive.h linux/os.h \
 	\
 	$(SEDUTIL_COMMON_CODE)
-EXTRA_DIST = Common/pbkdf2/COPYING docs/sedutil-cli.8 linux/GitVersion.sh LICENSE README.md
+EXTRA_DIST = Common/pbkdf2/COPYING docs/sedutil-cli.8 linux/GitVersion.sh FEATURES.md LICENSE README.md
 man_MANS = docs/sedutil-cli.8
 linux/Version.h:
 	./linux/GitVersion.sh > linux/Version.h
