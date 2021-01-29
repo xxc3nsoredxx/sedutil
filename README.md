@@ -1,5 +1,3 @@
-![alt tag](dta.png)
-
 # sedutil for AMD Ryzen
 The sedutil project provides a commandline tool (`sedutil-cli`) for setting up and managing self encrypting drives (SEDs) that comply with the TCG Opal 2.0 standard.
 This project also provides a pre-boot authorization (PBA) image (`linuxpba`) which can be loaded onto an encrypted disk's shadow MBR.
