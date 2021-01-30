@@ -18,7 +18,6 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 
  * C:E********************************************************************** */
 #include "config.h"
-#include "Version.h"
 
 #include <cstdio>
 #include <cstring>
@@ -30,7 +29,7 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 #include "linux/os.h"
 
 void usage( ) {
-    printf("sedutil v%s Copyright 2014-2017 Bright Plaza Inc. <drivetrust@drivetrust.com>\n", GIT_VERSION);
+    printf("sedutil v%s Copyright 2014-2017 Bright Plaza Inc. <drivetrust@drivetrust.com>\n", VERSION);
     printf("Copyright 2020-2021 xxc3nsoredxx\n");
     printf("a utility to manage self encrypting drives that conform\n");
     printf("to the Trusted Computing Group OPAL 2.0 SSC specification\n");
@@ -135,7 +134,7 @@ uint8_t DtaOptions (int argc, char *argv [], DTA_OPTIONS *opts) {
                 loggingLevel += (uint16_t)(strlen(argv[i]) - 1);
                 CLog::Level() = CLog::FromInt(loggingLevel);
                 LOG(D) << "Log level set to " << CLog::ToString(CLog::FromInt(loggingLevel));
-                LOG(D) << "sedutil version : " << GIT_VERSION;
+                LOG(D) << "sedutil version : " << VERSION;
             }
         } else if (!(strcmp("-n", argv[i]))) {
             baseOptions += 1;

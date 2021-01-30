@@ -2,7 +2,7 @@
 ## common_flags = -Wall -Wextra -Os
 common_flags = -Wall -Os
 AM_CFLAGS = $(common_flags) -std=c11
-AM_CPPFLAGS = -Iinclude
+AM_CPPFLAGS = -I$(srcdir)/include
 AM_CXXFLAGS = $(common_flags) -std=c++11 
 
 sbin_PROGRAMS = sedutil-cli linuxpba
@@ -73,7 +73,6 @@ sedutil_cli_SOURCES += $(LINUX_INCLUDE)
 sedutil_cli_SOURCES += $(LINUX_CODE)
 sedutil_cli_SOURCES += $(SEDUTIL_COMMON_INCLUDE)
 sedutil_cli_SOURCES += $(SEDUTIL_COMMON_CODE)
-## nodist_sedutil_cli_SOURCES = include/Version.h
 
 PBA_INCLUDE  = include/LinuxPBA/GetPassPhrase.h
 PBA_INCLUDE += include/LinuxPBA/UnlockSEDs.h
@@ -87,11 +86,4 @@ linuxpba_SOURCES += $(LINUX_CODE)
 linuxpba_SOURCES += $(SEDUTIL_COMMON_INCLUDE)
 linuxpba_SOURCES += $(SEDUTIL_COMMON_CODE)
 
-CLEANFILES = Version.h
-BUILT_SOURCES = Version.h
-EXTRA_DIST = Common/pbkdf2/COPYING docs/sedutil-cli.8 utils/GitVersion.sh FEATURES.md LICENSE README.md
-
-Version.h:
-	./utils/GitVersion.sh > Version.h
-.PRECIOUS: Version.h
-.INTERMEDIATE: Version.h
+EXTRA_DIST = Common/pbkdf2/COPYING docs/sedutil-cli.8 FEATURES.md LICENSE README.md
