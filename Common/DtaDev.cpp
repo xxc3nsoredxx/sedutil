@@ -27,14 +27,14 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 #include <iostream>
 #include <iomanip>
 
-#include "DtaConstants.h"
-#include "DtaDev.h"
-#include "DtaEndianFixup.h"
-#include "DtaHexDump.h"
-#include "DtaOptions.h"
-#include "DtaStructures.h"
-#include "log.h"
-#include "os.h"
+#include "Common/DtaConstants.h"
+#include "Common/DtaDev.h"
+#include "Common/DtaEndianFixup.h"
+#include "Common/DtaHexDump.h"
+#include "Common/DtaOptions.h"
+#include "Common/DtaStructures.h"
+#include "Common/log.h"
+#include "linux/os.h"
 
 /** Device Class (Base) represents a single disk device.
  *  This is the functionality that is common to all OS's and SSC's

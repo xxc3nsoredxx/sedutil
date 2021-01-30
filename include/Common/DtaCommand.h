@@ -21,8 +21,8 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <vector>
 
-#include "DtaConstants.h"
-#include "DtaLexicon.h"
+#include "Common/DtaConstants.h"
+#include "Common/DtaLexicon.h"
 
 class DtaDevOpal;
 class DtaDevEnterprise;

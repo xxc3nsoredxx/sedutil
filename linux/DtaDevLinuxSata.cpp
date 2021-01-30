@@ -34,11 +34,11 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 #include <sys/stat.h>
 #include <sys/types.h>
 
-#include "DtaConstants.h"
-#include "DtaDevLinuxSata.h"
-#include "DtaHexDump.h"
-#include "log.h"
-#include "os.h"
+#include "Common/DtaConstants.h"
+#include "Common/DtaHexDump.h"
+#include "Common/log.h"
+#include "linux/DtaDevLinuxSata.h"
+#include "linux/os.h"
 //
 // taken from <scsi/scsi.h> to avoid SCSI/ATA name collision
 // 

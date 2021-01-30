@@ -22,8 +22,8 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 #include <string>
 #include <vector>
 
-#include "DtaLexicon.h"
-#include "DtaStructures.h"
+#include "Common/DtaLexicon.h"
+#include "Common/DtaStructures.h"
 
 
 /** Object containing the parsed tokens.

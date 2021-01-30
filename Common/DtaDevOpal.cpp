@@ -26,16 +26,16 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 #include <iostream>
 #include <vector>
 
-#include "DtaCommand.h"
-#include "DtaDevOpal.h"
-#include "DtaEndianFixup.h"
-#include "DtaHashPwd.h"
-#include "DtaHexDump.h"
-#include "DtaResponse.h"
-#include "DtaSession.h"
-#include "DtaStructures.h"
-#include "log.h"
-#include "os.h"
+#include "Common/DtaCommand.h"
+#include "Common/DtaDevOpal.h"
+#include "Common/DtaEndianFixup.h"
+#include "Common/DtaHashPwd.h"
+#include "Common/DtaHexDump.h"
+#include "Common/DtaResponse.h"
+#include "Common/DtaSession.h"
+#include "Common/DtaStructures.h"
+#include "Common/log.h"
+#include "linux/os.h"
 
 DtaDevOpal::DtaDevOpal () {}
 DtaDevOpal::~DtaDevOpal () {}

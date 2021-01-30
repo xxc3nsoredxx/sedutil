@@ -19,12 +19,12 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
  * C:E********************************************************************** */
 #pragma once
 
-#include "DtaConstants.h"
-#include "DtaLexicon.h"
-#include "DtaOptions.h"
-#include "DtaResponse.h"
-#include "DtaStructures.h"
-#include "os.h"
+#include "Common/DtaConstants.h"
+#include "Common/DtaLexicon.h"
+#include "Common/DtaOptions.h"
+#include "Common/DtaResponse.h"
+#include "Common/DtaStructures.h"
+#include "linux/os.h"
 
 class DtaCommand;
 class DtaSession;

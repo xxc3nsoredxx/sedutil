@@ -18,7 +18,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#include "chash.h"
+#include "Common/pbkdf2/chash.h"
 
 /**
  * HMAC

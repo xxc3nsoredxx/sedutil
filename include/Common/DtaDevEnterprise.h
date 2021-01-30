@@ -24,13 +24,13 @@ class DtaSession;
 
 #include <vector>
 
-#include "DtaDev.h"
-#include "DtaDevOS.h"
-#include "DtaLexicon.h"
-#include "DtaOptions.h"
-#include "DtaResponse.h"   // wouldn't take class
-#include "DtaStructures.h"
-#include "os.h"
+#include "Common/DtaDev.h"
+#include "Common/DtaLexicon.h"
+#include "Common/DtaOptions.h"
+#include "Common/DtaResponse.h"   // wouldn't take class
+#include "Common/DtaStructures.h"
+#include "linux/DtaDevOS.h"
+#include "linux/os.h"
 
 /** Device Class represents a disk device, conforming to the TCG Enterprise standard
 */

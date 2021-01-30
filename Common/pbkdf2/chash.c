@@ -12,9 +12,9 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-#include "chash.h"
-#include "handy.h"
-#include "tassert.h"
+#include "Common/pbkdf2/chash.h"
+#include "Common/pbkdf2/handy.h"
+#include "Common/pbkdf2/tassert.h"
 
 void cf_hash(const cf_chash *h, const void *m, size_t nm, uint8_t *out)
 {

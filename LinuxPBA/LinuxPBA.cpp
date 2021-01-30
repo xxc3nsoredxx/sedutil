@@ -26,9 +26,9 @@ This software is Copyright 2014-2017 Bright Plaza Inc. <drivetrust@drivetrust.co
 
 #include <sys/reboot.h>
 
-#include "GetPassPhrase.h"
-#include "log.h"
-#include "UnlockSEDs.h"
+#include "Common/log.h"
+#include "LinuxPBA/GetPassPhrase.h"
+#include "LinuxPBA/UnlockSEDs.h"
 
 /* Default to output that includes timestamps and goes to stderr*/
 sedutiloutput outputFormat = sedutilNormal;

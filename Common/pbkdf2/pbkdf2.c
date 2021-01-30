@@ -12,13 +12,13 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-#include "pbkdf2.h"
-#include "hmac.h"
-#include "bitops.h"
-#include "handy.h"
-#include "tassert.h"
-
 #include <string.h>
+
+#include "Common/pbkdf2/bitops.h"
+#include "Common/pbkdf2/handy.h"
+#include "Common/pbkdf2/hmac.h"
+#include "Common/pbkdf2/pbkdf2.h"
+#include "Common/pbkdf2/tassert.h"
 
 static void F(const cf_hmac_ctx *startctx,
               uint32_t counter,

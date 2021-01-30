@@ -20,12 +20,12 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 #include <cstdio>
 #include <cstring>
 
-#include "DtaCommand.h"
-#include "DtaEndianFixup.h"
-#include "DtaHexDump.h"
-#include "DtaStructures.h"
-#include "log.h"
-#include "os.h"
+#include "Common/DtaCommand.h"
+#include "Common/DtaEndianFixup.h"
+#include "Common/DtaHexDump.h"
+#include "Common/DtaStructures.h"
+#include "Common/log.h"
+#include "linux/os.h"
 
 DtaCommand::DtaCommand () {
     LOG(D1) << "Creating DtaCommand()";

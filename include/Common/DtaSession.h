@@ -24,7 +24,7 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <vector>
 
-#include "DtaLexicon.h"
+#include "Common/DtaLexicon.h"
 
 class DtaCommand;
 class DtaDev;

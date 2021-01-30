@@ -22,16 +22,16 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 #include <iostream>
 #include <vector>
 
-#include "DtaDev.h"
-#include "DtaHashPwd.h"
-#include "DtaLexicon.h"
-#include "DtaOptions.h"
-#include "log.h"
-#include "os.h"
+#include "Common/DtaDev.h"
+#include "Common/DtaHashPwd.h"
+#include "Common/DtaLexicon.h"
+#include "Common/DtaOptions.h"
+#include "Common/log.h"
+#include "linux/os.h"
 
 extern "C" {
-#include "pbkdf2.h"
-#include "sha2.h"
+#include "Common/pbkdf2/pbkdf2.h"
+#include "Common/pbkdf2/sha2.h"
 }
 
 void DtaHashPassword (std::vector<uint8_t>& hash, char *password,

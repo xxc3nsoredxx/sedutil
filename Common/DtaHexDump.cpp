@@ -21,8 +21,8 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 #include <cstdint>
 #include <cstring>
 
-#include "log.h"
-#include "os.h"
+#include "Common/log.h"
+#include "linux/os.h"
 
 void DtaHexDump (void *address, int length) {
     uint8_t display [17];

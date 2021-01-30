@@ -31,10 +31,10 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#include "DtaDevLinuxNvme.h"
-#include "DtaHexDump.h"
-#include "log.h"
-#include "os.h"
+#include "Common/DtaHexDump.h"
+#include "Common/log.h"
+#include "linux/DtaDevLinuxNvme.h"
+#include "linux/os.h"
 
 #define  NVME_SECURITY_SEND 0x81
 #define  NVME_SECURITY_RECV 0x82

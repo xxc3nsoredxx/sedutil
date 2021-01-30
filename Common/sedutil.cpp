@@ -19,15 +19,15 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 * C:E********************************************************************** */
 #include <iostream>
 
-#include "DtaDevEnterprise.h"
-#include "DtaDevGeneric.h"
-#include "DtaDevOpal1.h"
-#include "DtaDevOpal2.h"
-#include "DtaHashPwd.h"
-#include "DtaLexicon.h"
-#include "DtaOptions.h"
-#include "log.h"
-#include "os.h"
+#include "Common/DtaDevEnterprise.h"
+#include "Common/DtaDevGeneric.h"
+#include "Common/DtaDevOpal1.h"
+#include "Common/DtaDevOpal2.h"
+#include "Common/DtaHashPwd.h"
+#include "Common/DtaLexicon.h"
+#include "Common/DtaOptions.h"
+#include "Common/log.h"
+#include "linux/os.h"
 
 /* Default to output that omits timestamps and goes to stdout */
 sedutiloutput outputFormat = sedutilReadable;

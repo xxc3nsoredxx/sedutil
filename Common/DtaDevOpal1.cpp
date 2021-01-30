@@ -19,7 +19,7 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
  * C:E********************************************************************** */
 #include <cassert>
 
-#include "DtaDevOpal1.h"
+#include "Common/DtaDevOpal1.h"
 
 DtaDevOpal1::DtaDevOpal1 (const char *devref) {
     DtaDevOpal::init(devref);

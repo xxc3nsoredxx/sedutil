@@ -12,12 +12,12 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-#include "blockwise.h"
-#include "bitops.h"
-#include "handy.h"
-#include "tassert.h"
-
 #include <string.h>
+
+#include "Common/pbkdf2/bitops.h"
+#include "Common/pbkdf2/blockwise.h"
+#include "Common/pbkdf2/handy.h"
+#include "Common/pbkdf2/tassert.h"
 
 void cf_blockwise_accumulate(uint8_t *partial, size_t *npartial, size_t nblock,
                              const void *inp, size_t nbytes,

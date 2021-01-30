@@ -12,13 +12,13 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-#include "hmac.h"
-#include "chash.h"
-#include "bitops.h"
-#include "handy.h"
-#include "tassert.h"
-
 #include <string.h>
+
+#include "Common/pbkdf2/bitops.h"
+#include "Common/pbkdf2/chash.h"
+#include "Common/pbkdf2/handy.h"
+#include "Common/pbkdf2/hmac.h"
+#include "Common/pbkdf2/tassert.h"
 
 void cf_hmac_init(cf_hmac_ctx *ctx,
                   const cf_chash *hash,

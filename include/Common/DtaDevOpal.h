@@ -23,11 +23,11 @@ class DtaSession;
 
 #include <vector>
 
-#include "DtaDev.h"
-#include "DtaDevOS.h"
-#include "DtaLexicon.h"
-#include "DtaResponse.h"   // wouldn't take class
-#include "DtaStructures.h"
+#include "Common/DtaDev.h"
+#include "Common/DtaLexicon.h"
+#include "Common/DtaResponse.h"   // wouldn't take class
+#include "Common/DtaStructures.h"
+#include "linux/DtaDevOS.h"
 
 /** Common code for OPAL SSCs.
  * most of the code that works for OPAL 2.0 also works for OPAL 1.0

@@ -16,22 +16,9 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 
- * C:E********************************************************************** */
+* C:E********************************************************************** */
 #pragma once
 
-#include "DtaDevOpal.h"
-#include "os.h"
+#include "linux/os.h"
 
-/** Class representing a disk device, this class is represents a disk that conforms
- * to the OPAL 1.0 SSC
- *
- * testing so far indicates that the functions implemented in this program
- * operate the same in OPAL 1.0 and Opal 2.0
- */
-class DtaDevOpal1 : public DtaDevOpal {
-public:
-    DtaDevOpal1 (const char *devref);
-    ~DtaDevOpal1 ();
-    /** return the communication ID to be used with this device */
-    uint16_t comID ();
-};
+uint8_t UnlockSEDs(char *password);

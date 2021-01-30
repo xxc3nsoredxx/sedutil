@@ -19,19 +19,19 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
  * C:E********************************************************************** */
 #pragma once
 
-#include "DtaDevOpal.h"
-#include "os.h"
+#include "Common/DtaDevOpal.h"
+#include "linux/os.h"
 
 /** Class representing a disk device, this class is represents a disk that conforms
- * to the OPAL 2.0 SSC
+ * to the OPAL 1.0 SSC
  *
  * testing so far indicates that the functions implemented in this program
- * function the same in OPAL 1.0 and Opal 2.0
+ * operate the same in OPAL 1.0 and Opal 2.0
  */
-class DtaDevOpal2 : public DtaDevOpal {
+class DtaDevOpal1 : public DtaDevOpal {
 public:
-    DtaDevOpal2 (const char *devref);
-    ~DtaDevOpal2 ();
+    DtaDevOpal1 (const char *devref);
+    ~DtaDevOpal1 ();
     /** return the communication ID to be used with this device */
     uint16_t comID ();
 };

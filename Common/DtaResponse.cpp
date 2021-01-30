@@ -20,10 +20,10 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 #include <cstring>
 #include <vector>
 
-#include "DtaEndianFixup.h"
-#include "DtaResponse.h"
-#include "log.h"
-#include "os.h"
+#include "Common/DtaEndianFixup.h"
+#include "Common/DtaResponse.h"
+#include "Common/log.h"
+#include "linux/os.h"
 
 DtaResponse::DtaResponse () {
     LOG(D1) << "Creating  DtaResponse()";

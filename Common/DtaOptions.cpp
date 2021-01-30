@@ -18,16 +18,16 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 
  * C:E********************************************************************** */
 #include "config.h"
+#include "Version.h"
 
 #include <cstdio>
 #include <cstring>
 
-#include "DtaConstants.h"
-#include "DtaLexicon.h"
-#include "DtaOptions.h"
-#include "log.h"
-#include "os.h"
-#include "Version.h"
+#include "Common/DtaConstants.h"
+#include "Common/DtaLexicon.h"
+#include "Common/DtaOptions.h"
+#include "Common/log.h"
+#include "linux/os.h"
 
 void usage( ) {
     printf("sedutil v%s Copyright 2014-2017 Bright Plaza Inc. <drivetrust@drivetrust.com>\n", GIT_VERSION);

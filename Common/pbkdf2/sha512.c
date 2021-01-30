@@ -14,11 +14,11 @@
 
 #include <string.h>
 
-#include "sha2.h"
-#include "blockwise.h"
-#include "bitops.h"
-#include "handy.h"
-#include "tassert.h"
+#include "Common/pbkdf2/bitops.h"
+#include "Common/pbkdf2/blockwise.h"
+#include "Common/pbkdf2/handy.h"
+#include "Common/pbkdf2/sha2.h"
+#include "Common/pbkdf2/tassert.h"
 
 static const uint64_t K[80] = {
   UINT64_C(0x428a2f98d728ae22), UINT64_C(0x7137449123ef65cd),

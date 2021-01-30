@@ -21,10 +21,10 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 class DtaCommand;
 class DtaSession;
 
-#include "DtaDev.h"
-#include "DtaDevOS.h"
-#include "DtaStructures.h"   
-#include "os.h"
+#include "Common/DtaDev.h"
+#include "Common/DtaStructures.h"   
+#include "linux/DtaDevOS.h"
+#include "linux/os.h"
 
 /** Device Class representing an unknown type of disk device.
  * This device is used in determining if a disk supports a TCG Storage SSC.

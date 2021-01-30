@@ -21,9 +21,9 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <termios.h>
 
-#include "GetPassPhrase.h"
-#include "log.h"
-#include "os.h"
+#include "Common/log.h"
+#include "linux/os.h"
+#include "LinuxPBA/GetPassPhrase.h"
 
 static struct termios tiosold;
 static struct termios tiosnew;

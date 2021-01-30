@@ -34,13 +34,13 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 #include <sys/stat.h>
 #include <sys/types.h>
 
-#include "DtaDevOS.h"
-#include "DtaHexDump.h"
-#include "DtaDevLinuxSata.h"
-#include "DtaDevLinuxNvme.h"
-#include "DtaDevGeneric.h"
-#include "log.h"
-#include "os.h"
+#include "Common/DtaDevGeneric.h"
+#include "Common/DtaHexDump.h"
+#include "Common/log.h"
+#include "linux/DtaDevLinuxNvme.h"
+#include "linux/DtaDevLinuxSata.h"
+#include "linux/DtaDevOS.h"
+#include "linux/os.h"
 
 /** The Device class represents a Linux generic storage device.
  * At initialization we determine if we map to the NVMe or SATA derived class

@@ -24,17 +24,17 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <iostream>
 
-#include "DtaCommand.h"
-#include "DtaDevGeneric.h"
-#include "DtaEndianFixup.h"
-#include "DtaHashPwd.h"
-#include "DtaHexDump.h"
-#include "DtaOptions.h"
-#include "DtaResponse.h"
-#include "DtaSession.h"
-#include "DtaStructures.h"
-#include "log.h"
-#include "os.h"
+#include "Common/DtaCommand.h"
+#include "Common/DtaDevGeneric.h"
+#include "Common/DtaEndianFixup.h"
+#include "Common/DtaHashPwd.h"
+#include "Common/DtaHexDump.h"
+#include "Common/DtaOptions.h"
+#include "Common/DtaResponse.h"
+#include "Common/DtaSession.h"
+#include "Common/DtaStructures.h"
+#include "Common/log.h"
+#include "linux/os.h"
 
 /** Class representing a disk device, this class is intended to be used when
  * it is not yet known if the device is OPAL compliant

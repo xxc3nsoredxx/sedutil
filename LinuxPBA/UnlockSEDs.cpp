@@ -22,12 +22,12 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 #include <dirent.h>
 #include <fnmatch.h>
 
-#include "DtaDevGeneric.h"
-#include "DtaDevOpal1.h"
-#include "DtaDevOpal2.h"
-#include "log.h"
-#include "os.h"
-#include "UnlockSEDs.h"
+#include "Common/DtaDevGeneric.h"
+#include "Common/DtaDevOpal1.h"
+#include "Common/DtaDevOpal2.h"
+#include "Common/log.h"
+#include "linux/os.h"
+#include "LinuxPBA/UnlockSEDs.h"
 
 uint8_t UnlockSEDs (char *password) {
     /* Loop through drives */

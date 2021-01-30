@@ -22,7 +22,7 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <cstdint>
 
-#include "DtaStructures.h"
+#include "Common/DtaStructures.h"
 
 typedef union {
     // four bytes in big endian (network) byte order
