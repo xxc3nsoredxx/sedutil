@@ -43,7 +43,7 @@ AC_TYPE_UINT8_T
 AC_CHECK_FUNCS([memset])
 
 # use automake
-AM_INIT_AUTOMAKE([dist-xz no-dist-gzip -Wall])
+AM_INIT_AUTOMAKE([foreign dist-xz no-dist-gzip no-installman subdir-objects -Wall -Werror])
 AC_CONFIG_FILES([Makefile])
 
 # Output info
