@@ -4,7 +4,8 @@
 # Arg 2: disk layout        (set in buildroot config file)
 
 # Global info
-VERSIONINFO="$(git describe --dirty)" || VERSIONINFO='tarball'
+# Get version info through git(1) or the VERSION file if not in a git repo or no git(1)
+VERSIONINFO="$(git describe --dirty)" || VERSIONINFO="$(< $BUILD_DIR/sedutil-xxc*/build/VERSION)"
 LAYOUT="$2"
 SECTOR_SIZE=512
 # Sectors per cluster

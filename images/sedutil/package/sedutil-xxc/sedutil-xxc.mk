@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-SEDUTIL_XXC_VERSION = 1.15.1
+SEDUTIL_XXC_VERSION = 1.20.0
 SEDUTIL_XXC_SOURCE = sedutil-xxc-$(SEDUTIL_XXC_VERSION).tar.xz
 SEDUTIL_XXC_SITE = $(SEDUTIL_XXC_PKGDIR)/src
 SEDUTIL_XXC_SITE_METHOD = file
