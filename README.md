@@ -379,6 +379,10 @@ On the next boot, the drive will present the shadow MBR to the system and the up
 After entering your password, the machine will reboot.
 If the password was entered correctly, the drive will be unlocked, the actual contents of the drive will be visible, and the boot will continue as normal.
 
+# External Links
+Some links that might be useful for some:
+* [Buildroot manual][buildroot archive] (archived from [the original][buildroot])
+
 # Copyright
 This software is Copyright 2014-2017 Bright Plaza Inc. <drivetrust@drivetrust.com>
 
@@ -414,3 +418,5 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 [feat bb]:FEATURES.md#busybox
 [dta wiki encrypt]:https://github.com/Drive-Trust-Alliance/sedutil/wiki/Encrypting-your-drive
 [dta wiki recover]:https://github.com/Drive-Trust-Alliance/sedutil/wiki/Encrypting-your-drive#recovery-information
+[buildroot archive]:https://web.archive.org/web/20210203023200/https://buildroot.net/downloads/manual/manual.pdf
+[buildroot]:https://buildroot.net/downloads/manual/manual.pdf
