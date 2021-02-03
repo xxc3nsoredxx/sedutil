@@ -402,7 +402,7 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 
 <!-- Link refs -->
 [build source]:#building-from-source
-[lastest release]:https://github.com/xxc3nsoredxx/sedutil/releases/latest
+[latest release]:https://github.com/xxc3nsoredxx/sedutil/releases/latest
 [encrypt]:#encrypting-your-drive
 [chubbyant]:https://github.com/ChubbyAnt/sedutil
 [dta]:https://github.com/Drive-Trust-Alliance/sedutil
