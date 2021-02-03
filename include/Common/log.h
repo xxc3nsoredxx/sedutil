@@ -1,5 +1,6 @@
 /*
  * This software is Copyright 2007 Petru Marginean <petru.marginean@gmail.com>
+ * Copyright 2020-2021 xxc3nsoredxx
  *
  * This is free and unencumbered software released into the public domain.
  *
