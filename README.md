@@ -3,7 +3,7 @@ The sedutil project provides a commandline tool (`sedutil-cli`) for setting up a
 This project also provides a pre-boot authorization (PBA) image (`linuxpba`) which can be loaded onto an encrypted disk's shadow MBR.
 The PBA allows the user to enter their password to unlock the SED during the boot process.
 
-To configure a drive, [build the images from source][build source] or download a prebuilt image from here ***TODO: INSERT RECOVERY RELEASE HERE*** and follow the instructions on [encrypting][encrypt].  
+To configure a drive, [build the images from source][build source] or download a prebuilt image from [here][latest release] and follow the instructions on [encrypting][encrypt].
 
 S3 sleep is not supported.
 
@@ -68,7 +68,7 @@ Other \*nix-es may require some tweaking on the user's end to work.
 * prepare.sh
   * Source downloads
     * `curl`, `tar`, `gzip`
-    * Working Internet connection (uses Buildroot's `make source` to fetch all the necessary tarballs before the build is started)
+    * Working Internet connection
   * sedutil tarball creation
     * `autoconf`, `sed`, `make`, `tar`, `xz-utils`
 * Buildroot
@@ -83,6 +83,14 @@ Other \*nix-es may require some tweaking on the user's end to work.
 
 Run `images/check_deps.sh` to test for missing dependencies.
 Doesn't test for `bash`, `which`, Debian's `build-essential`, Internet connection, or availability of root permissions.
+The GNU Coreutils, `util-linux`, `bash`, and `which` are implied dependencies and are not tested for.
+
+Additionally, the Debian `build-essential` package is not tested for directly, but some of the build dependencies are included in it:
+* `libc-dev`
+* `gcc`
+* `g++`
+* `make`
+
 If you're not customizing the images further yourself, the `libata.allow_tpm` requirement is handled by the SYSLINUX config file.
 
 ## Build
@@ -96,6 +104,12 @@ $ ./build.sh
 [Insert the USB where the rescue image will be written to]
 # ./flash_rescue.sh
 ```
+
+The `prepare.sh` script is designed to restart failed downloads as long as the script is running.
+Thanks to Buildroot's `make source`, if the script is killed and restarted later it will continue the downloads where it left off.
+
+The build output is saved into `scratch/buildroot/output/build_output.txt` to make it easy to investigate if something goes wrong.
+
 If the flash drive does not show up in the list when running `flash_rescue.sh`, cancel by hitting `Ctrl-C`  or giving empty input, and try again.
 It can take a little bit for the device to be recognized by the kernel and be available for use.
 
@@ -115,6 +129,10 @@ The following `make` targets are of interest:
   * BusyBox configurator
 * `uclibc-menuconfig`
   * uClibc configurator
+
+If any toolchain options are changed, a `make clean` is required to ensure that the changes propagate down to each package.
+When in doubt, `make clean`.
+Buildroot is configured to use `ccache` so most changes won't result in a complete rebuild.
 
 To control the level of debug output for `sedutil-cli` and `linuxpba`, change the following `Kconfig` option using the Buildroot configurator:
 ```
@@ -176,7 +194,8 @@ The software cannot detect Opal 2 support on the drive, and continuing may erase
 
 ## Test the PBA
 Run `linuxpba` and enter `debug` as the password when prompted.
-Using a different password will reboot the system.
+It will try to unlock any drives with the password `debug`, but fail.
+Unless a drive's password _is_ `debug`, in which case _change it_!
 
 Example output:
 ```
@@ -383,6 +402,7 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 
 <!-- Link refs -->
 [build source]:#building-from-source
+[lastest release]:https://github.com/xxc3nsoredxx/sedutil/releases/latest
 [encrypt]:#encrypting-your-drive
 [chubbyant]:https://github.com/ChubbyAnt/sedutil
 [dta]:https://github.com/Drive-Trust-Alliance/sedutil
