@@ -29,17 +29,29 @@ along with sedutil.  If not, see <http://www.gnu.org/licenses/>.
 #include "Common/log.h"
 #include "linux/os.h"
 
-void usage( ) {
+void version () {
     printf("sedutil v%s Copyright 2014-2017 Bright Plaza Inc. <drivetrust@drivetrust.com>\n", VERSION);
     printf("Copyright 2020-2021 xxc3nsoredxx\n");
     printf("a utility to manage self encrypting drives that conform\n");
     printf("to the Trusted Computing Group OPAL 2.0 SSC specification\n");
+    printf("This program is freely distributable by the terms of GPLv3 (or later).\n");
+    printf("You should have received a copy of the GNU General Public License\n");
+    printf("along with sedutil.  If not, see <http://www.gnu.org/licenses/>.\n");
+    printf("This program comes with ABSOLUTELY NO WARRANY.\n");
+}
+
+void usage () {
+    version();
+    printf("\n");
     printf("General Usage:                     (see readme for extended commandset)\n");
     printf("sedutil-cli <-v> <-n> <action> <options> <device>\n");
-    printf("-v (optional)                       increase verbosity, one to five v's\n");
-    printf("-n (optional)                       no password hashing. Passwords will be sent in clear text!\n");
+    printf("-h, --help                          Print this help message\n");
     printf("-l (optional)                       log style output to stderr only\n");
-    printf("actions \n");
+    printf("-n (optional)                       no password hashing. Passwords will be sent in clear text!\n");
+    printf("-v (optional)                       increase verbosity, one to five v's\n");
+    printf("--version                           Display version information\n");
+    printf("\n");
+    printf("Actions:\n");
     printf("--scan \n");
     printf("                                Scans the devices on the system \n");
     printf("                                identifying Opal compliant devices \n");
@@ -128,6 +140,9 @@ uint8_t DtaOptions (int argc, char *argv [], DTA_OPTIONS *opts) {
     for (uint8_t i = 1; i < argc; i++) {
         if (!(strcmp("-h", argv[i])) || !(strcmp("--help", argv[i]))) {
             usage();
+            return DTAERROR_INVALID_COMMAND;
+        } else if (!(strcmp("--version", argv[i]))) {
+            version();
             return DTAERROR_INVALID_COMMAND;
         } else if ('v' == argv[i][1]) {
             baseOptions += 1;
