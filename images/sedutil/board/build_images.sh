@@ -151,6 +151,13 @@ EOF
         mkdir -pv usr/sedutil
         cp -v $BINARIES_DIR/UEFI/UEFI-*.img.xz usr/sedutil/
 
+        # Add hash of the PBA
+        # This process is convoluted and I hate it >:(
+        HASH="$(sha512sum usr/sedutil/UEFI-*.img.xz | cut -d ' ' -f 1)"
+        echo "Hash: $HASH"
+        echo 'Writing SHA512 checksum file ...'
+        echo "$HASH  /usr/sedutil/$(basename usr/sedutil/UEFI-*.img.xz)" > usr/sedutil/UEFI.sha512
+
         # Repack initramfs
         echo 'Repacking as rescuefs.cpio.xz ...'
         find . | cpio -o -H newc | xz -9 -C crc32 -c -v > $BINARIES_DIR/rescuefs.cpio.xz

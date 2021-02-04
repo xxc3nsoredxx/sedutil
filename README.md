@@ -214,6 +214,17 @@ The next sections assume the target drive is on `/dev/nvme0`.
 Replace with the appropriate block device if needed.
 
 ## Enable Locking and Install the PBA
+### Optional: Verify the checksum of the PBA image
+Run `sha512sum -c < /usr/sedutil/UEFI.sha512`
+
+Example output:
+```
+#sha512sum -c < /usr/sedutil/UEFI.sha512
+UEFI-1.20.0.img.xz: OK
+```
+
+---
+
 Run the following commands:
 ```
 xz -d /usr/sedutil/UEFI-*.img.xz
@@ -340,6 +351,16 @@ Drive /dev/nvme0 Samsung SSD 970 EVO Plus 1TB             is OPAL Unlocked
 ```
 
 ## Flash the New PBA Image
+### Optional: Verify the checksum of the PBA image
+Run `sha512sum -c < /usr/sedutil/UEFI.sha512`
+
+Example output:
+```
+#sha512sum -c < /usr/sedutil/UEFI.sha512
+UEFI-1.20.0.img.xz: OK
+```
+
+---
 To flash the updated image, run the following commands to decompress the image, switch to the shadow MBR, and flash the image:
 ```
 xz -d /usr/sedutil/UEFI-*.img.xz
